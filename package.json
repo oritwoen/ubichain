@@ -1,0 +1,45 @@
+{
+  "name": "ubichain",
+  "version": "0.0.0",
+  "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
+  "repository": "https://github.com/oritwoen/ubichain",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./blockchains/*": {
+      "types": "./dist/blockchains/*.d.ts",
+      "default": "./dist/blockchains/*.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "vitest dev",
+
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+
+    "test:types": "tsc --noEmit --skipLibCheck"
+  },
+  "devDependencies": {
+    "vitest": "3.1.1",
+    "unbuild": "3.5.0",
+    "typescript": "5.8.2",
+
+    "eslint": "9.24.0",
+    "eslint-config-unjs": "0.4.2",
+
+    "@scure/base": "1.2.4",
+    "@types/node": "22.14.1",
+    "@noble/hashes": "1.7.1",
+    "@noble/curves": "1.8.1"
+  },
+  "packageManager": "pnpm@10.8.0"
+}
