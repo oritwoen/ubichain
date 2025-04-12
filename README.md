@@ -18,7 +18,9 @@ Currently supported blockchains:
 
 - **Bitcoin**
   - Legacy addresses (P2PKH) - addresses starting with '1'
-  - P2SH addresses - addresses starting with '3' 
+  - P2SH addresses - addresses starting with '3'
+- **Solana**
+  - Standard addresses (Ed25519 public keys encoded in base58)
 
 ## Installation
 
@@ -37,29 +39,49 @@ pnpm add ubichain
 ```typescript
 import { useBlockchain } from 'ubichain';
 import bitcoin from 'ubichain/blockchains/bitcoin';
+import solana from 'ubichain/blockchains/solana';
 
-// Create a blockchain interface
-const blockchain = useBlockchain(bitcoin());
+// Create a Bitcoin blockchain interface
+const bitcoinChain = useBlockchain(bitcoin());
 
 // Generate a new private key
-const privateKey = blockchain.generateKeyPrivate();
+const privateKey = bitcoinChain.generateKeyPrivate();
 console.log('Private Key:', privateKey);
 
 // Generate a public key from the private key
-const publicKey = blockchain.generateKeyPublic(privateKey);
+const publicKey = bitcoinChain.generateKeyPublic(privateKey);
 console.log('Public Key:', publicKey);
 
 // Generate a legacy address from the public key
-const legacyAddress = blockchain.generateAddress(publicKey, 'legacy');
-console.log('Legacy Address:', legacyAddress);
+const legacyAddress = bitcoinChain.generateAddress(publicKey, 'legacy');
+console.log('Bitcoin Legacy Address:', legacyAddress);
 
 // Generate a P2SH address from the public key
-const p2shAddress = blockchain.generateAddress(publicKey, 'p2sh');
-console.log('P2SH Address:', p2shAddress);
+const p2shAddress = bitcoinChain.generateAddress(publicKey, 'p2sh');
+console.log('Bitcoin P2SH Address:', p2shAddress);
 
 // Validate an address
-const isValid = blockchain.validateAddress(legacyAddress);
-console.log('Is Valid Address:', isValid);
+const isValid = bitcoinChain.validateAddress(legacyAddress);
+console.log('Is Valid Bitcoin Address:', isValid);
+
+// Create a Solana blockchain interface
+const solanaChain = useBlockchain(solana());
+
+// Generate a new private key
+const solPrivateKey = solanaChain.generateKeyPrivate();
+console.log('Solana Private Key:', solPrivateKey);
+
+// Generate a public key from the private key (using Ed25519)
+const solPublicKey = solanaChain.generateKeyPublic(solPrivateKey);
+console.log('Solana Public Key:', solPublicKey);
+
+// Generate a Solana address from the public key
+const solAddress = solanaChain.generateAddress(solPublicKey);
+console.log('Solana Address:', solAddress);
+
+// Validate a Solana address
+const isSolAddressValid = solanaChain.validateAddress(solAddress);
+console.log('Is Valid Solana Address:', isSolAddressValid);
 ```
 
 ### Advanced Usage

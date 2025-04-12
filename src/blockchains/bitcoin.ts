@@ -18,12 +18,6 @@ export default function bitcoin () {
    * @returns Bitcoin address
    */
   function generateAddress(keyPublic: string, type?: string): string {
-    if (type) {
-      console.log(`Generating Bitcoin ${type} address...`)
-    } else {
-      console.log('Generating Bitcoin address...')
-    }
-    
     // Explicitly check if type is exactly 'p2sh'
     if (type === 'p2sh') {
       // Bitcoin mainnet P2SH version byte is 0x05
