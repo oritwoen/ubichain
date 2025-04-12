@@ -2,7 +2,26 @@
   "name": "ubichain",
   "version": "0.0.1",
   "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
-  "repository": "https://github.com/oritwoen/ubichain",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oritwoen/ubichain"
+  },
+  "homepage": "https://github.com/oritwoen/ubichain",
+  "bugs": {
+    "url": "https://github.com/oritwoen/ubichain/issues"
+  },
+  "keywords": [
+    "blockchain",
+    "crypto",
+    "bitcoin",
+    "wallet",
+    "cryptocurrency",
+    "typescript",
+    "addresses",
+    "cryptography",
+    "keys"
+  ],
+  "author": "oritwoen",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
