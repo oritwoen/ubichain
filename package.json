@@ -1,6 +1,6 @@
 {
   "name": "ubichain",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
   "repository": "https://github.com/oritwoen/ubichain",
   "license": "MIT",
@@ -23,10 +23,8 @@
     "build": "unbuild",
     "dev": "vitest dev",
     "release": "changelogen --release && git push --follow-tags",
-
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-
     "test:types": "tsc --noEmit --skipLibCheck"
   },
   "devDependencies": {
@@ -34,10 +32,8 @@
     "unbuild": "3.5.0",
     "typescript": "5.8.2",
     "changelogen": "0.6.1",
-
     "eslint": "9.24.0",
     "eslint-config-unjs": "0.4.2",
-
     "@scure/base": "1.2.4",
     "@types/node": "22.14.1",
     "@noble/hashes": "1.7.1",
