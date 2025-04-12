@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.4...v0.0.5)
+
+### 🚀 Enhancements
+
+- Add SUI blockchain support with address generation and validation ([bad2b57](https://github.com/oritwoen/ubichain/commit/bad2b57))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.4
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.3...v0.0.4)
