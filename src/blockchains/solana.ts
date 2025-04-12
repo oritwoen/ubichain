@@ -1,22 +1,9 @@
-import { ed25519 } from '@noble/curves/ed25519'
 import { base58 } from '@scure/base'
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { hexToBytes } from '@noble/hashes/utils'
+import { generateKeyPublic } from '../utils/ed25519'
 
 export default function solana() {
   const name = "solana";
-  
-  /**
-   * Generate public key from private key using Ed25519
-   * Solana uses Ed25519 elliptic curve cryptography
-   * 
-   * @param keyPrivate - The private key as a hex string
-   * @returns The public key as a hex string
-   */
-  function generateKeyPublic(keyPrivate: string): string {
-    const keyPrivateBytes = hexToBytes(keyPrivate)
-    const keyPublic = ed25519.getPublicKey(keyPrivateBytes)
-    return bytesToHex(keyPublic)
-  }
   
   /**
    * Generate Solana address from public key
