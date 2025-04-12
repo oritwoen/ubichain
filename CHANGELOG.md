@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.3...v0.0.4)
+
+### 🚀 Enhancements
+
+- Add TRON blockchain functionality with address generation and validation ([6f52038](https://github.com/oritwoen/ubichain/commit/6f52038))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.3
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.2...v0.0.3)
