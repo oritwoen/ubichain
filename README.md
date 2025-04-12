@@ -21,6 +21,13 @@ Currently supported blockchains:
   - P2SH addresses - addresses starting with '3'
 - **Solana**
   - Standard addresses (Ed25519 public keys encoded in base58)
+- **Aptos**
+  - Standard addresses (Ed25519 based)
+- **TRON**
+  - Standard addresses (Secp256k1 based with Keccak-256 hash)
+- **SUI**
+  - Standard addresses (Blake2b hash of scheme flag + public key)
+  - Supports both Ed25519 and Secp256k1 keys
 
 ## Installation
 
@@ -40,6 +47,7 @@ pnpm add ubichain
 import { useBlockchain } from 'ubichain';
 import bitcoin from 'ubichain/blockchains/bitcoin';
 import solana from 'ubichain/blockchains/solana';
+import sui from 'ubichain/blockchains/sui';
 
 // Create a Bitcoin blockchain interface
 const bitcoinChain = useBlockchain(bitcoin());
@@ -82,6 +90,28 @@ console.log('Solana Address:', solAddress);
 // Validate a Solana address
 const isSolAddressValid = solanaChain.validateAddress(solAddress);
 console.log('Is Valid Solana Address:', isSolAddressValid);
+
+// Create a SUI blockchain interface
+const suiChain = useBlockchain(sui());
+
+// Generate a public key from private key using Ed25519 (default)
+const suiEd25519PublicKey = suiChain.generateKeyPublic(privateKey);
+console.log('SUI Ed25519 Public Key:', suiEd25519PublicKey);
+
+// Generate a SUI address from the Ed25519 public key
+const suiEd25519Address = suiChain.generateAddress(suiEd25519PublicKey);
+console.log('SUI Address (Ed25519):', suiEd25519Address);
+
+// Generate a public key using Secp256k1
+const suiSecp256k1PublicKey = suiChain.generateKeyPublic(privateKey, 'secp256k1');
+console.log('SUI Secp256k1 Public Key:', suiSecp256k1PublicKey);
+
+// Generate a SUI address from the Secp256k1 public key
+const suiSecp256k1Address = suiChain.generateAddress(suiSecp256k1PublicKey, 'secp256k1');
+console.log('SUI Address (Secp256k1):', suiSecp256k1Address);
+
+// Validate SUI addresses
+console.log('Is Valid SUI Address:', suiChain.validateAddress(suiEd25519Address));
 ```
 
 ### Advanced Usage
@@ -137,7 +167,7 @@ pnpm run lint
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add HD wallet support (BIP32/BIP44)
 - [ ] Add transaction creation and signing
-- [ ] Add support for more blockchains (Ethereum, Litecoin, etc.)
+- [ ] Add support for more blockchains (Ethereum, Polygon, Cardano, etc.)
 
 ## License
 
