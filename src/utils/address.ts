@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha256'
 import { ripemd160 } from '@noble/hashes/ripemd160'
 import { hexToBytes } from '@noble/hashes/utils'
-import { base58check } from '@scure/base'
+import { encodeBase58Check, validateBase58Check } from './encoding'
 
 /**
  * Create RIPEMD160(SHA256(input)) hash - commonly used in Bitcoin-like blockchains
@@ -29,68 +29,11 @@ export type OptionsAddressP2SH = OptionsAddress
  * @param bytesVersion - The version byte to use
  * @returns Versioned hash with version byte prepended
  */
-function createVersionedHash(hash: Uint8Array, bytesVersion: number): Uint8Array {
+export function createVersionedHash(hash: Uint8Array, bytesVersion: number): Uint8Array {
   const hashVersioned = new Uint8Array(hash.length + 1)
   hashVersioned[0] = bytesVersion
   hashVersioned.set(hash, 1)
   return hashVersioned
-}
-
-/**
- * Encode a hash with Base58Check
- * @param hash - The hash to encode
- * @returns Base58Check encoded string
- */
-function encodeBase58Check(hash: Uint8Array): string {
-  return base58check(sha256).encode(hash)
-}
-
-/**
- * Validate a base58check address
- * @param address - The address to validate
- * @param bytesVersion - The expected version byte
- * @param expectedPrefix - The expected prefix character(s)
- * @returns Whether the address is valid
- */
-function validateBase58Address(
-  address: string,
-  bytesVersion: number, 
-  expectedPrefix?: string
-): boolean {
-  // Quick format check before trying to decode
-  if (!address || typeof address !== 'string') {
-    return false
-  }
-  
-  // Check if the address has the expected prefix if provided
-  if (expectedPrefix && !address.startsWith(expectedPrefix)) {
-    return false
-  }
-  
-  // Bitcoin addresses are typically 26-35 characters long
-  if (address.length < 26 || address.length > 35) {
-    return false
-  }
-  
-  try {
-    // Try to decode the address with Base58Check
-    const decoded = base58check(sha256).decode(address)
-    
-    // Check length (21 bytes: 1 byte version + 20 bytes hash)
-    if (decoded.length !== 21) {
-      return false
-    }
-    
-    // Check version byte
-    if (decoded[0] !== bytesVersion) {
-      return false
-    }
-    
-    return true
-  } catch {
-    // If decoding fails, the address is invalid
-    return false
-  }
 }
 
 /**
@@ -124,7 +67,7 @@ export function validateAddressLegacy(address: string, options: OptionsAddressLe
   const expectedPrefix = options.bytesVersion === 0x00 ? '1' : undefined
   
   // Use common validation function
-  return validateBase58Address(address, options.bytesVersion, expectedPrefix)
+  return validateBase58Check(address, options.bytesVersion, expectedPrefix)
 }
 
 /**
@@ -167,5 +110,5 @@ export function validateAddressP2SH(address: string, options: OptionsAddressP2SH
   const expectedPrefix = options.bytesVersion === 0x05 ? '3' : undefined
   
   // Use common validation function
-  return validateBase58Address(address, options.bytesVersion, expectedPrefix)
+  return validateBase58Check(address, options.bytesVersion, expectedPrefix)
 }

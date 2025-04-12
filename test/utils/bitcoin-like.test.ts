@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { hash160, generateAddressLegacy, validateAddressLegacy } from '../../src/utils/bitcoin-like'
+import { hash160, generateAddressLegacy, validateAddressLegacy } from '../../src/utils/address'
 import { sha256 } from '@noble/hashes/sha256'
-import { base58check } from '@scure/base'
+import { createVersionedHash } from '../../src/utils/address'
+import { encodeBase58Check } from '../../src/utils/encoding'
 
 describe('Bitcoin-like utils', () => {
   describe('hash160', () => {
@@ -14,11 +15,9 @@ describe('Bitcoin-like utils', () => {
       
       // Test the hash function by ensuring an address generated with it is valid
       const bytesVersion = 0x00
-      const hashVersioned = new Uint8Array(21)
-      hashVersioned[0] = bytesVersion
-      hashVersioned.set(result, 1)
+      const hashVersioned = createVersionedHash(result, bytesVersion)
       
-      const address = base58check(sha256).encode(hashVersioned)
+      const address = encodeBase58Check(hashVersioned)
       expect(address).toBeTruthy()
       expect(address.length).toBeGreaterThan(25)
       expect(address.length).toBeLessThan(36)
