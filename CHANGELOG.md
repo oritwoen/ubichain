@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.2...v0.0.3)
+
+### 🚀 Enhancements
+
+- Implement Aptos blockchain functionality with address generation and validation ([5db315a](https://github.com/oritwoen/ubichain/commit/5db315a))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.2
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.1...v0.0.2)
