@@ -42,8 +42,11 @@
     "build": "unbuild",
     "dev": "vitest dev",
     "release": "changelogen --release && git push --follow-tags",
+
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+
+    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
     "test:types": "tsc --noEmit --skipLibCheck"
   },
   "devDependencies": {
@@ -51,12 +54,15 @@
     "unbuild": "3.5.0",
     "typescript": "5.8.2",
     "changelogen": "0.6.1",
+
     "eslint": "9.24.0",
     "eslint-config-unjs": "0.4.2",
+
     "@scure/base": "1.2.4",
     "@types/node": "22.14.1",
     "@noble/hashes": "1.7.1",
-    "@noble/curves": "1.8.1"
+    "@noble/curves": "1.8.1",
+    "@vitest/coverage-v8": "3.1.1"
   },
   "packageManager": "pnpm@10.8.0"
 }
