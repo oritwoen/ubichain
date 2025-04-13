@@ -1,6 +1,6 @@
 import { sha256 } from '@noble/hashes/sha256'
 import { ripemd160 } from '@noble/hashes/ripemd160'
-import { hexToBytes } from '@noble/hashes/utils'
+import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
 import { encodeBase58Check, validateBase58Check } from './encoding'
 import { bech32 } from '@scure/base'
 
@@ -36,16 +36,23 @@ export type OptionsAddressSegWit = {
 }
 
 /**
+ * Options for validating hex addresses
+ */
+export interface OptionsAddressHex {
+  prefix?: string; // Prefix for address (e.g. '0x')
+  length?: number; // Expected length without prefix
+  caseSensitive?: boolean; // Whether hex is case sensitive
+}
+
+/**
  * Create a versioned hash with a version byte
  * @param hash - The hash to version
  * @param bytesVersion - The version byte to use
  * @returns Versioned hash with version byte prepended
+ * @deprecated Use addSchemeByte instead
  */
 export function createVersionedHash(hash: Uint8Array, bytesVersion: number): Uint8Array {
-  const hashVersioned = new Uint8Array(hash.length + 1)
-  hashVersioned[0] = bytesVersion
-  hashVersioned.set(hash, 1)
-  return hashVersioned
+  return addSchemeByte(hash, bytesVersion, true);
 }
 
 /**
@@ -184,4 +191,80 @@ export function validateAddressSegWit(address: string, options: OptionsAddressSe
     // If decoding fails, the address is invalid
     return false
   }
+}
+
+/**
+ * Validate a hex address with common format like 0x-prefixed addresses
+ * Used by Ethereum, Sui, Aptos and others
+ * 
+ * @param address - Address to validate
+ * @param options - Validation options
+ * @returns Whether the address is valid
+ */
+export function validateAddressHex(address: string, options: OptionsAddressHex = {}): boolean {
+  // Set defaults
+  const prefix = options.prefix || '0x';
+  const expectedLength = options.length || 40;
+  const caseSensitive = options.caseSensitive || false;
+  
+  // Check prefix
+  if (!address.startsWith(prefix)) {
+    return false;
+  }
+  
+  // Remove prefix and check length
+  const addressWithoutPrefix = address.slice(prefix.length);
+  if (addressWithoutPrefix.length !== expectedLength) {
+    return false;
+  }
+  
+  // Create regex pattern based on case sensitivity
+  const pattern = caseSensitive 
+    ? new RegExp(`^[0-9a-f]{${expectedLength}}$`) 
+    : new RegExp(`^[0-9a-fA-F]{${expectedLength}}$`);
+  
+  // Check if it's valid hex
+  return pattern.test(addressWithoutPrefix);
+}
+
+/**
+ * Create a standard prefixed hash address
+ * Used by Ethereum, Sui, Aptos and others
+ * 
+ * @param hash - Hash bytes to use as address
+ * @param prefix - Prefix to add (default: '0x')
+ * @returns Prefixed hex address
+ */
+export function createPrefixedAddress(hash: Uint8Array, prefix: string = '0x'): string {
+  return prefix + bytesToHex(hash);
+}
+
+/**
+ * Helper function to create a byte array with scheme/flag byte and data
+ * Used by many blockchains like Sui, Aptos
+ * 
+ * @param data - The main data bytes
+ * @param schemeByte - The scheme or flag byte to prepend/append
+ * @param prepend - Whether to prepend (true) or append (false) the scheme byte
+ * @returns Combined byte array
+ */
+export function addSchemeByte(
+  data: Uint8Array, 
+  schemeByte: number, 
+  prepend: boolean = true
+): Uint8Array {
+  // Create new array with extra byte
+  const result = new Uint8Array(data.length + 1);
+  
+  if (prepend) {
+    // Scheme byte at the beginning
+    result[0] = schemeByte;
+    result.set(data, 1);
+  } else {
+    // Scheme byte at the end
+    result.set(data);
+    result[data.length] = schemeByte;
+  }
+  
+  return result;
 }

@@ -1,6 +1,7 @@
 import { sha3_256 } from '@noble/hashes/sha3'
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
+import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
 import type { Curve } from '../types'
 
 export default function aptos() {
@@ -19,15 +20,13 @@ export default function aptos() {
     const keyPublicBytes = hexToBytes(keyPublic)
     
     // Concatenate with scheme identifier byte (0x00 for single Ed25519)
-    const dataToHash = new Uint8Array(keyPublicBytes.length + 1)
-    dataToHash.set(keyPublicBytes)
-    dataToHash[keyPublicBytes.length] = 0x00 // Single signer scheme identifier
+    const dataToHash = addSchemeByte(keyPublicBytes, 0x00, false)
     
     // Hash with SHA3-256
     const addressBytes = sha3_256(dataToHash)
     
     // Return as hex string with 0x prefix
-    return '0x' + bytesToHex(addressBytes)
+    return createPrefixedAddress(addressBytes)
   }
 
   /**
@@ -39,18 +38,11 @@ export default function aptos() {
    */
   function validateAddress(address: string): boolean {
     try {
-      // Check if the address starts with '0x'
-      if (!address.startsWith('0x')) {
-        return false
-      }
-      
-      // Remove the '0x' prefix and check if it's a valid hex string
-      const addressHex = address.slice(2)
-      if (!/^[0-9a-f]{64}$/i.test(addressHex)) {
-        return false
-      }
-      
-      return true
+      return validateAddressHex(address, {
+        prefix: '0x',
+        length: 64,
+        caseSensitive: false
+      });
     } catch (error) {
       return false
     }

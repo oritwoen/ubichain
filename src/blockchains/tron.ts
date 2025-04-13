@@ -1,7 +1,7 @@
 import { generateKeyPublic as getKeyPublic } from '../utils/secp256k1'
 import { hexToBytes } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
-import { createVersionedHash } from '../utils/address'
+import { createVersionedHash, addSchemeByte } from '../utils/address'
 import { encodeBase58Check, validateBase58Check } from '../utils/encoding'
 import type { Curve } from '../types'
 
@@ -27,8 +27,8 @@ export default function tron() {
     // Take the last 20 bytes of the hash result
     const addressBytes = keccakHash.slice(keccakHash.length - 20)
     
-    // Create versioned hash with TRON version byte 0x41
-    const hashVersioned = createVersionedHash(addressBytes, 0x41)
+    // Create versioned hash with TRON version byte 0x41 (using addSchemeByte)
+    const hashVersioned = addSchemeByte(addressBytes, 0x41, true)
     
     // Encode with Base58Check
     return encodeBase58Check(hashVersioned)

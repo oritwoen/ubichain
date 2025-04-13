@@ -1,8 +1,9 @@
 import { base58 } from '@scure/base'
 import { blake2b } from '@noble/hashes/blake2b'
-import { bytesToHex, hexToBytes } from '@noble/hashes/utils'
+import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { generateKeyPublic as getSecp256k1KeyPublic } from '../utils/secp256k1'
+import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
 import type { Curve } from '../types'
 
 export default function sui() {
@@ -60,15 +61,13 @@ export default function sui() {
     }
     
     // Create input for hashing: flag byte + public key
-    const input = new Uint8Array(keyPublicBytes.length + 1)
-    input[0] = flagByte
-    input.set(keyPublicBytes, 1)
+    const input = addSchemeByte(keyPublicBytes, flagByte, true);
     
     // Hash with BLAKE2b-256
     const hash = blake2b(input, { dkLen: 32 }) // 32 bytes = 256 bits
     
     // Sui address is just the hex representation of the hash
-    return '0x' + bytesToHex(hash)
+    return createPrefixedAddress(hash)
   }
 
   /**
@@ -82,21 +81,11 @@ export default function sui() {
    * @returns Whether the address is valid
    */
   function validateAddress(address: string): boolean {
-    if (!address.startsWith('0x')) {
-      return false
-    }
-    
-    // Remove '0x' prefix
-    const addressWithoutPrefix = address.slice(2)
-    
-    // Check if it's 32 bytes (64 hex chars)
-    if (addressWithoutPrefix.length !== 64) {
-      return false
-    }
-    
-    // Check if it's valid hex
-    const hexRegex = /^[0-9a-fA-F]+$/
-    return hexRegex.test(addressWithoutPrefix)
+    return validateAddressHex(address, {
+      prefix: '0x',
+      length: 64,
+      caseSensitive: false
+    });
   }
 
   return {
