@@ -6,4 +6,5 @@ export const blockchains = Object.freeze({
   'sui': 'ubichain/blockchains/sui',
   'ethereum': 'ubichain/blockchains/ethereum',
   'base': 'ubichain/blockchains/base',
+  'cardano': 'ubichain/blockchains/cardano',
 })
