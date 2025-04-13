@@ -26,7 +26,10 @@ export default function sui() {
    * @param scheme - Signature scheme (ed25519, secp256k1)
    * @returns Public key as hex string
    */
-  function getKeyPublic(keyPrivate: string, scheme: string = 'ed25519'): string {
+  function getKeyPublic(keyPrivate: string, options?: Record<string, any>): string {
+    // Extract scheme from options or use default 'ed25519'
+    const scheme = options?.scheme || 'ed25519';
+    
     if (scheme.toLowerCase() === 'secp256k1') {
       return getSecp256k1KeyPublic(keyPrivate, { compressed: true })
     }
@@ -43,13 +46,13 @@ export default function sui() {
    * @param scheme - Signature scheme (ed25519, secp256k1)
    * @returns Sui address (base58 encoded BLAKE2b hash)
    */
-  function getAddress(keyPublic: string, scheme: string = 'ed25519'): string {
+  function getAddress(keyPublic: string, type?: string): string {
     // Convert public key to bytes
     const keyPublicBytes = hexToBytes(keyPublic)
     
     // Determine flag byte based on scheme
     let flagByte: number
-    if (scheme.toLowerCase() === 'secp256k1') {
+    if (type?.toLowerCase() === 'secp256k1') {
       flagByte = SIGNATURE_SCHEME_FLAGS.SECP256K1
     } else {
       // Default to Ed25519

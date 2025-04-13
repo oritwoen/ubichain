@@ -15,11 +15,11 @@ describe('Sui', () => {
 
   describe('Keys and addresses', () => {
     it('should generate correct Ed25519 public key', () => {
-      expect(blockchain.getKeyPublic(keyPrivate, 'ed25519')).toBe(keyPublicEd25519)
+      expect(blockchain.getKeyPublic(keyPrivate, { scheme: 'ed25519' })).toBe(keyPublicEd25519)
     })
 
     it('should generate correct Secp256k1 public key', () => {
-      expect(blockchain.getKeyPublic(keyPrivate, 'secp256k1')).toBe(keyPublicSecp256k1)
+      expect(blockchain.getKeyPublic(keyPrivate, { scheme: 'secp256k1' })).toBe(keyPublicSecp256k1)
     })
 
     it('should generate correct Ed25519 Sui address', () => {
@@ -38,19 +38,19 @@ describe('Sui', () => {
 
   describe('Address validation', () => {
     it('should validate correct Sui addresses', () => {
-      expect(blockchain.validateAddress(addressEd25519)).toBe(true)
-      expect(blockchain.validateAddress(addressSecp256k1)).toBe(true)
+      expect(blockchain.validateAddress?.(addressEd25519)).toBe(true)
+      expect(blockchain.validateAddress?.(addressSecp256k1)).toBe(true)
     })
 
     it('should reject invalid addresses', () => {
       // Wrong prefix
-      expect(blockchain.validateAddress('7e50de9ffb8ebbd709f774966c0a653f2bdecd96f3fe68f0d957fc9e855b3a13')).toBe(false)
+      expect(blockchain.validateAddress?.('7e50de9ffb8ebbd709f774966c0a653f2bdecd96f3fe68f0d957fc9e855b3a13')).toBe(false)
       
       // Wrong length
-      expect(blockchain.validateAddress('0x7e50de9ffb8ebbd709f774966c0a653f2bdecd96f3fe68f0d957fc9e855b3a')).toBe(false)
+      expect(blockchain.validateAddress?.('0x7e50de9ffb8ebbd709f774966c0a653f2bdecd96f3fe68f0d957fc9e855b3a')).toBe(false)
       
       // Invalid characters
-      expect(blockchain.validateAddress('0x7e50de9ffb8ebbd709f774966c0a653f2bdecd96f3fe68f0d957fc9e855b3a1z')).toBe(false)
+      expect(blockchain.validateAddress?.('0x7e50de9ffb8ebbd709f774966c0a653f2bdecd96f3fe68f0d957fc9e855b3a1z')).toBe(false)
     })
   })
 })

@@ -5,6 +5,7 @@ import type { Blockchain, BlockchainResponse } from '../src/types'
 function isBlockchain(obj: any): obj is Blockchain {
   return (
     typeof obj.name === 'string' &&
+    (typeof obj.curve === 'string' || Array.isArray(obj.curve)) &&
     typeof obj.getKeyPublic === 'function' &&
     typeof obj.getAddress === 'function' &&
     (obj.validateAddress === undefined || typeof obj.validateAddress === 'function')
@@ -14,6 +15,7 @@ function isBlockchain(obj: any): obj is Blockchain {
 function isBlockchainResponse(obj: any): obj is BlockchainResponse {
   return (
     typeof obj.name === 'string' &&
+    (typeof obj.curve === 'string' || Array.isArray(obj.curve)) &&
     typeof obj.generateKeyPrivate === 'function' &&
     typeof obj.getKeyPublic === 'function' &&
     typeof obj.getAddress === 'function' &&
@@ -26,6 +28,7 @@ describe('Types', () => {
     it('should detect valid Blockchain implementation', () => {
       const validBlockchain = {
         name: 'test-chain',
+        curve: 'secp256k1',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
@@ -36,6 +39,7 @@ describe('Types', () => {
     it('should detect valid Blockchain implementation with validateAddress', () => {
       const validBlockchain = {
         name: 'test-chain',
+        curve: 'secp256k1',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,
         validateAddress: (address: string) => address.startsWith('addr-')
@@ -78,6 +82,7 @@ describe('Types', () => {
     it('should detect valid BlockchainResponse implementation', () => {
       const validResponse = {
         name: 'test-chain',
+        curve: 'secp256k1',
         generateKeyPrivate: () => 'priv-key',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`
@@ -88,6 +93,7 @@ describe('Types', () => {
       // Create an instance that looks like the interface to test type safety
       const usedResponse: BlockchainResponse = {
         name: 'test-chain-2',
+        curve: 'ed25519',
         generateKeyPrivate: () => 'private-key',
         getKeyPublic: (keyPrivate: string) => `public-${keyPrivate}`, 
         getAddress: (keyPublic: string) => `address-${keyPublic}`,
@@ -105,6 +111,7 @@ describe('Types', () => {
     it('should detect valid BlockchainResponse with validateAddress', () => {
       const validResponse = {
         name: 'test-chain',
+        curve: 'secp256k1',
         generateKeyPrivate: () => 'priv-key',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,

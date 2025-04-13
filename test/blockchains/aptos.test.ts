@@ -31,7 +31,7 @@ describe('Aptos Blockchain', () => {
     
     expect(address).toBeDefined()
     expect(address.startsWith('0x')).toBe(true)
-    expect(blockchain.validateAddress(address)).toBe(true)
+    expect(blockchain.validateAddress?.(address)).toBe(true)
   })
   
   // Test address validation
@@ -41,12 +41,12 @@ describe('Aptos Blockchain', () => {
     const keyPublic = blockchain.getKeyPublic(keyPrivate)
     const validAddress = blockchain.getAddress(keyPublic)
     
-    expect(blockchain.validateAddress(validAddress)).toBe(true)
+    expect(blockchain.validateAddress?.(validAddress)).toBe(true)
     
     // Invalid addresses
-    expect(blockchain.validateAddress('not-a-valid-address')).toBe(false)
-    expect(blockchain.validateAddress('1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2')).toBe(false) // Bitcoin address
-    expect(blockchain.validateAddress('0x1234')).toBe(false) // Too short
-    expect(blockchain.validateAddress('')).toBe(false)
+    expect(blockchain.validateAddress?.('not-a-valid-address')).toBe(false)
+    expect(blockchain.validateAddress?.('1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2')).toBe(false) // Bitcoin address
+    expect(blockchain.validateAddress?.('0x1234')).toBe(false) // Too short
+    expect(blockchain.validateAddress?.('')).toBe(false)
   })
 })

@@ -4,4 +4,5 @@ export const blockchains = Object.freeze({
   'aptos': 'ubichain/blockchains/aptos',
   'tron': 'ubichain/blockchains/tron',
   'sui': 'ubichain/blockchains/sui',
+  'ethereum': 'ubichain/blockchains/ethereum',
 })

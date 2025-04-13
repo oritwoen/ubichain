@@ -56,7 +56,7 @@ describe('TRON Blockchain', () => {
       ]
       
       validAddresses.forEach(address => {
-        expect(blockchain.validateAddress(address)).toBe(true)
+        expect(blockchain.validateAddress?.(address)).toBe(true)
       })
     })
     
@@ -71,7 +71,7 @@ describe('TRON Blockchain', () => {
       ]
       
       invalidAddresses.forEach(address => {
-        expect(blockchain.validateAddress(address)).toBe(false)
+        expect(blockchain.validateAddress?.(address)).toBe(false)
       })
     })
   })
