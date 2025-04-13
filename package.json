@@ -39,6 +39,7 @@
       "default": "./dist/blockchains/*.mjs"
     }
   },
+  "types": "./dist/index.d.mts",
   "files": [
     "dist"
   ],
