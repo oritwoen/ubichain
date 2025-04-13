@@ -1,4 +1,4 @@
-import { generateKeyPublic } from '../utils/secp256k1'
+import { generateKeyPublic as getKeyPublic } from '../utils/secp256k1'
 import { 
   generateAddressLegacy, validateAddressLegacy,
   generateAddressP2SH, validateAddressP2SH
@@ -10,7 +10,7 @@ export default function bitcoin () {
   const curve: Curve = "secp256k1";
   
   /**
-   * Generate Bitcoin address from public key
+   * Get Bitcoin address from public key
    * Supports following formats:
    * - 'legacy' (P2PKH) - addresses starting with '1'
    * - 'p2sh' - addresses starting with '3'
@@ -19,7 +19,7 @@ export default function bitcoin () {
    * @param type - Address type (legacy or p2sh)
    * @returns Bitcoin address
    */
-  function generateAddress(keyPublic: string, type?: string): string {
+  function getAddress(keyPublic: string, type?: string): string {
     // Explicitly check if type is exactly 'p2sh'
     if (type === 'p2sh') {
       // Bitcoin mainnet P2SH version byte is 0x05
@@ -55,8 +55,8 @@ export default function bitcoin () {
   return {
     name,
     curve,
-    generateKeyPublic,
-    generateAddress,
+    getKeyPublic,
+    getAddress,
     validateAddress,
   }
 }

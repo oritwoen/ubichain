@@ -15,24 +15,24 @@ describe('Sui', () => {
 
   describe('Keys and addresses', () => {
     it('should generate correct Ed25519 public key', () => {
-      expect(blockchain.generateKeyPublic(keyPrivate, 'ed25519')).toBe(keyPublicEd25519)
+      expect(blockchain.getKeyPublic(keyPrivate, 'ed25519')).toBe(keyPublicEd25519)
     })
 
     it('should generate correct Secp256k1 public key', () => {
-      expect(blockchain.generateKeyPublic(keyPrivate, 'secp256k1')).toBe(keyPublicSecp256k1)
+      expect(blockchain.getKeyPublic(keyPrivate, 'secp256k1')).toBe(keyPublicSecp256k1)
     })
 
     it('should generate correct Ed25519 Sui address', () => {
-      expect(blockchain.generateAddress(keyPublicEd25519, 'ed25519')).toBe(addressEd25519)
+      expect(blockchain.getAddress(keyPublicEd25519, 'ed25519')).toBe(addressEd25519)
     })
 
     it('should generate correct Secp256k1 Sui address', () => {
-      expect(blockchain.generateAddress(keyPublicSecp256k1, 'secp256k1')).toBe(addressSecp256k1)
+      expect(blockchain.getAddress(keyPublicSecp256k1, 'secp256k1')).toBe(addressSecp256k1)
     })
 
     it('should default to Ed25519 when no scheme is specified', () => {
-      expect(blockchain.generateKeyPublic(keyPrivate)).toBe(keyPublicEd25519)
-      expect(blockchain.generateAddress(keyPublicEd25519)).toBe(addressEd25519)
+      expect(blockchain.getKeyPublic(keyPrivate)).toBe(keyPublicEd25519)
+      expect(blockchain.getAddress(keyPublicEd25519)).toBe(addressEd25519)
     })
   })
 

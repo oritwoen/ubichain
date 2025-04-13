@@ -1,6 +1,6 @@
 import { sha3_256 } from '@noble/hashes/sha3'
 import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
-import { generateKeyPublic } from '../utils/ed25519'
+import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
 import type { Curve } from '../types'
 
 export default function aptos() {
@@ -8,13 +8,13 @@ export default function aptos() {
   const curve: Curve = "ed25519";
   
   /**
-   * Generate Aptos address from public key
+   * Get Aptos address from public key
    * Aptos address is the 32-byte SHA3-256 hash of the public key concatenated with a single byte 0x00
    * 
    * @param keyPublic - The public key as a hex string
    * @returns Aptos address (hex string)
    */
-  function generateAddress(keyPublic: string): string {
+  function getAddress(keyPublic: string): string {
     // Convert hex public key to bytes
     const keyPublicBytes = hexToBytes(keyPublic)
     
@@ -59,8 +59,8 @@ export default function aptos() {
   return {
     name,
     curve,
-    generateKeyPublic,
-    generateAddress,
+    getKeyPublic,
+    getAddress,
     validateAddress,
   }
 }

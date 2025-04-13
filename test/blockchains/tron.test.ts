@@ -20,7 +20,7 @@ describe('TRON Blockchain', () => {
     
     it('generates the correct public key from a private key', () => {
       keyPairs.forEach(pair => {
-        const keyPublic = blockchain.generateKeyPublic(pair.keyPrivate)
+        const keyPublic = blockchain.getKeyPublic(pair.keyPrivate)
         expect(keyPublic).toBe(pair.keyPublic)
       })
     })
@@ -41,7 +41,7 @@ describe('TRON Blockchain', () => {
     
     it('generates the correct address from a public key', () => {
       addressVectors.forEach(vector => {
-        const address = blockchain.generateAddress(vector.keyPublic)
+        const address = blockchain.getAddress(vector.keyPublic)
         expect(address).toBe(vector.address)
       })
     })

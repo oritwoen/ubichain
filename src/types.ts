@@ -19,14 +19,14 @@ export type Blockchain = {
   curve: Curve | Curve[];
 
   /**
-   * Generates a public key from a private key
+   * Gets a public key derived from a private key
    */
-  generateKeyPublic: (keyPrivate: string, options?: Record<string, any>) => string;
+  getKeyPublic: (keyPrivate: string, options?: Record<string, any>) => string;
 
   /**
-   * Generates a public address from a public key
+   * Gets a public address derived from a public key
    */
-  generateAddress: (keyPublic: string, type?: string) => string;
+  getAddress: (keyPublic: string, type?: string) => string;
   
   /**
    * Validates a blockchain address
@@ -53,14 +53,14 @@ export interface BlockchainResponse {
   generateKeyPrivate: () => string;
   
   /**
-   * Generates a public key from a private key
+   * Gets a public key derived from a private key
    */
-  generateKeyPublic: (keyPrivate: string, options?: Record<string, any>) => string;
+  getKeyPublic: (keyPrivate: string, options?: Record<string, any>) => string;
   
   /**
-   * Generates a public address from a public key
+   * Gets a public address derived from a public key
    */
-  generateAddress: (keyPublic: string, type?: string) => string;
+  getAddress: (keyPublic: string, type?: string) => string;
   
   /**
    * Validates a blockchain address

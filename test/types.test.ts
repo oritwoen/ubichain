@@ -5,8 +5,8 @@ import type { Blockchain, BlockchainResponse } from '../src/types'
 function isBlockchain(obj: any): obj is Blockchain {
   return (
     typeof obj.name === 'string' &&
-    typeof obj.generateKeyPublic === 'function' &&
-    typeof obj.generateAddress === 'function' &&
+    typeof obj.getKeyPublic === 'function' &&
+    typeof obj.getAddress === 'function' &&
     (obj.validateAddress === undefined || typeof obj.validateAddress === 'function')
   )
 }
@@ -15,8 +15,8 @@ function isBlockchainResponse(obj: any): obj is BlockchainResponse {
   return (
     typeof obj.name === 'string' &&
     typeof obj.generateKeyPrivate === 'function' &&
-    typeof obj.generateKeyPublic === 'function' &&
-    typeof obj.generateAddress === 'function' &&
+    typeof obj.getKeyPublic === 'function' &&
+    typeof obj.getAddress === 'function' &&
     (obj.validateAddress === undefined || typeof obj.validateAddress === 'function')
   )
 }
@@ -26,8 +26,8 @@ describe('Types', () => {
     it('should detect valid Blockchain implementation', () => {
       const validBlockchain = {
         name: 'test-chain',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       expect(isBlockchain(validBlockchain)).toBe(true)
@@ -36,8 +36,8 @@ describe('Types', () => {
     it('should detect valid Blockchain implementation with validateAddress', () => {
       const validBlockchain = {
         name: 'test-chain',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`,
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
         validateAddress: (address: string) => address.startsWith('addr-')
       }
       
@@ -46,24 +46,24 @@ describe('Types', () => {
     
     it('should reject invalid Blockchain implementations', () => {
       const missingName = {
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       const missingGenerateKeyPublic = {
         name: 'test-chain',
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       const missingGenerateAddress = {
         name: 'test-chain',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
       }
       
       const validateAddressWrongType = {
         name: 'test-chain',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`,
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
         validateAddress: 'not-a-function'
       }
       
@@ -79,8 +79,8 @@ describe('Types', () => {
       const validResponse = {
         name: 'test-chain',
         generateKeyPrivate: () => 'priv-key',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       expect(isBlockchainResponse(validResponse)).toBe(true)
@@ -89,15 +89,15 @@ describe('Types', () => {
       const usedResponse: BlockchainResponse = {
         name: 'test-chain-2',
         generateKeyPrivate: () => 'private-key',
-        generateKeyPublic: (keyPrivate: string) => `public-${keyPrivate}`, 
-        generateAddress: (keyPublic: string) => `address-${keyPublic}`,
+        getKeyPublic: (keyPrivate: string) => `public-${keyPrivate}`, 
+        getAddress: (keyPublic: string) => `address-${keyPublic}`,
         validateAddress: (address: string) => address.startsWith('address-')
       }
       
       expect(usedResponse.name).toBe('test-chain-2')
       expect(usedResponse.generateKeyPrivate()).toBe('private-key')
-      expect(usedResponse.generateKeyPublic('test')).toBe('public-test')
-      expect(usedResponse.generateAddress('pub-key')).toBe('address-pub-key')
+      expect(usedResponse.getKeyPublic('test')).toBe('public-test')
+      expect(usedResponse.getAddress('pub-key')).toBe('address-pub-key')
       expect(usedResponse.validateAddress?.('address-xyz')).toBe(true)
       expect(usedResponse.validateAddress?.('invalid')).toBe(false)
     })
@@ -106,8 +106,8 @@ describe('Types', () => {
       const validResponse = {
         name: 'test-chain',
         generateKeyPrivate: () => 'priv-key',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`,
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
         validateAddress: (address: string) => address.startsWith('addr-')
       }
       
@@ -117,26 +117,26 @@ describe('Types', () => {
     it('should reject invalid BlockchainResponse implementations', () => {
       const missingName = {
         generateKeyPrivate: () => 'priv-key',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       const missingGenerateKeyPrivate = {
         name: 'test-chain',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       const missingGenerateKeyPublic = {
         name: 'test-chain',
         generateKeyPrivate: () => 'priv-key',
-        generateAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`
       }
       
       const missingGenerateAddress = {
         name: 'test-chain',
         generateKeyPrivate: () => 'priv-key',
-        generateKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
       }
       
       expect(isBlockchainResponse(missingName)).toBe(false)

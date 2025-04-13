@@ -17,7 +17,7 @@ describe('Aptos Blockchain', () => {
   // Test public key generation
   it('generates a valid public key from a private key', () => {
     const keyPrivate = '0000000000000000000000000000000000000000000000000000000000000001'
-    const keyPublic = blockchain.generateKeyPublic(keyPrivate)
+    const keyPublic = blockchain.getKeyPublic(keyPrivate)
     
     expect(keyPublic).toBeDefined()
     expect(/^[0-9a-f]+$/i.test(keyPublic)).toBe(true)
@@ -26,8 +26,8 @@ describe('Aptos Blockchain', () => {
   // Test address generation
   it('generates a valid Aptos address from a public key', () => {
     const keyPrivate = '0000000000000000000000000000000000000000000000000000000000000001'
-    const keyPublic = blockchain.generateKeyPublic(keyPrivate)
-    const address = blockchain.generateAddress(keyPublic)
+    const keyPublic = blockchain.getKeyPublic(keyPrivate)
+    const address = blockchain.getAddress(keyPublic)
     
     expect(address).toBeDefined()
     expect(address.startsWith('0x')).toBe(true)
@@ -38,8 +38,8 @@ describe('Aptos Blockchain', () => {
   it('validates Aptos addresses correctly', () => {
     // Use the address generated in the previous test
     const keyPrivate = '0000000000000000000000000000000000000000000000000000000000000001'
-    const keyPublic = blockchain.generateKeyPublic(keyPrivate)
-    const validAddress = blockchain.generateAddress(keyPublic)
+    const keyPublic = blockchain.getKeyPublic(keyPrivate)
+    const validAddress = blockchain.getAddress(keyPublic)
     
     expect(blockchain.validateAddress(validAddress)).toBe(true)
     

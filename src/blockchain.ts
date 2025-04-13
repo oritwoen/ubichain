@@ -29,8 +29,8 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
     name: blockchain.name,
     curve: blockchain.curve,
     generateKeyPrivate,
-    generateKeyPublic: (keyPrivate, options) => blockchain.generateKeyPublic(keyPrivate, options),
-    generateAddress: (keyPublic, type) => blockchain.generateAddress(keyPublic, type)
+    getKeyPublic: (keyPrivate, options) => blockchain.getKeyPublic(keyPrivate, options),
+    getAddress: (keyPublic, type) => blockchain.getAddress(keyPublic, type)
   }
   
   // Add address validation if blockchain implements it

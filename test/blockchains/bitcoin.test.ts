@@ -25,7 +25,7 @@ describe("Bitcoin blockchain", () => {
   
   it("should generate a public key from a private key", () => {
     const keyPrivate = blockchain.generateKeyPrivate();
-    const keyPublic = blockchain.generateKeyPublic(keyPrivate);
+    const keyPublic = blockchain.getKeyPublic(keyPrivate);
     
     // Compressed public key should be a 66-character hex string (33 bytes)
     expect(keyPublic).toMatch(/^[0-9a-f]{66}$/);
@@ -36,7 +36,7 @@ describe("Bitcoin blockchain", () => {
   
   it("should generate an uncompressed public key", () => {
     const keyPrivate = blockchain.generateKeyPrivate();
-    const keyPublic = blockchain.generateKeyPublic(keyPrivate, { compressed: false });
+    const keyPublic = blockchain.getKeyPublic(keyPrivate, { compressed: false });
     
     // Uncompressed public key should be a 130-character hex string (65 bytes)
     expect(keyPublic).toMatch(/^[0-9a-f]{130}$/);
@@ -48,8 +48,8 @@ describe("Bitcoin blockchain", () => {
   describe("Legacy addresses (P2PKH)", () => {
     it("should generate a legacy address from a public key", () => {
       const keyPrivate = blockchain.generateKeyPrivate();
-      const keyPublic = blockchain.generateKeyPublic(keyPrivate);
-      const address = blockchain.generateAddress(keyPublic, 'legacy');
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'legacy');
       
       // Legacy address should start with 1
       expect(address.startsWith('1')).toBe(true);
@@ -61,8 +61,8 @@ describe("Bitcoin blockchain", () => {
     
     it("should validate a valid legacy address", () => {
       const keyPrivate = blockchain.generateKeyPrivate();
-      const keyPublic = blockchain.generateKeyPublic(keyPrivate);
-      const address = blockchain.generateAddress(keyPublic, 'legacy');
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'legacy');
       
       expect(blockchain.validateAddress!(address)).toBe(true);
     });
@@ -82,8 +82,8 @@ describe("Bitcoin blockchain", () => {
   describe("P2SH addresses", () => {
     it("should generate a P2SH address from a public key", () => {
       const keyPrivate = blockchain.generateKeyPrivate();
-      const keyPublic = blockchain.generateKeyPublic(keyPrivate);
-      const address = blockchain.generateAddress(keyPublic, 'p2sh');
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'p2sh');
       
       // P2SH address should start with 3
       expect(address.startsWith('3')).toBe(true);
@@ -95,8 +95,8 @@ describe("Bitcoin blockchain", () => {
     
     it("should validate a valid P2SH address", () => {
       const keyPrivate = blockchain.generateKeyPrivate();
-      const keyPublic = blockchain.generateKeyPublic(keyPrivate);
-      const address = blockchain.generateAddress(keyPublic, 'p2sh');
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'p2sh');
       
       expect(blockchain.validateAddress!(address)).toBe(true);
     });

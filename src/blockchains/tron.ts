@@ -1,4 +1,4 @@
-import { generateKeyPublic } from '../utils/secp256k1'
+import { generateKeyPublic as getKeyPublic } from '../utils/secp256k1'
 import { hexToBytes } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
 import { createVersionedHash } from '../utils/address'
@@ -10,14 +10,14 @@ export default function tron() {
   const curve: Curve = "secp256k1";
   
   /**
-   * Generate TRON address from public key
+   * Get TRON address from public key
    * TRON uses Keccak-256 hash and base58check encoding with version byte 0x41
    * Addresses start with 'T'
    * 
    * @param keyPublic - The public key as a hex string
    * @returns TRON address string
    */
-  function generateAddress(keyPublic: string): string {
+  function getAddress(keyPublic: string): string {
     // Convert public key to bytes
     const keyPublicBytes = hexToBytes(keyPublic)
     
@@ -51,8 +51,8 @@ export default function tron() {
   return {
     name,
     curve,
-    generateKeyPublic,
-    generateAddress,
+    getKeyPublic,
+    getAddress,
     validateAddress,
   }
 }
