@@ -11,21 +11,29 @@ A TypeScript library for interacting with various blockchains, providing simple 
 - 🧩 **Modular design** - easily extendable to support additional blockchains
 - 📦 **Zero external dependencies** - only uses Node.js crypto and minimal utilities
 - 📐 **Type-safe** - written in TypeScript with full type definitions
+- 💼 **Wallet generation** - generate complete crypto wallets in one step 
+- 🔄 **Consistent API** - uniform interface across all blockchains
+- 🌐 **EVM support** - common implementation for all EVM chains
 
 ## Supported Blockchains
 
 Currently supported blockchains:
 
-- **Bitcoin**
+- **Bitcoin** (secp256k1)
   - Legacy addresses (P2PKH) - addresses starting with '1'
   - P2SH addresses - addresses starting with '3'
-- **Solana**
+- **Ethereum** (secp256k1)
+  - Standard addresses (Keccak-256 hash of public key)
+  - EIP-55 checksum support
+- **Base** (secp256k1)
+  - Same format as Ethereum (EVM compatible)
+- **Solana** (ed25519)
   - Standard addresses (Ed25519 public keys encoded in base58)
-- **Aptos**
+- **Aptos** (ed25519)
   - Standard addresses (Ed25519 based)
-- **TRON**
+- **TRON** (secp256k1)
   - Standard addresses (Secp256k1 based with Keccak-256 hash)
-- **SUI**
+- **SUI** (ed25519, secp256k1)
   - Standard addresses (Blake2b hash of scheme flag + public key)
   - Supports both Ed25519 and Secp256k1 keys
 
@@ -46,82 +54,112 @@ pnpm add ubichain
 ```typescript
 import { useBlockchain } from 'ubichain';
 import bitcoin from 'ubichain/blockchains/bitcoin';
+import ethereum from 'ubichain/blockchains/ethereum';
 import solana from 'ubichain/blockchains/solana';
-import sui from 'ubichain/blockchains/sui';
 
-// Create a Bitcoin blockchain interface
+// Create blockchain interfaces
 const bitcoinChain = useBlockchain(bitcoin());
-
-// Generate a new private key
-const privateKey = bitcoinChain.generateKeyPrivate();
-console.log('Private Key:', privateKey);
-
-// Generate a public key from the private key
-const publicKey = bitcoinChain.generateKeyPublic(privateKey);
-console.log('Public Key:', publicKey);
-
-// Generate a legacy address from the public key
-const legacyAddress = bitcoinChain.generateAddress(publicKey, 'legacy');
-console.log('Bitcoin Legacy Address:', legacyAddress);
-
-// Generate a P2SH address from the public key
-const p2shAddress = bitcoinChain.generateAddress(publicKey, 'p2sh');
-console.log('Bitcoin P2SH Address:', p2shAddress);
-
-// Validate an address
-const isValid = bitcoinChain.validateAddress(legacyAddress);
-console.log('Is Valid Bitcoin Address:', isValid);
-
-// Create a Solana blockchain interface
+const ethereumChain = useBlockchain(ethereum());
 const solanaChain = useBlockchain(solana());
 
-// Generate a new private key
-const solPrivateKey = solanaChain.generateKeyPrivate();
-console.log('Solana Private Key:', solPrivateKey);
-
-// Generate a public key from the private key (using Ed25519)
-const solPublicKey = solanaChain.generateKeyPublic(solPrivateKey);
-console.log('Solana Public Key:', solPublicKey);
-
-// Generate a Solana address from the public key
-const solAddress = solanaChain.generateAddress(solPublicKey);
-console.log('Solana Address:', solAddress);
-
-// Validate a Solana address
-const isSolAddressValid = solanaChain.validateAddress(solAddress);
-console.log('Is Valid Solana Address:', isSolAddressValid);
-
-// Create a SUI blockchain interface
-const suiChain = useBlockchain(sui());
-
-// Generate a public key from private key using Ed25519 (default)
-const suiEd25519PublicKey = suiChain.generateKeyPublic(privateKey);
-console.log('SUI Ed25519 Public Key:', suiEd25519PublicKey);
-
-// Generate a SUI address from the Ed25519 public key
-const suiEd25519Address = suiChain.generateAddress(suiEd25519PublicKey);
-console.log('SUI Address (Ed25519):', suiEd25519Address);
-
-// Generate a public key using Secp256k1
-const suiSecp256k1PublicKey = suiChain.generateKeyPublic(privateKey, 'secp256k1');
-console.log('SUI Secp256k1 Public Key:', suiSecp256k1PublicKey);
-
-// Generate a SUI address from the Secp256k1 public key
-const suiSecp256k1Address = suiChain.generateAddress(suiSecp256k1PublicKey, 'secp256k1');
-console.log('SUI Address (Secp256k1):', suiSecp256k1Address);
-
-// Validate SUI addresses
-console.log('Is Valid SUI Address:', suiChain.validateAddress(suiEd25519Address));
+// Get cryptographic curve used by the blockchain
+console.log('Bitcoin uses curve:', bitcoinChain.curve);        // secp256k1
+console.log('Ethereum uses curve:', ethereumChain.curve);      // secp256k1
+console.log('Solana uses curve:', solanaChain.curve);          // ed25519
 ```
 
-### Advanced Usage
-
-#### Generate Uncompressed Public Key
+### Working with Keys
 
 ```typescript
+import { useBlockchain } from 'ubichain';
+import bitcoin from 'ubichain/blockchains/bitcoin';
+
+const chain = useBlockchain(bitcoin());
+
+// Generate a single private key
+const privateKey = chain.generateKeyPrivate();
+console.log('Private Key:', privateKey);
+
+// Get a public key from a private key
+const publicKey = chain.getKeyPublic(privateKey);
+console.log('Public Key:', publicKey);
+
 // Generate an uncompressed public key
-const uncompressedPublicKey = blockchain.generateKeyPublic(privateKey, { compressed: false });
+const uncompressedPublicKey = chain.getKeyPublic(privateKey, { compressed: false });
 console.log('Uncompressed Public Key:', uncompressedPublicKey);
+
+// Generate address from public key
+const address = chain.getAddress(publicKey);
+console.log('Address:', address);
+
+// Generate a different type of address (e.g., Bitcoin P2SH)
+const p2shAddress = chain.getAddress(publicKey, 'p2sh');
+console.log('P2SH Address:', p2shAddress);
+
+// Validate an address
+const isValid = chain.validateAddress?.(address);
+console.log('Is Valid Address:', isValid);
+```
+
+### Generating Key Pairs and Wallets
+
+```typescript
+import { useBlockchain } from 'ubichain';
+import ethereum from 'ubichain/blockchains/ethereum';
+
+const chain = useBlockchain(ethereum());
+
+// Generate a key pair (private and public keys)
+const keyPair = chain.generateKeys();
+console.log('Private Key:', keyPair.keys.private);
+console.log('Public Key:', keyPair.keys.public);
+
+// Generate a complete wallet (private key, public key, and address)
+const wallet = chain.generateWallet();
+console.log('Private Key:', wallet.keys.private);
+console.log('Public Key:', wallet.keys.public);
+console.log('Address:', wallet.address);
+
+// Generate wallet with specific options
+const uncompressedWallet = chain.generateWallet({ compressed: false });
+console.log('Uncompressed Public Key:', uncompressedWallet.keys.public);
+
+// Generate Bitcoin wallet with specific address type
+import bitcoin from 'ubichain/blockchains/bitcoin';
+const bitcoinChain = useBlockchain(bitcoin());
+const p2shWallet = bitcoinChain.generateWallet({}, 'p2sh');
+console.log('Bitcoin P2SH Address:', p2shWallet.address); // Starts with '3'
+```
+
+### Working with EVM Blockchains
+
+```typescript
+import { useBlockchain } from 'ubichain';
+import ethereum from 'ubichain/blockchains/ethereum';
+import base from 'ubichain/blockchains/base';
+
+// EVM blockchains share the same address format
+const ethereumChain = useBlockchain(ethereum());
+const baseChain = useBlockchain(base());
+
+// Generate wallets for both chains
+const ethWallet = ethereumChain.generateWallet();
+const baseWallet = baseChain.generateWallet();
+
+console.log('Ethereum Address:', ethWallet.address);
+console.log('Base Address:', baseWallet.address);
+
+// Same private key will generate same address on both chains
+const privateKey = ethereumChain.generateKeyPrivate();
+const ethPublicKey = ethereumChain.getKeyPublic(privateKey);
+const basePublicKey = baseChain.getKeyPublic(privateKey);
+
+console.log('Same public key?', ethPublicKey === basePublicKey); // true
+
+const ethAddress = ethereumChain.getAddress(ethPublicKey);
+const baseAddress = baseChain.getAddress(basePublicKey);
+
+console.log('Same address?', ethAddress === baseAddress); // true
 ```
 
 ## Architecture
@@ -131,6 +169,9 @@ The library is designed to be modular and extensible:
 - **Core Utilities** - Hash functions, cryptographic primitives, encoding/decoding
 - **Blockchain Implementations** - Specific implementations for each supported blockchain
 - **Common Interface** - Consistent API across all blockchain implementations
+- **Shared Implementations** - Common code for similar blockchains (e.g., EVM chains)
+- **Type Definitions** - Strong TypeScript typing for all interfaces and data structures
+- **Hierarchical Data Model** - Structured representation of keys and wallets
 
 ## Development
 
@@ -162,12 +203,18 @@ pnpm run lint
 
 ## Roadmap
 
+- [x] Add support for Ethereum and EIP-55 checksums
+- [x] Add support for Base (and other EVM chains)
+- [x] Add key pair generation in one step
+- [x] Add wallet generation in one step
+- [x] Create hierarchical data model for keys and wallets
 - [ ] Add SegWit (bech32) address support
 - [ ] Add Testnet address support
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add HD wallet support (BIP32/BIP44)
 - [ ] Add transaction creation and signing
-- [ ] Add support for more blockchains (Ethereum, Polygon, Cardano, etc.)
+- [ ] Add support for more EVM blockchains (Polygon, Arbitrum, Optimism, etc.)
+- [ ] Add support for additional blockchains (Cardano, Polkadot, etc.)
 
 ## License
 

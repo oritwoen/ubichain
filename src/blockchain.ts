@@ -1,4 +1,4 @@
-import type { Blockchain, BlockchainResponse } from "./types"
+import type { Blockchain, BlockchainResponse, KeyPair, Wallet } from "./types"
 import { randomBytes } from 'node:crypto'
 import { bytesToHex } from '@noble/hashes/utils'
 
@@ -25,12 +25,51 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
     return bytesToHex(keyPrivateBytes)
   }
 
+  /**
+   * Generates a key pair (private and public keys)
+   * This is a convenience function that combines generateKeyPrivate and getKeyPublic
+   * 
+   * @param {Record<string, any>} options - Optional parameters for key generation
+   * @returns {KeyPair} A pair of cryptographic keys
+   */
+  function generateKeys(options?: Record<string, any>): KeyPair {
+    const privateKey = generateKeyPrivate()
+    const publicKey = blockchain.getKeyPublic(privateKey, options)
+    
+    return {
+      keys: {
+        private: privateKey,
+        public: publicKey
+      }
+    }
+  }
+
+  /**
+   * Generates a complete wallet (private key, public key, and address)
+   * This is a convenience function that combines generateKeys and getAddress
+   * 
+   * @param {Record<string, any>} options - Optional parameters for key generation
+   * @param {string} addressType - Optional address type for blockchains with multiple address formats
+   * @returns {Wallet} A complete wallet with keys and address
+   */
+  function generateWallet(options?: Record<string, any>, addressType?: string): Wallet {
+    const keyPair = generateKeys(options)
+    const address = blockchain.getAddress(keyPair.keys.public, addressType)
+    
+    return {
+      ...keyPair,
+      address
+    }
+  }
+
   const response: BlockchainResponse = {
     name: blockchain.name,
     curve: blockchain.curve,
     generateKeyPrivate,
     getKeyPublic: (keyPrivate, options) => blockchain.getKeyPublic(keyPrivate, options),
-    getAddress: (keyPublic, type) => blockchain.getAddress(keyPublic, type)
+    getAddress: (keyPublic, type) => blockchain.getAddress(keyPublic, type),
+    generateKeys,
+    generateWallet
   }
   
   // Add address validation if blockchain implements it

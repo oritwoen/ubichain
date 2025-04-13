@@ -19,7 +19,9 @@ function isBlockchainResponse(obj: any): obj is BlockchainResponse {
     typeof obj.generateKeyPrivate === 'function' &&
     typeof obj.getKeyPublic === 'function' &&
     typeof obj.getAddress === 'function' &&
-    (obj.validateAddress === undefined || typeof obj.validateAddress === 'function')
+    (obj.validateAddress === undefined || typeof obj.validateAddress === 'function') &&
+    typeof obj.generateKeys === 'function' &&
+    typeof obj.generateWallet === 'function'
   )
 }
 
@@ -85,7 +87,20 @@ describe('Types', () => {
         curve: 'secp256k1',
         generateKeyPrivate: () => 'priv-key',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+        generateKeys: () => ({
+          keys: {
+            private: 'priv-key',
+            public: 'pub-key'
+          }
+        }),
+        generateWallet: () => ({
+          keys: {
+            private: 'priv-key',
+            public: 'pub-key'
+          },
+          address: 'addr-pub-key'
+        })
       }
       
       expect(isBlockchainResponse(validResponse)).toBe(true)
@@ -97,7 +112,20 @@ describe('Types', () => {
         generateKeyPrivate: () => 'private-key',
         getKeyPublic: (keyPrivate: string) => `public-${keyPrivate}`, 
         getAddress: (keyPublic: string) => `address-${keyPublic}`,
-        validateAddress: (address: string) => address.startsWith('address-')
+        validateAddress: (address: string) => address.startsWith('address-'),
+        generateKeys: () => ({
+          keys: {
+            private: 'private-key',
+            public: 'public-key'
+          }
+        }),
+        generateWallet: () => ({
+          keys: {
+            private: 'private-key',
+            public: 'public-key'
+          },
+          address: 'address-key'
+        })
       }
       
       expect(usedResponse.name).toBe('test-chain-2')
@@ -115,7 +143,20 @@ describe('Types', () => {
         generateKeyPrivate: () => 'priv-key',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,
-        validateAddress: (address: string) => address.startsWith('addr-')
+        validateAddress: (address: string) => address.startsWith('addr-'),
+        generateKeys: () => ({
+          keys: {
+            private: 'priv-key',
+            public: 'pub-key'
+          }
+        }),
+        generateWallet: () => ({
+          keys: {
+            private: 'priv-key',
+            public: 'pub-key'
+          },
+          address: 'addr-pub-key'
+        })
       }
       
       expect(isBlockchainResponse(validResponse)).toBe(true)

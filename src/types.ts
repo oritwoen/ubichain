@@ -4,6 +4,36 @@
 export type Curve = 'ed25519' | 'secp256k1';
 
 /**
+ * Represents a pair of cryptographic keys
+ */
+export interface KeyPair {
+  /**
+   * Cryptographic keys
+   */
+  keys: {
+    /**
+     * Private key as a hex string
+     */
+    private: string;
+    
+    /**
+     * Public key as a hex string
+     */
+    public: string;
+  };
+}
+
+/**
+ * Represents a complete wallet with keys and address
+ */
+export interface Wallet extends KeyPair {
+  /**
+   * Blockchain address derived from the public key
+   */
+  address: string;
+}
+
+/**
  * Defines a blockchain interface that allows you to generate keys or addresses
  */
 export type Blockchain = {
@@ -66,4 +96,16 @@ export interface BlockchainResponse {
    * Validates a blockchain address
    */
   validateAddress?: (address: string) => boolean;
+  
+  /**
+   * Generates a key pair (private and public keys)
+   * This is a convenience function that combines generateKeyPrivate and getKeyPublic
+   */
+  generateKeys: (options?: Record<string, any>) => KeyPair;
+  
+  /**
+   * Generates a complete wallet (private key, public key, and address)
+   * This is a convenience function that combines generateKeys and getAddress
+   */
+  generateWallet: (options?: Record<string, any>, addressType?: string) => Wallet;
 };
