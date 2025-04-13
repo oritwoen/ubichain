@@ -11,67 +11,67 @@ describe("Common blockchain functionality", () => {
   describe("generateKeys function", () => {
     it("should generate a valid key pair for Bitcoin", () => {
       const blockchain = useBlockchain(bitcoin());
-      const keyPair = blockchain.generateKeys();
+      const keys = blockchain.generateKeys();
       
       // Verify structure
-      expect(keyPair).toHaveProperty("keys");
-      expect(keyPair.keys).toHaveProperty("private");
-      expect(keyPair.keys).toHaveProperty("public");
+      expect(keys).toHaveProperty("keys");
+      expect(keys.keys).toHaveProperty("private");
+      expect(keys.keys).toHaveProperty("public");
       
       // Verify private key format
-      expect(keyPair.keys.private).toMatch(/^[0-9a-f]{64}$/);
+      expect(keys.keys.private).toMatch(/^[0-9a-f]{64}$/);
       
       // Verify public key format (compressed secp256k1 key)
-      expect(keyPair.keys.public).toMatch(/^[0-9a-f]{66}$/);
-      expect(keyPair.keys.public.startsWith('02') || keyPair.keys.public.startsWith('03')).toBe(true);
+      expect(keys.keys.public).toMatch(/^[0-9a-f]{66}$/);
+      expect(keys.keys.public.startsWith('02') || keys.keys.public.startsWith('03')).toBe(true);
       
       // Verify that public key was correctly derived from private key
-      const derivedPublicKey = blockchain.getKeyPublic(keyPair.keys.private);
-      expect(keyPair.keys.public).toBe(derivedPublicKey);
+      const derivedPublicKey = blockchain.getKeyPublic(keys.keys.private);
+      expect(keys.keys.public).toBe(derivedPublicKey);
     });
     
     it("should generate a valid key pair for Ethereum", () => {
       const blockchain = useBlockchain(ethereum());
-      const keyPair = blockchain.generateKeys();
+      const keys = blockchain.generateKeys();
       
       // Verify structure
-      expect(keyPair).toHaveProperty("keys");
-      expect(keyPair.keys).toHaveProperty("private");
-      expect(keyPair.keys).toHaveProperty("public");
+      expect(keys).toHaveProperty("keys");
+      expect(keys.keys).toHaveProperty("private");
+      expect(keys.keys).toHaveProperty("public");
       
       // Verify private key format
-      expect(keyPair.keys.private).toMatch(/^[0-9a-f]{64}$/);
+      expect(keys.keys.private).toMatch(/^[0-9a-f]{64}$/);
       
       // Verify public key format (compressed secp256k1 key)
-      expect(keyPair.keys.public).toMatch(/^[0-9a-f]{66}$/);
-      expect(keyPair.keys.public.startsWith('02') || keyPair.keys.public.startsWith('03')).toBe(true);
+      expect(keys.keys.public).toMatch(/^[0-9a-f]{66}$/);
+      expect(keys.keys.public.startsWith('02') || keys.keys.public.startsWith('03')).toBe(true);
       
       // Verify that public key was correctly derived from private key
-      const derivedPublicKey = blockchain.getKeyPublic(keyPair.keys.private);
-      expect(keyPair.keys.public).toBe(derivedPublicKey);
+      const derivedPublicKey = blockchain.getKeyPublic(keys.keys.private);
+      expect(keys.keys.public).toBe(derivedPublicKey);
     });
     
     it("should respect options passed to generateKeys", () => {
       const blockchain = useBlockchain(bitcoin());
       
       // Generate with default options (compressed key)
-      const compressedPair = blockchain.generateKeys();
-      expect(compressedPair.keys.public).toMatch(/^[0-9a-f]{66}$/);
-      expect(compressedPair.keys.public.startsWith('02') || compressedPair.keys.public.startsWith('03')).toBe(true);
+      const compressedKeys = blockchain.generateKeys();
+      expect(compressedKeys.keys.public).toMatch(/^[0-9a-f]{66}$/);
+      expect(compressedKeys.keys.public.startsWith('02') || compressedKeys.keys.public.startsWith('03')).toBe(true);
       
       // Generate with uncompressed key option
-      const uncompressedPair = blockchain.generateKeys({ compressed: false });
-      expect(uncompressedPair.keys.public).toMatch(/^[0-9a-f]{130}$/);
-      expect(uncompressedPair.keys.public.startsWith('04')).toBe(true);
+      const uncompressedKeys = blockchain.generateKeys({ compressed: false });
+      expect(uncompressedKeys.keys.public).toMatch(/^[0-9a-f]{130}$/);
+      expect(uncompressedKeys.keys.public.startsWith('04')).toBe(true);
     });
     
     it("should generate different key pairs each time", () => {
       const blockchain = useBlockchain(bitcoin());
-      const keyPair1 = blockchain.generateKeys();
-      const keyPair2 = blockchain.generateKeys();
+      const keys1 = blockchain.generateKeys();
+      const keys2 = blockchain.generateKeys();
       
-      expect(keyPair1.keys.private).not.toBe(keyPair2.keys.private);
-      expect(keyPair1.keys.public).not.toBe(keyPair2.keys.public);
+      expect(keys1.keys.private).not.toBe(keys2.keys.private);
+      expect(keys1.keys.public).not.toBe(keys2.keys.public);
     });
     
     it("should generate a valid wallet with address", () => {

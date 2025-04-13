@@ -110,9 +110,9 @@ import ethereum from 'ubichain/blockchains/ethereum';
 const chain = useBlockchain(ethereum());
 
 // Generate a key pair (private and public keys)
-const keyPair = chain.generateKeys();
-console.log('Private Key:', keyPair.keys.private);
-console.log('Public Key:', keyPair.keys.public);
+const keys = chain.generateKeys();
+console.log('Private Key:', keys.keys.private);
+console.log('Public Key:', keys.keys.public);
 
 // Generate a complete wallet (private key, public key, and address)
 const wallet = chain.generateWallet();

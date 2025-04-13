@@ -1,4 +1,4 @@
-import type { Blockchain, BlockchainResponse, KeyPair, Wallet } from "./types"
+import type { Blockchain, BlockchainResponse, Keys, Wallet } from "./types"
 import { randomBytes } from 'node:crypto'
 import { bytesToHex } from '@noble/hashes/utils'
 
@@ -30,9 +30,9 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
    * This is a convenience function that combines generateKeyPrivate and getKeyPublic
    * 
    * @param {Record<string, any>} options - Optional parameters for key generation
-   * @returns {KeyPair} A pair of cryptographic keys
+   * @returns {Keys} A pair of cryptographic keys
    */
-  function generateKeys(options?: Record<string, any>): KeyPair {
+  function generateKeys(options?: Record<string, any>): Keys {
     const privateKey = generateKeyPrivate()
     const publicKey = blockchain.getKeyPublic(privateKey, options)
     
@@ -53,11 +53,11 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
    * @returns {Wallet} A complete wallet with keys and address
    */
   function generateWallet(options?: Record<string, any>, addressType?: string): Wallet {
-    const keyPair = generateKeys(options)
-    const address = blockchain.getAddress(keyPair.keys.public, addressType)
+    const keys = generateKeys(options)
+    const address = blockchain.getAddress(keys.keys.public, addressType)
     
     return {
-      ...keyPair,
+      ...keys,
       address
     }
   }

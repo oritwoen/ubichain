@@ -7,7 +7,7 @@ describe('TRON Blockchain', () => {
   
   describe('Key Generation', () => {
     // Test vectors for key pairs with correct values from our test
-    const keyPairs = [
+    const keysExamples = [
       { 
         keyPrivate: '0000000000000000000000000000000000000000000000000000000000000001',
         keyPublic: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'
@@ -19,7 +19,7 @@ describe('TRON Blockchain', () => {
     ]
     
     it('generates the correct public key from a private key', () => {
-      keyPairs.forEach(pair => {
+      keysExamples.forEach(pair => {
         const keyPublic = blockchain.getKeyPublic(pair.keyPrivate)
         expect(keyPublic).toBe(pair.keyPublic)
       })
