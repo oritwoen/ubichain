@@ -107,15 +107,15 @@ describe("Bitcoin blockchain", () => {
     });
   });
   
-  describe("SegWit (bech32) addresses", () => {
-    // Known test vector for SegWit
+  describe("SegWit v0 (bech32) addresses", () => {
+    // Known test vector for SegWit v0
     const segwitTestVector = {
       privateKey: '0000000000000000000000000000000000000000000000000000000000000001',
       publicKey: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
       segwitAddress: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4'
     };
     
-    it("should generate a SegWit address from a public key", () => {
+    it("should generate a SegWit v0 address from a public key", () => {
       const address = blockchain.getAddress(segwitTestVector.publicKey, 'segwit');
       
       // SegWit address should match expected value
@@ -125,19 +125,19 @@ describe("Bitcoin blockchain", () => {
       expect(address.startsWith('bc1')).toBe(true);
     });
     
-    it("should generate a valid SegWit address from any key", () => {
+    it("should generate a valid SegWit v0 address from any key", () => {
       const keyPrivate = blockchain.generateKeyPrivate();
       const keyPublic = blockchain.getKeyPublic(keyPrivate);
       const address = blockchain.getAddress(keyPublic, 'segwit');
       
-      // SegWit address should start with bc1
-      expect(address.startsWith('bc1')).toBe(true);
+      // SegWit address should start with bc1q (q is part of the encoding, indicating v0)
+      expect(address.startsWith('bc1q')).toBe(true);
       
       // Should be a valid address
       expect(blockchain.validateAddress!(address)).toBe(true);
     });
     
-    it("should validate valid SegWit addresses", () => {
+    it("should validate valid SegWit v0 addresses", () => {
       // Test known valid SegWit addresses
       const validAddresses = [
         'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4', // P2WPKH
@@ -149,7 +149,7 @@ describe("Bitcoin blockchain", () => {
       }
     });
     
-    it("should reject invalid SegWit addresses", () => {
+    it("should reject invalid SegWit v0 addresses", () => {
       // Test known invalid SegWit addresses
       const invalidAddresses = [
         'tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty', // Wrong hrp
@@ -163,6 +163,54 @@ describe("Bitcoin blockchain", () => {
       for (const address of invalidAddresses) {
         expect(blockchain.validateAddress!(address)).toBe(false);
       }
+    });
+  });
+  
+  describe("SegWit v1 (bech32m/Taproot) addresses", () => {
+    it("should generate a Taproot address from a public key", () => {
+      const keyPrivate = blockchain.generateKeyPrivate();
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'taproot');
+      
+      // Taproot address should start with bc1p (p is part of the encoding, indicating v1)
+      expect(address.startsWith('bc1p')).toBe(true);
+      
+      // Should be a valid address
+      expect(blockchain.validateAddress!(address)).toBe(true);
+    });
+    
+    it("should generate different addresses for same key with different types", () => {
+      const keyPrivate = blockchain.generateKeyPrivate();
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      
+      const legacyAddress = blockchain.getAddress(keyPublic, 'legacy');
+      const p2shAddress = blockchain.getAddress(keyPublic, 'p2sh');
+      const segwitAddress = blockchain.getAddress(keyPublic, 'segwit');
+      const taprootAddress = blockchain.getAddress(keyPublic, 'taproot');
+      
+      // All addresses should be different
+      expect(new Set([legacyAddress, p2shAddress, segwitAddress, taprootAddress]).size).toBe(4);
+      
+      // Each address should start with the correct prefix
+      expect(legacyAddress.startsWith('1')).toBe(true);
+      expect(p2shAddress.startsWith('3')).toBe(true);
+      expect(segwitAddress.startsWith('bc1q')).toBe(true);
+      expect(taprootAddress.startsWith('bc1p')).toBe(true);
+    });
+    
+    it("should validate a Taproot address", () => {
+      // Generate a Taproot address
+      const keyPrivate = blockchain.generateKeyPrivate();
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'taproot');
+      
+      // Should be valid
+      expect(blockchain.validateAddress!(address)).toBe(true);
+      
+      // Slightly modifying the address should make it invalid
+      const invalidAddress = address.slice(0, address.length - 1) + 
+                            (address[address.length - 1] === 'a' ? 'b' : 'a');
+      expect(blockchain.validateAddress!(invalidAddress)).toBe(false);
     });
   });
 });

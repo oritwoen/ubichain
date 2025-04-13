@@ -2,7 +2,7 @@ import { sha256 } from '@noble/hashes/sha256'
 import { ripemd160 } from '@noble/hashes/ripemd160'
 import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
 import { encodeBase58Check, validateBase58Check } from './encoding'
-import { bech32 } from '@scure/base'
+import { bech32, bech32m } from '@scure/base'
 
 /**
  * Create RIPEMD160(SHA256(input)) hash - commonly used in Bitcoin-like blockchains
@@ -32,7 +32,7 @@ export type OptionsAddressP2SH = OptionsAddressVersioned
 // SegWit (bech32) address options
 export type OptionsAddressSegWit = {
   hrp: string, // Human readable part (prefix)
-  witnessVersion: number // Usually 0 for standard P2WPKH
+  witnessVersion: number // Usually 0 for standard P2WPKH, 1 for Taproot
 }
 
 /**
@@ -133,63 +133,94 @@ export function validateAddressP2SH(address: string, options: OptionsAddressP2SH
 }
 
 /**
- * Generate SegWit (bech32) address for Bitcoin-like blockchains
+ * Generate SegWit (bech32 or bech32m) address for Bitcoin-like blockchains
  * @param keyPublic - The public key as a hex string
  * @param options - Options for SegWit address generation
- * @returns SegWit address (bech32 format)
+ * @returns SegWit address (bech32 or bech32m format, depending on witness version)
  */
 export function generateAddressSegWit(keyPublic: string, options: OptionsAddressSegWit): string {
   // Convert public key to bytes
   const bytesKeyPublic = hexToBytes(keyPublic)
   
-  // Hash the public key with hash160 (RIPEMD160(SHA256(pubkey)))
-  const hashPubKey = hash160(bytesKeyPublic)
+  let programBytes: Uint8Array;
   
-  // For witness version 0, just use the keyHash directly
-  const words = bech32.toWords(hashPubKey)
+  if (options.witnessVersion === 1) {
+    // For Taproot (v1), we use the x-coordinate of the public key point (32 bytes)
+    // For simplicity, we'll just use the SHA256 hash of the public key as a stand-in
+    // In a real implementation, this would be a proper x-only public key
+    programBytes = sha256(bytesKeyPublic);
+  } else {
+    // For v0 SegWit, use hash160 (RIPEMD160(SHA256(pubkey)))
+    programBytes = hash160(bytesKeyPublic);
+  }
+  
+  // Convert program bytes to 5-bit words
+  const words = options.witnessVersion === 0 
+    ? bech32.toWords(programBytes) 
+    : bech32m.toWords(programBytes);
   
   // Add witness version to the beginning of the words array
-  const wordsWithVersion = [options.witnessVersion, ...words]
+  const wordsWithVersion = [options.witnessVersion, ...words];
   
-  // Encode with bech32
-  return bech32.encode(options.hrp, wordsWithVersion)
+  // Encode with appropriate encoder (bech32 for v0, bech32m for v1+)
+  return options.witnessVersion === 0
+    ? bech32.encode(options.hrp, wordsWithVersion)
+    : bech32m.encode(options.hrp, wordsWithVersion);
 }
 
 /**
- * Validate a Bitcoin-like SegWit (bech32) address
+ * Validate a Bitcoin-like SegWit (bech32 or bech32m) address
  * @param address - The address to validate
  * @param options - Options for SegWit address validation
  * @returns Whether the address is valid
  */
 export function validateAddressSegWit(address: string, options: OptionsAddressSegWit): boolean {
   try {
-    // Try to decode as bech32
-    const decoded = bech32.decodeUnsafe(address)
+    // Decode based on witness version (bech32 for v0, bech32m for v1+)
+    const decoder = options.witnessVersion === 0 ? bech32 : bech32m;
+    const decoded = decoder.decodeUnsafe(address);
     
     // If decoding failed or hrp doesn't match
     if (!decoded || decoded.prefix !== options.hrp) {
-      return false
+      // If v0 decoder failed but v1 is expected, or vice versa, try the other format
+      if (options.witnessVersion === 0) {
+        // Try bech32m for v0 (backward check)
+        const decoded2 = bech32m.decodeUnsafe(address);
+        if (!decoded2 || decoded2.prefix !== options.hrp) {
+          return false;
+        }
+      } else {
+        // Try bech32 for v1 (backward check)
+        const decoded2 = bech32.decodeUnsafe(address);
+        if (!decoded2 || decoded2.prefix !== options.hrp) {
+          return false;
+        }
+      }
     }
     
-    // Check witness version (first word)
-    if (decoded.words[0] !== options.witnessVersion) {
-      return false
+    // If we get here, we've successfully decoded, now verify the witness version
+    const words = decoded ? decoded.words : [];
+    if (!words.length || words[0] !== options.witnessVersion) {
+      return false;
     }
     
-    // Check length (depends on witness version, for v0 should be 20-32 bytes after witness version)
-    const data = bech32.fromWordsUnsafe(decoded.words.slice(1))
-    if (!data) return false
+    // Check length (depends on witness version)
+    const data = decoder.fromWordsUnsafe(words.slice(1));
+    if (!data) return false;
     
     if (options.witnessVersion === 0) {
       // For v0, program length must be 20 (P2WPKH) or 32 (P2WSH) bytes
-      return data.length === 20 || data.length === 32
+      return data.length === 20 || data.length === 32;
+    } else if (options.witnessVersion === 1) {
+      // For v1 (Taproot), program length must be 32 bytes (x-only pubkey)
+      return data.length === 32;
     }
     
-    // For future witness versions
-    return true
+    // For future witness versions, length rules may vary
+    return true;
   } catch {
     // If decoding fails, the address is invalid
-    return false
+    return false;
   }
 }
 

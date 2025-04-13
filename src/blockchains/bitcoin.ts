@@ -15,14 +15,21 @@ export default function bitcoin () {
    * Supports following formats:
    * - 'legacy' (P2PKH) - addresses starting with '1'
    * - 'p2sh' - addresses starting with '3'
-   * - 'segwit' - addresses starting with 'bc1' (bech32)
+   * - 'segwit' - addresses starting with 'bc1' with short data (bech32, v0)
+   * - 'taproot' - addresses starting with 'bc1p' (bech32m, v1, Taproot)
    * 
    * @param keyPublic - The public key as a hex string
-   * @param type - Address type (legacy, p2sh, or segwit)
+   * @param type - Address type (legacy, p2sh, segwit, or taproot)
    * @returns Bitcoin address
    */
   function getAddress(keyPublic: string, type?: string): string {
-    // Check for segwit address type
+    // Check for taproot address type (SegWit v1, bech32m)
+    if (type === 'taproot') {
+      // Bitcoin mainnet bech32m prefix is 'bc' and witness version is 1
+      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 1 })
+    }
+    
+    // Check for segwit address type (bech32, v0)
     if (type === 'segwit') {
       // Bitcoin mainnet bech32 prefix is 'bc' and witness version is 0
       return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 0 })
@@ -44,14 +51,20 @@ export default function bitcoin () {
    * Supports:
    * - Legacy (P2PKH) addresses starting with '1'
    * - P2SH addresses starting with '3'
-   * - SegWit (bech32) addresses starting with 'bc1'
+   * - SegWit v0 (bech32) addresses starting with 'bc1q'
+   * - SegWit v1 (bech32m) addresses starting with 'bc1p' (Taproot)
    * 
    * @param address - The address to validate
    * @returns Whether the address is valid
    */
   function validateAddress(address: string): boolean {
-    // Check for SegWit bech32 address
+    // Check for SegWit address
     if (address.startsWith('bc1')) {
+      // Taproot addresses typically start with 'bc1p' (specific to witness v1)
+      if (address.startsWith('bc1p')) {
+        return validateAddressSegWit(address, { hrp: 'bc', witnessVersion: 1 })
+      }
+      // Handle typical v0 SegWit addresses (bech32)
       return validateAddressSegWit(address, { hrp: 'bc', witnessVersion: 0 })
     }
     

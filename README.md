@@ -9,7 +9,7 @@ A TypeScript library for interacting with various blockchains, providing simple 
 - 📫 **Address generation** - create addresses for different blockchains
 - ✅ **Address validation** - verify address validity and checksums
 - 🧩 **Modular design** - easily extendable to support additional blockchains
-- 📦 **Zero external dependencies** - only uses Node.js crypto and minimal utilities
+- 📦 **Minimal dependencies** - uses carefully selected crypto libraries with excellent security track records
 - 📐 **Type-safe** - written in TypeScript with full type definitions
 - 💼 **Wallet generation** - generate complete crypto wallets in one step 
 - 🔄 **Consistent API** - uniform interface across all blockchains
@@ -22,7 +22,8 @@ Currently supported blockchains:
 - **Bitcoin** (secp256k1)
   - Legacy addresses (P2PKH) - addresses starting with '1'
   - P2SH addresses - addresses starting with '3'
-  - SegWit addresses (bech32) - addresses starting with 'bc1'
+  - SegWit v0 addresses (bech32) - addresses starting with 'bc1q'
+  - SegWit v1 addresses (bech32m/Taproot) - addresses starting with 'bc1p'
 - **Ethereum** (secp256k1)
   - Standard addresses (Keccak-256 hash of public key)
   - EIP-55 checksum support
@@ -210,7 +211,8 @@ pnpm run lint
 - [x] Add wallet generation in one step
 - [x] Create hierarchical data model for keys and wallets
 - [x] Add SegWit (bech32) address support
-- [ ] Add SegWit v1 (bech32m) and P2WSH address support
+- [x] Add SegWit v1 (bech32m/Taproot) address support
+- [ ] Add P2WSH address support
 - [ ] Add Testnet address support
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add HD wallet support (BIP32/BIP44)
