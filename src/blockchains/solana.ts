@@ -34,7 +34,7 @@ export default function solana() {
       const decoded = base58.decode(address)
       // Solana addresses are 32 bytes (Ed25519 public key)
       return decoded.length === 32
-    } catch (error) {
+    } catch {
       return false
     }
   }

@@ -62,7 +62,7 @@ describe("Ethereum blockchain", () => {
       expect(address.length).toBe(42);
       
       // Should contain hex characters (potentially mixed case due to EIP-55 checksum)
-      expect(address.substring(2)).toMatch(/^[0-9a-fA-F]{40}$/);
+      expect(address.slice(2)).toMatch(/^[0-9a-fA-F]{40}$/);
       
       // Validate address using validateAddress
       expect(blockchain.validateAddress!(address)).toBe(true);
@@ -93,14 +93,14 @@ describe("Ethereum blockchain", () => {
       expect(blockchain.validateAddress!(lowercaseAddress)).toBe(true);
       
       // Uppercase address should also be valid (backward compatibility)
-      const uppercaseAddress = '0x' + address.substring(2).toUpperCase();
+      const uppercaseAddress = '0x' + address.slice(2).toUpperCase();
       expect(blockchain.validateAddress!(uppercaseAddress)).toBe(true);
     });
     
     it("should correctly implement EIP-55 checksum", () => {
       // Test with a known address and its EIP-55 checksum version
       // Example from EIP-55 specification
-      const lowerCaseAddress = '0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed';
+      const _lowerCaseAddress = '0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed';
       const checksumAddress = '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed';
       
       const keyPrivate = blockchain.generateKeyPrivate();

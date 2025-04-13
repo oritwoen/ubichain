@@ -142,17 +142,10 @@ export function generateAddressSegWit(keyPublic: string, options: OptionsAddress
   // Convert public key to bytes
   const bytesKeyPublic = hexToBytes(keyPublic)
   
-  let programBytes: Uint8Array;
-  
-  if (options.witnessVersion === 1) {
-    // For Taproot (v1), we use the x-coordinate of the public key point (32 bytes)
-    // For simplicity, we'll just use the SHA256 hash of the public key as a stand-in
-    // In a real implementation, this would be a proper x-only public key
-    programBytes = sha256(bytesKeyPublic);
-  } else {
-    // For v0 SegWit, use hash160 (RIPEMD160(SHA256(pubkey)))
-    programBytes = hash160(bytesKeyPublic);
-  }
+  // Determine program bytes based on witness version
+  const programBytes = options.witnessVersion === 1
+    ? sha256(bytesKeyPublic) // For Taproot (v1), use SHA256 hash (simplified)
+    : hash160(bytesKeyPublic); // For v0 SegWit, use hash160
   
   // Convert program bytes to 5-bit words
   const words = options.witnessVersion === 0 
@@ -200,7 +193,7 @@ export function validateAddressSegWit(address: string, options: OptionsAddressSe
     
     // If we get here, we've successfully decoded, now verify the witness version
     const words = decoded ? decoded.words : [];
-    if (!words.length || words[0] !== options.witnessVersion) {
+    if (words.length === 0 || words[0] !== options.witnessVersion) {
       return false;
     }
     

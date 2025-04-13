@@ -16,9 +16,9 @@ describe('Ed25519 Utils', () => {
 
   // Test key generation
   it('generates the correct public key from a private key', () => {
-    vectors.forEach(vector => {
+    for (const vector of vectors) {
       const keyPublic = generateKeyPublic(vector.keyPrivate)
       expect(keyPublic).toBe(vector.keyPublic)
-    })
+    }
   })
 })

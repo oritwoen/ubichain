@@ -43,7 +43,7 @@ export default function aptos() {
         length: 64,
         caseSensitive: false
       });
-    } catch (error) {
+    } catch {
       return false
     }
   }

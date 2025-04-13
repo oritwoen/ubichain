@@ -19,10 +19,10 @@ describe('TRON Blockchain', () => {
     ]
     
     it('generates the correct public key from a private key', () => {
-      keysExamples.forEach(pair => {
+      for (const pair of keysExamples) {
         const keyPublic = blockchain.getKeyPublic(pair.keyPrivate)
         expect(keyPublic).toBe(pair.keyPublic)
-      })
+      }
     })
   })
   
@@ -40,10 +40,10 @@ describe('TRON Blockchain', () => {
     ]
     
     it('generates the correct address from a public key', () => {
-      addressVectors.forEach(vector => {
+      for (const vector of addressVectors) {
         const address = blockchain.getAddress(vector.keyPublic)
         expect(address).toBe(vector.address)
-      })
+      }
     })
   })
   
@@ -55,9 +55,9 @@ describe('TRON Blockchain', () => {
         'TBXfjm7RnFnvDQaPnzQwtzWsAiS69RbTGe'
       ]
       
-      validAddresses.forEach(address => {
+      for (const address of validAddresses) {
         expect(blockchain.validateAddress?.(address)).toBe(true)
-      })
+      }
     })
     
     it('rejects invalid TRON addresses', () => {
@@ -70,9 +70,9 @@ describe('TRON Blockchain', () => {
         'not an address' // Invalid format
       ]
       
-      invalidAddresses.forEach(address => {
+      for (const address of invalidAddresses) {
         expect(blockchain.validateAddress?.(address)).toBe(false)
-      })
+      }
     })
   })
 })

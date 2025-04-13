@@ -38,7 +38,7 @@ export function generateAddress(keyPublic: string): string {
   const keccakHash = keccak_256(publicKeyForHashing)
   
   // Take the last 20 bytes of the hash result
-  const addressBytes = keccakHash.slice(keccakHash.length - 20)
+  const addressBytes = keccakHash.slice(-20)
   
   // Convert to hex string
   const addressHex = bytesToHex(addressBytes)
@@ -61,21 +61,17 @@ export function toChecksumAddress(address: string): string {
   const addressHash = bytesToHex(keccak_256(lowercaseAddress))
   
   // Apply checksum rules - using array for better performance
-  const result: string[] = new Array(lowercaseAddress.length)
+  const result = Array.from({length: lowercaseAddress.length})
   
-  for (let i = 0; i < lowercaseAddress.length; i++) {
+  // Use for...of with entries to get both index and character
+  for (const [i, char] of [...lowercaseAddress].entries()) {
     const hashChar = addressHash[i]
     if (hashChar === undefined) {
       throw new Error(`Invalid hash character at index ${i}`)
     }
     
-    const char = lowercaseAddress[i]
     // If the ith character in the hash is 8 or higher, uppercase the ith character in the address
-    if (parseInt(hashChar, 16) >= 8) {
-      result[i] = char.toUpperCase()
-    } else {
-      result[i] = char
-    }
+    result[i] = Number.parseInt(hashChar, 16) >= 8 ? char.toUpperCase() : char
   }
   
   return result.join('')

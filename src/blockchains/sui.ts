@@ -1,4 +1,3 @@
-import { base58 } from '@scure/base'
 import { blake2b } from '@noble/hashes/blake2b'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
@@ -52,13 +51,9 @@ export default function sui() {
     const keyPublicBytes = hexToBytes(keyPublic)
     
     // Determine flag byte based on scheme
-    let flagByte: number
-    if (type?.toLowerCase() === 'secp256k1') {
-      flagByte = SIGNATURE_SCHEME_FLAGS.SECP256K1
-    } else {
-      // Default to Ed25519
-      flagByte = SIGNATURE_SCHEME_FLAGS.ED25519
-    }
+    const flagByte = type?.toLowerCase() === 'secp256k1' 
+      ? SIGNATURE_SCHEME_FLAGS.SECP256K1
+      : SIGNATURE_SCHEME_FLAGS.ED25519
     
     // Create input for hashing: flag byte + public key
     const input = addSchemeByte(keyPublicBytes, flagByte, true);

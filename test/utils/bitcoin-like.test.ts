@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hash160, generateAddressLegacy, validateAddressLegacy } from '../../src/utils/address'
-import { sha256 } from '@noble/hashes/sha256'
-import { createVersionedHash } from '../../src/utils/address'
+import { hash160, generateAddressLegacy, validateAddressLegacy, createVersionedHash } from '../../src/utils/address'
 import { encodeBase58Check } from '../../src/utils/encoding'
 
 describe('Bitcoin-like utils', () => {

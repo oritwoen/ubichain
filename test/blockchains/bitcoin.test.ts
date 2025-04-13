@@ -208,8 +208,8 @@ describe("Bitcoin blockchain", () => {
       expect(blockchain.validateAddress!(address)).toBe(true);
       
       // Slightly modifying the address should make it invalid
-      const invalidAddress = address.slice(0, address.length - 1) + 
-                            (address[address.length - 1] === 'a' ? 'b' : 'a');
+      const invalidAddress = address.slice(0, -1) + 
+                            (address.at(-1) === 'a' ? 'b' : 'a');
       expect(blockchain.validateAddress!(invalidAddress)).toBe(false);
     });
   });

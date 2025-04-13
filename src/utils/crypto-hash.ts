@@ -1,4 +1,4 @@
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { hexToBytes } from '@noble/hashes/utils'
 import { sha256 } from '@noble/hashes/sha256'
 import { ripemd160 } from '@noble/hashes/ripemd160'
 import { keccak_256 } from '@noble/hashes/sha3'
@@ -41,14 +41,15 @@ export function hashData(
   // Apply hash function
   const hashed = hashFn(bytes);
   
-  // Apply slice if specified
-  if (slice) {
-    const start = slice.start || 0;
-    const end = slice.end !== undefined ? slice.end : hashed.length;
-    return hashed.slice(start, end);
+  // Return sliced or full hash data
+  if (!slice) {
+    return hashed;
   }
   
-  return hashed;
+  const start = slice.start || 0;
+  const end = slice.end ?? hashed.length;
+  
+  return hashed.slice(start, end);
 }
 
 /**
