@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.7
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.6...v0.0.7)
+
+### 🚀 Enhancements
+
+- Implement Base blockchain with address generation and validation ([33c1627](https://github.com/oritwoen/ubichain/commit/33c1627))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.6
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.5...v0.0.6)
