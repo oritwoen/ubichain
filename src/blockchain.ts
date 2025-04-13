@@ -27,6 +27,7 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
 
   const response: BlockchainResponse = {
     name: blockchain.name,
+    curve: blockchain.curve,
     generateKeyPrivate,
     generateKeyPublic: (keyPrivate, options) => blockchain.generateKeyPublic(keyPrivate, options),
     generateAddress: (keyPublic, type) => blockchain.generateAddress(keyPublic, type)

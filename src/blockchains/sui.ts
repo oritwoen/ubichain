@@ -3,9 +3,11 @@ import { blake2b } from '@noble/hashes/blake2b'
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as generateEd25519KeyPublic } from '../utils/ed25519'
 import { generateKeyPublic as generateSecp256k1KeyPublic } from '../utils/secp256k1'
+import type { Curve } from '../types'
 
 export default function sui() {
   const name = "sui";
+  const curve: Curve[] = ["ed25519", "secp256k1"];
   
   /**
    * Flag bytes for different signature schemes in Sui
@@ -96,6 +98,7 @@ export default function sui() {
 
   return {
     name,
+    curve,
     generateKeyPublic,
     generateAddress,
     validateAddress,

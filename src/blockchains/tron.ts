@@ -3,9 +3,11 @@ import { hexToBytes } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
 import { createVersionedHash } from '../utils/address'
 import { encodeBase58Check, validateBase58Check } from '../utils/encoding'
+import type { Curve } from '../types'
 
 export default function tron() {
   const name = "tron";
+  const curve: Curve = "secp256k1";
   
   /**
    * Generate TRON address from public key
@@ -48,6 +50,7 @@ export default function tron() {
 
   return {
     name,
+    curve,
     generateKeyPublic,
     generateAddress,
     validateAddress,

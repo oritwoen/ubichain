@@ -1,9 +1,11 @@
 import { base58 } from '@scure/base'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic } from '../utils/ed25519'
+import type { Curve } from '../types'
 
 export default function solana() {
   const name = "solana";
+  const curve: Curve = "ed25519";
   
   /**
    * Generate Solana address from public key
@@ -39,6 +41,7 @@ export default function solana() {
 
   return {
     name,
+    curve,
     generateKeyPublic,
     generateAddress,
     validateAddress,

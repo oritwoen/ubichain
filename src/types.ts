@@ -1,4 +1,9 @@
 /**
+ * Cryptographic curve type
+ */
+export type Curve = 'ed25519' | 'secp256k1';
+
+/**
  * Defines a blockchain interface that allows you to generate keys or addresses
  */
 export type Blockchain = {
@@ -6,6 +11,12 @@ export type Blockchain = {
    * The name of the blockchain.
    */
   name: string;
+  
+  /**
+   * The cryptographic curve(s) used by the blockchain.
+   * Some blockchains (like SUI) support multiple curves.
+   */
+  curve: Curve | Curve[];
 
   /**
    * Generates a public key from a private key
@@ -28,6 +39,12 @@ export interface BlockchainResponse {
    * The name of the blockchain.
    */
   name: string;
+  
+  /**
+   * The cryptographic curve(s) used by the blockchain.
+   * Some blockchains (like SUI) support multiple curves.
+   */
+  curve: Curve | Curve[];
   
   /**
    * Generates a cryptographically secure random private key

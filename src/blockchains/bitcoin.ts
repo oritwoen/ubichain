@@ -3,9 +3,11 @@ import {
   generateAddressLegacy, validateAddressLegacy,
   generateAddressP2SH, validateAddressP2SH
 } from '../utils/address'
+import type { Curve } from '../types'
 
 export default function bitcoin () {
   const name = "bitcoin";
+  const curve: Curve = "secp256k1";
   
   /**
    * Generate Bitcoin address from public key
@@ -52,6 +54,7 @@ export default function bitcoin () {
 
   return {
     name,
+    curve,
     generateKeyPublic,
     generateAddress,
     validateAddress,
