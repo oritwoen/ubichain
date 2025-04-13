@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.0.9
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.8...v0.0.9)
+
+### 🚀 Enhancements
+
+- Add SegWit (bech32) address support and validation to Bitcoin implementation ([b0363ac](https://github.com/oritwoen/ubichain/commit/b0363ac))
+
+### 💅 Refactors
+
+- Rename KeyPair to Keys and update related documentation and tests ([1397ce4](https://github.com/oritwoen/ubichain/commit/1397ce4))
+
+### 📖 Documentation
+
+- Init ([4980c1e](https://github.com/oritwoen/ubichain/commit/4980c1e))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.8
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.7...v0.0.8)
