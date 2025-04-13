@@ -1,6 +1,6 @@
 {
   "name": "ubichain",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
   "repository": {
     "type": "git",
@@ -46,7 +46,7 @@
   "scripts": {
     "build": "unbuild",
     "dev": "vitest dev",
-    "release": "changelogen --release && git push --follow-tags",
+    "release": "changelogen --release && git push --follow-tags && npm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",

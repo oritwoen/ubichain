@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.1.0
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.9...v0.0.10)
+
+### 🚀 Enhancements
+
+- Add CI and autofix workflows for automated testing and linting ([1b48f16](https://github.com/oritwoen/ubichain/commit/1b48f16))
+
+### 🩹 Fixes
+
+- Add missing types entry in package.json for TypeScript support ([94ed2d6](https://github.com/oritwoen/ubichain/commit/94ed2d6))
+
+### 💅 Refactors
+
+- Update key generation options to use KeyOptions type and optimize address checksum calculation ([ab77d28](https://github.com/oritwoen/ubichain/commit/ab77d28))
+- Update blockchain interface and response types for clarity and consistency ([60fef35](https://github.com/oritwoen/ubichain/commit/60fef35))
+- Streamline address handling and validation across Aptos, Sui, and Tron implementations ([2cc742f](https://github.com/oritwoen/ubichain/commit/2cc742f))
+- Enhance Bitcoin address support with SegWit v0 and v1 (Taproot) implementations ([4020b49](https://github.com/oritwoen/ubichain/commit/4020b49))
+- Simplify error handling and improve code readability across blockchain implementations ([28a2979](https://github.com/oritwoen/ubichain/commit/28a2979))
+
+### 🏡 Chore
+
+- Update license year and enhance README with security dependencies and contributing guidelines ([5d757de](https://github.com/oritwoen/ubichain/commit/5d757de))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.9
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.8...v0.0.9)
