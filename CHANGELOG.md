@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.8
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.7...v0.0.8)
+
+### 🚀 Enhancements
+
+- Add key pair and wallet generation functions to blockchain interface ([4a51497](https://github.com/oritwoen/ubichain/commit/4a51497))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.7
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.6...v0.0.7)
