@@ -22,6 +22,7 @@ Currently supported blockchains:
 - **Bitcoin** (secp256k1)
   - Legacy addresses (P2PKH) - addresses starting with '1'
   - P2SH addresses - addresses starting with '3'
+  - SegWit addresses (bech32) - addresses starting with 'bc1'
 - **Ethereum** (secp256k1)
   - Standard addresses (Keccak-256 hash of public key)
   - EIP-55 checksum support
@@ -208,7 +209,8 @@ pnpm run lint
 - [x] Add key pair generation in one step
 - [x] Add wallet generation in one step
 - [x] Create hierarchical data model for keys and wallets
-- [ ] Add SegWit (bech32) address support
+- [x] Add SegWit (bech32) address support
+- [ ] Add SegWit v1 (bech32m) and P2WSH address support
 - [ ] Add Testnet address support
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add HD wallet support (BIP32/BIP44)

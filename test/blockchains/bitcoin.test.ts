@@ -106,4 +106,63 @@ describe("Bitcoin blockchain", () => {
       expect(blockchain.validateAddress!("3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwX1")).toBe(false);
     });
   });
+  
+  describe("SegWit (bech32) addresses", () => {
+    // Known test vector for SegWit
+    const segwitTestVector = {
+      privateKey: '0000000000000000000000000000000000000000000000000000000000000001',
+      publicKey: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
+      segwitAddress: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4'
+    };
+    
+    it("should generate a SegWit address from a public key", () => {
+      const address = blockchain.getAddress(segwitTestVector.publicKey, 'segwit');
+      
+      // SegWit address should match expected value
+      expect(address).toBe(segwitTestVector.segwitAddress);
+      
+      // SegWit address should start with bc1
+      expect(address.startsWith('bc1')).toBe(true);
+    });
+    
+    it("should generate a valid SegWit address from any key", () => {
+      const keyPrivate = blockchain.generateKeyPrivate();
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'segwit');
+      
+      // SegWit address should start with bc1
+      expect(address.startsWith('bc1')).toBe(true);
+      
+      // Should be a valid address
+      expect(blockchain.validateAddress!(address)).toBe(true);
+    });
+    
+    it("should validate valid SegWit addresses", () => {
+      // Test known valid SegWit addresses
+      const validAddresses = [
+        'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4', // P2WPKH
+        'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3' // P2WSH
+      ];
+      
+      for (const address of validAddresses) {
+        expect(blockchain.validateAddress!(address)).toBe(true);
+      }
+    });
+    
+    it("should reject invalid SegWit addresses", () => {
+      // Test known invalid SegWit addresses
+      const invalidAddresses = [
+        'tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty', // Wrong hrp
+        'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5', // Invalid checksum
+        'bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6q', // Invalid witness version
+        'BC1SW50QA3JX3S', // Mixed case not allowed in bech32
+        'bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj', // Invalid program length
+        'bc1q' // Too short
+      ];
+      
+      for (const address of invalidAddresses) {
+        expect(blockchain.validateAddress!(address)).toBe(false);
+      }
+    });
+  });
 });
