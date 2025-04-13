@@ -39,6 +39,7 @@ export interface Wallet extends Keys {
 export interface KeyOptions {
   compressed?: boolean;
   encoding?: 'hex' | 'base64' | 'binary';
+  scheme?: string; // For blockchain implementations that support multiple signature schemes
   // Extend with more specific options as needed
 }
 

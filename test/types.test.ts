@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Blockchain, BlockchainResponse } from '../src/types'
+import type { Blockchain } from '../src/types'
 
 // Helper function to check proper implementation of interfaces
 function isBlockchain(obj: any): obj is Blockchain {
@@ -12,7 +12,7 @@ function isBlockchain(obj: any): obj is Blockchain {
   )
 }
 
-function isBlockchainResponse(obj: any): obj is BlockchainResponse {
+function isCompleteBlockchain(obj: any): obj is Blockchain {
   return (
     typeof obj.name === 'string' &&
     (typeof obj.curve === 'string' || Array.isArray(obj.curve)) &&
@@ -80,9 +80,9 @@ describe('Types', () => {
     })
   })
   
-  describe('BlockchainResponse interface', () => {
-    it('should detect valid BlockchainResponse implementation', () => {
-      const validResponse = {
+  describe('Complete Blockchain interface', () => {
+    it('should detect valid complete Blockchain implementation', () => {
+      const validBlockchain = {
         name: 'test-chain',
         curve: 'secp256k1',
         generateKeyPrivate: () => 'priv-key',
@@ -103,10 +103,10 @@ describe('Types', () => {
         })
       }
       
-      expect(isBlockchainResponse(validResponse)).toBe(true)
+      expect(isCompleteBlockchain(validBlockchain)).toBe(true)
       
       // Create an instance that looks like the interface to test type safety
-      const usedResponse: BlockchainResponse = {
+      const usedBlockchain: Blockchain = {
         name: 'test-chain-2',
         curve: 'ed25519',
         generateKeyPrivate: () => 'private-key',
@@ -128,16 +128,16 @@ describe('Types', () => {
         })
       }
       
-      expect(usedResponse.name).toBe('test-chain-2')
-      expect(usedResponse.generateKeyPrivate()).toBe('private-key')
-      expect(usedResponse.getKeyPublic('test')).toBe('public-test')
-      expect(usedResponse.getAddress('pub-key')).toBe('address-pub-key')
-      expect(usedResponse.validateAddress?.('address-xyz')).toBe(true)
-      expect(usedResponse.validateAddress?.('invalid')).toBe(false)
+      expect(usedBlockchain.name).toBe('test-chain-2')
+      expect(usedBlockchain.generateKeyPrivate()).toBe('private-key')
+      expect(usedBlockchain.getKeyPublic('test')).toBe('public-test')
+      expect(usedBlockchain.getAddress('pub-key')).toBe('address-pub-key')
+      expect(usedBlockchain.validateAddress?.('address-xyz')).toBe(true)
+      expect(usedBlockchain.validateAddress?.('invalid')).toBe(false)
     })
     
-    it('should detect valid BlockchainResponse with validateAddress', () => {
-      const validResponse = {
+    it('should detect valid complete Blockchain with validateAddress', () => {
+      const validBlockchain = {
         name: 'test-chain',
         curve: 'secp256k1',
         generateKeyPrivate: () => 'priv-key',
@@ -159,10 +159,10 @@ describe('Types', () => {
         })
       }
       
-      expect(isBlockchainResponse(validResponse)).toBe(true)
+      expect(isCompleteBlockchain(validBlockchain)).toBe(true)
     })
     
-    it('should reject invalid BlockchainResponse implementations', () => {
+    it('should reject invalid complete Blockchain implementations', () => {
       const missingName = {
         generateKeyPrivate: () => 'priv-key',
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
@@ -187,10 +187,10 @@ describe('Types', () => {
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
       }
       
-      expect(isBlockchainResponse(missingName)).toBe(false)
-      expect(isBlockchainResponse(missingGenerateKeyPrivate)).toBe(false)
-      expect(isBlockchainResponse(missingGenerateKeyPublic)).toBe(false)
-      expect(isBlockchainResponse(missingGenerateAddress)).toBe(false)
+      expect(isCompleteBlockchain(missingName)).toBe(false)
+      expect(isCompleteBlockchain(missingGenerateKeyPrivate)).toBe(false)
+      expect(isCompleteBlockchain(missingGenerateKeyPublic)).toBe(false)
+      expect(isCompleteBlockchain(missingGenerateAddress)).toBe(false)
     })
   })
 })
