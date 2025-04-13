@@ -1,4 +1,4 @@
-import type { Blockchain, BlockchainResponse, Keys, Wallet } from "./types"
+import type { Blockchain, BlockchainResponse, Keys, Wallet, KeyOptions } from "./types"
 import { randomBytes } from 'node:crypto'
 import { bytesToHex } from '@noble/hashes/utils'
 
@@ -29,10 +29,10 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
    * Generates a key pair (private and public keys)
    * This is a convenience function that combines generateKeyPrivate and getKeyPublic
    * 
-   * @param {Record<string, any>} options - Optional parameters for key generation
+   * @param {KeyOptions} options - Optional parameters for key generation
    * @returns {Keys} A pair of cryptographic keys
    */
-  function generateKeys(options?: Record<string, any>): Keys {
+  function generateKeys(options?: KeyOptions): Keys {
     const privateKey = generateKeyPrivate()
     const publicKey = blockchain.getKeyPublic(privateKey, options)
     
@@ -48,11 +48,11 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
    * Generates a complete wallet (private key, public key, and address)
    * This is a convenience function that combines generateKeys and getAddress
    * 
-   * @param {Record<string, any>} options - Optional parameters for key generation
+   * @param {KeyOptions} options - Optional parameters for key generation
    * @param {string} addressType - Optional address type for blockchains with multiple address formats
    * @returns {Wallet} A complete wallet with keys and address
    */
-  function generateWallet(options?: Record<string, any>, addressType?: string): Wallet {
+  function generateWallet(options?: KeyOptions, addressType?: string): Wallet {
     const keys = generateKeys(options)
     const address = blockchain.getAddress(keys.keys.public, addressType)
     
@@ -66,8 +66,8 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
     name: blockchain.name,
     curve: blockchain.curve,
     generateKeyPrivate,
-    getKeyPublic: (keyPrivate, options) => blockchain.getKeyPublic(keyPrivate, options),
-    getAddress: (keyPublic, type) => blockchain.getAddress(keyPublic, type),
+    getKeyPublic: (keyPrivate: string, options?: KeyOptions) => blockchain.getKeyPublic(keyPrivate, options),
+    getAddress: (keyPublic: string, type?: string) => blockchain.getAddress(keyPublic, type),
     generateKeys,
     generateWallet
   }

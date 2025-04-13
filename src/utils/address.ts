@@ -10,19 +10,24 @@ import { bech32 } from '@scure/base'
  * @returns Hash160 result
  */
 export function hash160(data: Uint8Array): Uint8Array {
-  return ripemd160(sha256(data))
+  // Calculate SHA256 hash
+  const sha256Hash = sha256(data)
+  
+  // Calculate RIPEMD160 hash of the SHA256 hash
+  // This avoids creating an intermediate array
+  return ripemd160(sha256Hash)
 }
 
-// Base address options type
-export type OptionsAddress = {
+/**
+ * Base Bitcoin address options that use version bytes (legacy P2PKH and P2SH)
+ */
+export type OptionsAddressVersioned = {
   bytesVersion: number
 }
 
-// Legacy (P2PKH) address options
-export type OptionsAddressLegacy = OptionsAddress
-
-// P2SH address options
-export type OptionsAddressP2SH = OptionsAddress
+// Use the unified type for both legacy and P2SH addresses
+export type OptionsAddressLegacy = OptionsAddressVersioned
+export type OptionsAddressP2SH = OptionsAddressVersioned
 
 // SegWit (bech32) address options
 export type OptionsAddressSegWit = {

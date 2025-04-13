@@ -36,6 +36,15 @@ export interface Wallet extends Keys {
 /**
  * Defines a blockchain interface that allows you to generate keys or addresses
  */
+/**
+ * Specific options for key derivation
+ */
+export interface KeyOptions {
+  compressed?: boolean;
+  encoding?: 'hex' | 'base64' | 'binary';
+  // Extend with more specific options as needed
+}
+
 export type Blockchain = {
   /**
    * The name of the blockchain.
@@ -51,7 +60,7 @@ export type Blockchain = {
   /**
    * Gets a public key derived from a private key
    */
-  getKeyPublic: (keyPrivate: string, options?: Record<string, any>) => string;
+  getKeyPublic: (keyPrivate: string, options?: KeyOptions) => string;
 
   /**
    * Gets a public address derived from a public key
@@ -85,7 +94,7 @@ export interface BlockchainResponse {
   /**
    * Gets a public key derived from a private key
    */
-  getKeyPublic: (keyPrivate: string, options?: Record<string, any>) => string;
+  getKeyPublic: (keyPrivate: string, options?: KeyOptions) => string;
   
   /**
    * Gets a public address derived from a public key
@@ -101,11 +110,11 @@ export interface BlockchainResponse {
    * Generates a key pair (private and public keys)
    * This is a convenience function that combines generateKeyPrivate and getKeyPublic
    */
-  generateKeys: (options?: Record<string, any>) => Keys;
+  generateKeys: (options?: KeyOptions) => Keys;
   
   /**
    * Generates a complete wallet (private key, public key, and address)
    * This is a convenience function that combines generateKeys and getAddress
    */
-  generateWallet: (options?: Record<string, any>, addressType?: string) => Wallet;
+  generateWallet: (options?: KeyOptions, addressType?: string) => Wallet;
 };

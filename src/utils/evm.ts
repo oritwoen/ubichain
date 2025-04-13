@@ -60,29 +60,25 @@ export function toChecksumAddress(address: string): string {
   // Hash the lowercase address
   const addressHash = bytesToHex(keccak_256(lowercaseAddress))
   
-  // Apply checksum rules
-  let result = ''
+  // Apply checksum rules - using array for better performance
+  const result: string[] = new Array(lowercaseAddress.length)
+  
   for (let i = 0; i < lowercaseAddress.length; i++) {
     const hashChar = addressHash[i]
     if (hashChar === undefined) {
       throw new Error(`Invalid hash character at index ${i}`)
     }
     
+    const char = lowercaseAddress[i]
     // If the ith character in the hash is 8 or higher, uppercase the ith character in the address
     if (parseInt(hashChar, 16) >= 8) {
-      const char = lowercaseAddress[i]
-      if (char) {
-        result += char.toUpperCase()
-      }
+      result[i] = char.toUpperCase()
     } else {
-      const char = lowercaseAddress[i]
-      if (char) {
-        result += char
-      }
+      result[i] = char
     }
   }
   
-  return result
+  return result.join('')
 }
 
 /**
