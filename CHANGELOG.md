@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.5...v0.0.6)
+
+### 🚀 Enhancements
+
+- Add curve property to blockchain interfaces and implementations ([c6d63d2](https://github.com/oritwoen/ubichain/commit/c6d63d2))
+- Add Ethereum blockchain support with address generation and validation ([b6010eb](https://github.com/oritwoen/ubichain/commit/b6010eb))
+
+### 💅 Refactors
+
+- Rename key generation and address functions for consistency ([8c33dd4](https://github.com/oritwoen/ubichain/commit/8c33dd4))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.0.5
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.4...v0.0.5)
