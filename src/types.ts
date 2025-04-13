@@ -34,9 +34,6 @@ export interface Wallet extends Keys {
 }
 
 /**
- * Defines a blockchain interface that allows you to generate keys or addresses
- */
-/**
  * Specific options for key derivation
  */
 export interface KeyOptions {
@@ -45,35 +42,10 @@ export interface KeyOptions {
   // Extend with more specific options as needed
 }
 
-export type Blockchain = {
-  /**
-   * The name of the blockchain.
-   */
-  name: string;
-  
-  /**
-   * The cryptographic curve(s) used by the blockchain.
-   * Some blockchains (like SUI) support multiple curves.
-   */
-  curve: Curve | Curve[];
-
-  /**
-   * Gets a public key derived from a private key
-   */
-  getKeyPublic: (keyPrivate: string, options?: KeyOptions) => string;
-
-  /**
-   * Gets a public address derived from a public key
-   */
-  getAddress: (keyPublic: string, type?: string) => string;
-  
-  /**
-   * Validates a blockchain address
-   */
-  validateAddress?: (address: string) => boolean;
-};
-
-export interface BlockchainResponse {
+/**
+ * Unified blockchain interface that allows you to generate keys or addresses
+ */
+export interface Blockchain {
   /**
    * The name of the blockchain.
    */

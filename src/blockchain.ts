@@ -1,17 +1,17 @@
-import type { Blockchain, BlockchainResponse, Keys, Wallet, KeyOptions } from "./types"
+import type { Blockchain, Keys, Wallet, KeyOptions } from "./types"
 import { randomBytes } from 'node:crypto'
 import { bytesToHex } from '@noble/hashes/utils'
 
 /**
- * Creates and returns a interface using the specified blockchain.
+ * Creates and returns a interface using the specified blockchain implementation.
  * This interface allows you to generate keys, addresses,
  * and sign transactions.
  *
- * @param {Blockchain} blockchain - The blockchain used to getters. See {@link Blockchain}.
- * @returns {BlockchainResponse} The blockchain interface that allows cryptocurrency operations.
+ * @param {Partial<Blockchain>} blockchain - The blockchain implementation. See {@link Blockchain}.
+ * @returns {Blockchain} The complete blockchain interface that allows cryptocurrency operations.
  */
 
-export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
+export function useBlockchain(blockchain: Partial<Blockchain>): Blockchain {
   /**
    * Generates a cryptographically secure random private key
    * Common implementation for all blockchains - 32 bytes (256 bits) 
@@ -62,12 +62,12 @@ export function useBlockchain(blockchain: Blockchain): BlockchainResponse {
     }
   }
 
-  const response: BlockchainResponse = {
-    name: blockchain.name,
-    curve: blockchain.curve,
+  const response: Blockchain = {
+    name: blockchain.name!,
+    curve: blockchain.curve!,
     generateKeyPrivate,
-    getKeyPublic: (keyPrivate: string, options?: KeyOptions) => blockchain.getKeyPublic(keyPrivate, options),
-    getAddress: (keyPublic: string, type?: string) => blockchain.getAddress(keyPublic, type),
+    getKeyPublic: (keyPrivate: string, options?: KeyOptions) => blockchain.getKeyPublic!(keyPrivate, options),
+    getAddress: (keyPublic: string, type?: string) => blockchain.getAddress!(keyPublic, type),
     generateKeys,
     generateWallet
   }
