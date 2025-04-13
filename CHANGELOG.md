@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.0...v0.1.1)
+
+### 🚀 Enhancements
+
+- Implement Cardano blockchain support with address generation and validation ([7a1d7dc](https://github.com/oritwoen/ubichain/commit/7a1d7dc))
+
+### 🩹 Fixes
+
+- Update eslint-utils to version 4.6.0 and reorganize dependencies in pnpm-lock.yaml ([bf6c4eb](https://github.com/oritwoen/ubichain/commit/bf6c4eb))
+
+### 🏡 Chore
+
+- Add missing newline in scripts section of package.json ([8267842](https://github.com/oritwoen/ubichain/commit/8267842))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.1.0
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.0.9...v0.0.10)
