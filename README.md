@@ -1,5 +1,11 @@
 # ubichain
 
+[![npm version](https://img.shields.io/npm/v/ubichain?color=black)](https://npmjs.com/package/ubichain)
+[![npm downloads](https://img.shields.io/npm/dm/ubichain?color=black)](https://npm.chart.dev/ubichain)
+[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/oritwoen/ubichain/ci.yml?branch=main&color=black)](https://github.com/oritwoen/ubichain/actions)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/ubichain?color=black)](https://bundlephobia.com/package/ubichain)
+
 A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets.
 
 ## Features
@@ -179,13 +185,13 @@ The library is designed to be modular and extensible:
 
 ### Prerequisites
 
-- Node.js 16+
-- pnpm
+- Node.js 22+ (Latest LTS)
+- pnpm 10+
 
 ### Setup
 
 ```bash
-git clone https://github.com/yourusername/ubichain.git
+git clone https://github.com/oritwoen/ubichain.git
 cd ubichain
 pnpm install
 ```
@@ -220,6 +226,26 @@ pnpm run lint
 - [ ] Add support for more EVM blockchains (Polygon, Arbitrum, Optimism, etc.)
 - [ ] Add support for additional blockchains (Cardano, Polkadot, etc.)
 
+## Security & Dependencies
+
+This library leverages high-quality, audited cryptographic packages:
+
+- [@noble/hashes](https://github.com/paulmillr/noble-hashes) - Audited, high-performance cryptographic hashing for the web
+- [@noble/curves](https://github.com/paulmillr/noble-curves) - Audited implementation of elliptic curves
+- [@scure/base](https://github.com/paulmillr/scure-base) - Secure encoding implementations
+
+These dependencies were chosen for their security, performance, and reliability in cryptographic operations.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
 ## License
 
-MIT
+MIT - See LICENSE.md for details
