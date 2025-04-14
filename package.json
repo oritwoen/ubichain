@@ -30,6 +30,8 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
