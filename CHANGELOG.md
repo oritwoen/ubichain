@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.1...v0.1.2)
+
+### 🩹 Fixes
+
+- Correct main and module fields in package.json for proper module resolution ([11d0df8](https://github.com/oritwoen/ubichain/commit/11d0df8))
+
+### 💅 Refactors
+
+- Enhance blockchain interface and validation methods for improved type safety ([f646ec7](https://github.com/oritwoen/ubichain/commit/f646ec7))
+- Simplify address prefix handling and improve variable naming in Cardano implementation ([eebd052](https://github.com/oritwoen/ubichain/commit/eebd052))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.1.1
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.0...v0.1.1)

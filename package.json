@@ -1,6 +1,6 @@
 {
   "name": "ubichain",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
   "repository": {
     "type": "git",
