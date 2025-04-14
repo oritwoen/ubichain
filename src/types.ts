@@ -4,6 +4,11 @@
 export type Curve = 'ed25519' | 'secp256k1';
 
 /**
+ * Common address formats for various blockchains
+ */
+export type AddressFormat = string;
+
+/**
  * Represents a pair of cryptographic keys
  */
 export interface Keys {
@@ -30,8 +35,23 @@ export interface Wallet extends Keys {
   /**
    * Blockchain address derived from the public key
    */
-  address: string;
+  address: AddressFormat;
 }
+
+/**
+ * Bitcoin address types
+ */
+export type BitcoinAddressType = 'legacy' | 'p2sh' | 'segwit' | 'p2wsh' | 'taproot';
+
+/**
+ * Cardano address types
+ */
+export type CardanoAddressType = 'payment' | 'stake' | 'enterprise';
+
+/**
+ * All blockchain address types
+ */
+export type AddressType = BitcoinAddressType | CardanoAddressType | string;
 
 /**
  * Specific options for key derivation
@@ -44,17 +64,22 @@ export interface KeyOptions {
 }
 
 /**
+ * Network type
+ */
+export type NetworkType = 'mainnet' | 'testnet' | string;
+
+/**
  * Common blockchain options interface
  */
 export interface Options {
-  network?: 'mainnet' | 'testnet' | string;
+  network?: NetworkType;
   // Add more common options as needed
 }
 
 /**
- * Unified blockchain interface that allows you to generate keys or addresses
+ * Base blockchain implementation interface
  */
-export interface Blockchain {
+export interface BlockchainImplementation {
   /**
    * The name of the blockchain.
    */
@@ -72,12 +97,6 @@ export interface Blockchain {
   network?: string;
   
   /**
-   * Generates a cryptographically secure random private key
-   * Common implementation for all blockchains - 32 bytes (256 bits)
-   */
-  generateKeyPrivate: () => string;
-  
-  /**
    * Gets a public key derived from a private key
    */
   getKeyPublic: (keyPrivate: string, options?: KeyOptions) => string;
@@ -91,6 +110,17 @@ export interface Blockchain {
    * Validates a blockchain address
    */
   validateAddress?: (address: string) => boolean;
+}
+
+/**
+ * Unified blockchain interface that allows you to generate keys or addresses
+ */
+export interface Blockchain extends BlockchainImplementation {
+  /**
+   * Generates a cryptographically secure random private key
+   * Common implementation for all blockchains - 32 bytes (256 bits)
+   */
+  generateKeyPrivate: () => string;
   
   /**
    * Generates a key pair (private and public keys)

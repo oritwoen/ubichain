@@ -1,7 +1,7 @@
 import { base58 } from '@scure/base'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
-import type { Curve, Options } from '../types'
+import type { Curve, Options, BlockchainImplementation } from '../types'
 
 /**
  * Solana blockchain implementation
@@ -56,5 +56,5 @@ export default function solana(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
-  }
+  } satisfies BlockchainImplementation;
 }

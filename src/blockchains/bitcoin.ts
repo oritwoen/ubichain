@@ -4,7 +4,16 @@ import {
   generateAddressP2SH, validateAddressP2SH,
   generateAddressSegWit, validateAddressSegWit
 } from '../utils/address'
-import type { Curve, Options } from '../types'
+import type { Curve, Options, BlockchainImplementation } from '../types'
+
+// Define network parameters interface
+type NetworkParams = {
+  hrpSegWit: string;
+  prefixSegWitV0: string;
+  prefixSegWitV1: string;
+  bytesVersionP2PKH: number;
+  bytesVersionP2SH: number;
+};
 
 export default function bitcoin (options?: Options) {
   const name = "bitcoin";
@@ -12,7 +21,7 @@ export default function bitcoin (options?: Options) {
   const network = options?.network || 'mainnet';
   
   // Network-specific parameters for address generation and validation
-  const networkParams = {
+  const networkParams: Record<string, NetworkParams> = {
     mainnet: {
       hrpSegWit: 'bc',
       prefixSegWitV0: 'bc1q',
@@ -132,5 +141,5 @@ export default function bitcoin (options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
-  }
+  } satisfies BlockchainImplementation;
 }

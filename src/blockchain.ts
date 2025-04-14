@@ -1,5 +1,5 @@
-import type { Blockchain, Keys, Wallet, KeyOptions } from "./types"
-import { randomBytes } from 'node:crypto'
+import type { Blockchain, BlockchainImplementation, Keys, Wallet, KeyOptions, AddressType } from "./types"
+import { webcrypto } from 'node:crypto'
 import { bytesToHex } from '@noble/hashes/utils'
 
 /**
@@ -10,22 +10,15 @@ import { bytesToHex } from '@noble/hashes/utils'
  * @param blockchain - The blockchain implementation with the basic required functions.
  * @returns The complete blockchain interface that allows cryptocurrency operations.
  */
-export function useBlockchain(blockchain: {
-  name: string;
-  curve: Blockchain['curve'];
-  network?: string;
-  getKeyPublic: NonNullable<Blockchain['getKeyPublic']>;
-  getAddress: NonNullable<Blockchain['getAddress']>;
-  validateAddress?: Blockchain['validateAddress'];
-}): Blockchain {
+export function useBlockchain(blockchain: BlockchainImplementation): Blockchain {
   /**
    * Generates a cryptographically secure random private key
    * Common implementation for all blockchains - 32 bytes (256 bits) 
    * represented as a 64-character hex string
    */
   function generateKeyPrivate(): string {
-    // Generate 32 bytes (256 bits) of random data
-    const keyPrivateBytes = randomBytes(32)
+    // Generate 32 bytes (256 bits) of random data using Web Crypto API
+    const keyPrivateBytes = webcrypto.getRandomValues(new Uint8Array(32))
     
     // Convert to hex string
     return bytesToHex(keyPrivateBytes)
@@ -58,7 +51,7 @@ export function useBlockchain(blockchain: {
    * @param addressType - Optional address type for blockchains with multiple address formats
    * @returns A complete wallet with keys and address
    */
-  function generateWallet(options?: KeyOptions, addressType?: string): Wallet {
+  function generateWallet(options?: KeyOptions, addressType?: AddressType): Wallet {
     const keys = generateKeys(options)
     const address = blockchain.getAddress(keys.keys.public, addressType)
     
@@ -84,5 +77,5 @@ export function useBlockchain(blockchain: {
     response.validateAddress = blockchain.validateAddress
   }
 
-  return response
+  return response satisfies Blockchain
 }

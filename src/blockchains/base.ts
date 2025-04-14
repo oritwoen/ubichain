@@ -1,5 +1,5 @@
 import { createEVMBlockchain } from '../utils/evm'
-import type { Options } from '../types'
+import type { Options, BlockchainImplementation } from '../types'
 
 /**
  * Base blockchain implementation
@@ -11,5 +11,5 @@ import type { Options } from '../types'
  * @returns An object implementing the Blockchain interface for Base
  */
 export default function base(options?: Options) {
-  return createEVMBlockchain("base", options)
+  return createEVMBlockchain("base", options) satisfies BlockchainImplementation;
 }

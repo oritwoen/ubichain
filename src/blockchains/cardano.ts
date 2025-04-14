@@ -2,7 +2,7 @@ import { blake2b } from '@noble/hashes/blake2b'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { base58 } from '@scure/base'
-import type { Curve, KeyOptions, Options } from '../types'
+import type { Curve, KeyOptions, Options, BlockchainImplementation } from '../types'
 
 export default function cardano(options?: Options) {
   const name = "cardano";
@@ -165,5 +165,5 @@ export default function cardano(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
-  };
+  } satisfies BlockchainImplementation;
 }

@@ -3,7 +3,7 @@ import { hexToBytes } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
 import { addSchemeByte } from '../utils/address'
 import { encodeBase58Check, validateBase58Check } from '../utils/encoding'
-import type { Curve, Options } from '../types'
+import type { Curve, Options, BlockchainImplementation } from '../types'
 
 /**
  * Tron blockchain implementation
@@ -18,7 +18,12 @@ export default function tron(options?: Options) {
   const network = options?.network || 'mainnet';
   
   // Network-specific parameters for address generation and validation
-  const networkParams = {
+  type NetworkParams = {
+    prefixByte: number;
+    prefixChar: string;
+  };
+
+  const networkParams: Record<string, NetworkParams> = {
     mainnet: {
       prefixByte: 0x41, // 65 in decimal, mainnet addresses start with 'T'
       prefixChar: 'T'
@@ -79,5 +84,5 @@ export default function tron(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
-  }
+  } satisfies BlockchainImplementation;
 }

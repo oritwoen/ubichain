@@ -2,6 +2,7 @@ import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
 import { secp256k1 } from '@noble/curves/secp256k1'
 import { generateKeyPublic as getSecp256k1KeyPublic } from './secp256k1'
+import type { BlockchainImplementation } from '../types'
 
 /**
  * Generate an EVM compatible address from a public key
@@ -119,7 +120,7 @@ export function validateAddress(address: string): boolean {
  * @param options - Optional configuration parameters
  * @returns An object implementing the Blockchain interface for EVM chains
  */
-export function createEVMBlockchain(name: string, options?: { network?: string }) {
+export function createEVMBlockchain(name: string, options?: { network?: string }): BlockchainImplementation {
   const network = options?.network || 'mainnet';
   
   return {

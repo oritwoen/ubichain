@@ -2,7 +2,7 @@ import { sha3_256 } from '@noble/hashes/sha3'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
 import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
-import type { Curve, Options } from '../types'
+import type { Curve, Options, BlockchainImplementation } from '../types'
 
 /**
  * Aptos blockchain implementation
@@ -65,5 +65,5 @@ export default function aptos(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
-  }
+  } satisfies BlockchainImplementation;
 }

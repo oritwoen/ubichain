@@ -3,7 +3,7 @@ import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { generateKeyPublic as getSecp256k1KeyPublic } from '../utils/secp256k1'
 import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
-import type { Curve, Options } from '../types'
+import type { Curve, Options, BlockchainImplementation } from '../types'
 
 /**
  * Sui blockchain implementation
@@ -100,5 +100,5 @@ export default function sui(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
-  }
+  } satisfies BlockchainImplementation;
 }
