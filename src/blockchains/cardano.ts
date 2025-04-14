@@ -2,13 +2,14 @@ import { blake2b } from '@noble/hashes/blake2b'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { base58 } from '@scure/base'
-import type { Curve, KeyOptions } from '../types'
+import type { Curve, KeyOptions, Options } from '../types'
 
-export default function cardano() {
+export default function cardano(options?: Options) {
   const name = "cardano";
   const curve: Curve = "ed25519";
+  const network = options?.network || 'mainnet';
   
-  // Cardano network constants (keep for future use)
+  // Cardano network constants
   const _NETWORK = {
     MAINNET: 1,
     TESTNET: 0
@@ -18,8 +19,7 @@ export default function cardano() {
   const ADDRESS_TYPE = {
     PAYMENT: 'payment',
     STAKE: 'stake',
-    ENTERPRISE: 'enterprise',
-    TESTNET: 'testnet'
+    ENTERPRISE: 'enterprise'
   };
 
   /**
@@ -63,23 +63,39 @@ export default function cardano() {
     // Create different address types with prefixes
     let prefix = '';
     
-    switch (type) {
-      case ADDRESS_TYPE.STAKE: {
-        prefix = 'stake1';
-        break;
+    // Determine prefix based on network and address type
+    if (network === 'testnet') {
+      switch (type) {
+        case ADDRESS_TYPE.STAKE: {
+          prefix = 'stake_test1';
+          break;
+        }
+        case ADDRESS_TYPE.ENTERPRISE: {
+          prefix = 'addr_test1e';
+          break;
+        }
+        default: {
+          // Default base payment address for testnet
+          prefix = 'addr_test1';
+          break;
+        }
       }
-      case ADDRESS_TYPE.TESTNET: {
-        prefix = 'addr_test1';
-        break;
-      }
-      case ADDRESS_TYPE.ENTERPRISE: {
-        prefix = 'addr1e';
-        break;
-      }
-      default: {
-        // Default base payment address
-        prefix = 'addr1';
-        break;
+    } else {
+      // Mainnet prefixes
+      switch (type) {
+        case ADDRESS_TYPE.STAKE: {
+          prefix = 'stake1';
+          break;
+        }
+        case ADDRESS_TYPE.ENTERPRISE: {
+          prefix = 'addr1e';
+          break;
+        }
+        default: {
+          // Default base payment address for mainnet
+          prefix = 'addr1';
+          break;
+        }
       }
     }
     
@@ -98,10 +114,14 @@ export default function cardano() {
    * @returns Whether the address format is valid
    */
   function validateAddress(address: string): boolean {
-    // List of valid prefixes
-    const validPrefixes = ['addr1', 'addr_test1', 'stake1', 'stake_test1', 'addr1e'];
+    // List of valid prefixes based on network
+    const mainnetPrefixes = ['addr1', 'addr1e', 'stake1'];
+    const testnetPrefixes = ['addr_test1', 'addr_test1e', 'stake_test1'];
     
-    // Check if address starts with a valid prefix
+    // Choose valid prefixes based on current network
+    const validPrefixes = network === 'testnet' ? testnetPrefixes : mainnetPrefixes;
+    
+    // Check if address starts with a valid prefix for the current network
     if (!validPrefixes.some(prefix => address.startsWith(prefix))) {
       return false;
     }
@@ -115,6 +135,8 @@ export default function cardano() {
       base58Part = address.slice(5);
     } else if (address.startsWith('stake1')) {
       base58Part = address.slice(6);
+    } else if (address.startsWith('addr_test1e')) {
+      base58Part = address.slice(11);
     } else if (address.startsWith('addr_test1')) {
       base58Part = address.slice(10);
     } else if (address.startsWith('stake_test1')) {
@@ -139,6 +161,7 @@ export default function cardano() {
   return {
     name,
     curve,
+    network,
     getKeyPublic,
     getAddress,
     validateAddress,

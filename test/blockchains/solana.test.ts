@@ -1,9 +1,11 @@
 import { expect, describe, it } from 'vitest'
 import solana from '../../src/blockchains/solana'
 import { useBlockchain } from '../../src/blockchain'
+import type { Options } from '../../src/types'
 
 describe('Solana Blockchain', () => {
-  const blockchain = useBlockchain(solana())
+  describe('Mainnet', () => {
+    const blockchain = useBlockchain(solana())
   
   // Test private key generation
   it('generates a valid private key', () => {
@@ -46,5 +48,46 @@ describe('Solana Blockchain', () => {
     expect(blockchain.validateAddress?.('not-a-valid-address')).toBe(false)
     expect(blockchain.validateAddress?.('1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2')).toBe(false) // Bitcoin address
     expect(blockchain.validateAddress?.('')).toBe(false)
+  })
+  })
+  
+  describe('Testnet', () => {
+    const options: Options = { network: 'testnet' };
+    const testnetBlockchain = useBlockchain(solana(options));
+    
+    describe('blockchain interface', () => {
+      it('has correct name', () => {
+        expect(testnetBlockchain.name).toBe('solana')
+      })
+      
+      it('uses Ed25519 curve', () => {
+        expect(testnetBlockchain.curve).toBe('ed25519')
+      })
+      
+      it('has network property set to testnet', () => {
+        expect(testnetBlockchain.network).toBe('testnet')
+      })
+    })
+    
+    describe('address generation', () => {
+      it('generates identical addresses for testnet and mainnet', () => {
+        // Solana uses the same address format for both networks
+        const mainnetBlockchain = useBlockchain(solana())
+        const keyPrivate = '0000000000000000000000000000000000000000000000000000000000000001'
+        
+        const testnetPublicKey = testnetBlockchain.getKeyPublic(keyPrivate)
+        const mainnetPublicKey = mainnetBlockchain.getKeyPublic(keyPrivate)
+        
+        // Public keys should be identical
+        expect(testnetPublicKey).toBe(mainnetPublicKey)
+        
+        // Addresses should be identical
+        const testnetAddress = testnetBlockchain.getAddress(testnetPublicKey)
+        const mainnetAddress = mainnetBlockchain.getAddress(mainnetPublicKey)
+        
+        expect(testnetAddress).toBe(mainnetAddress)
+        expect(testnetBlockchain.validateAddress?.(testnetAddress)).toBe(true)
+      })
+    })
   })
 })

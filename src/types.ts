@@ -44,6 +44,14 @@ export interface KeyOptions {
 }
 
 /**
+ * Common blockchain options interface
+ */
+export interface Options {
+  network?: 'mainnet' | 'testnet' | string;
+  // Add more common options as needed
+}
+
+/**
  * Unified blockchain interface that allows you to generate keys or addresses
  */
 export interface Blockchain {
@@ -57,6 +65,11 @@ export interface Blockchain {
    * Some blockchains (like SUI) support multiple curves.
    */
   curve: Curve | Curve[];
+  
+  /**
+   * The network type (mainnet, testnet, etc.).
+   */
+  network?: string;
   
   /**
    * Generates a cryptographically secure random private key

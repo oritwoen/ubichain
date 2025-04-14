@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { useBlockchain } from "../../src";
 import ethereum from "../../src/blockchains/ethereum";
+import type { Options } from "../../src/types";
 
 describe("Ethereum blockchain", () => {
-  const blockchain = useBlockchain(ethereum());
+  describe("Mainnet", () => {
+    const blockchain = useBlockchain(ethereum());
   
   it("should have a name", () => {
     expect(blockchain.name).toBe("ethereum");
@@ -130,6 +132,45 @@ describe("Ethereum blockchain", () => {
       
       // Invalid characters
       expect(blockchain.validateAddress!("0x71C7656EC7ab88b098defB751B7401B5f6d8976Z")).toBe(false);
+    });
+  });
+  });
+  
+  describe("Testnet", () => {
+    const options: Options = { network: 'testnet' };
+    const testnetBlockchain = useBlockchain(ethereum(options));
+    
+    it("should have a name", () => {
+      expect(testnetBlockchain.name).toBe("ethereum");
+    });
+    
+    it("should use secp256k1 curve", () => {
+      expect(testnetBlockchain.curve).toBe("secp256k1");
+    });
+    
+    it("has network property set to testnet", () => {
+      expect(testnetBlockchain.network).toBe("testnet");
+    });
+    
+    describe("Address generation", () => {
+      it("should generate the same addresses for both networks", () => {
+        // EVM addresses are the same regardless of network
+        const mainnetBlockchain = useBlockchain(ethereum());
+        const keyPrivate = "0000000000000000000000000000000000000000000000000000000000000001";
+        
+        const testnetPublicKey = testnetBlockchain.getKeyPublic(keyPrivate);
+        const mainnetPublicKey = mainnetBlockchain.getKeyPublic(keyPrivate);
+        
+        // Public keys should be identical
+        expect(testnetPublicKey).toBe(mainnetPublicKey);
+        
+        // Addresses should be identical
+        const testnetAddress = testnetBlockchain.getAddress(testnetPublicKey);
+        const mainnetAddress = mainnetBlockchain.getAddress(mainnetPublicKey);
+        
+        expect(testnetAddress).toBe(mainnetAddress);
+        expect(testnetBlockchain.validateAddress!(testnetAddress)).toBe(true);
+      });
     });
   });
 });

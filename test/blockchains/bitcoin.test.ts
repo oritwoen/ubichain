@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { useBlockchain } from "../../src";
 import bitcoin from "../../src/blockchains/bitcoin";
+import type { Options } from "../../src/types";
 
 describe("Bitcoin blockchain", () => {
   const blockchain = useBlockchain(bitcoin());
@@ -251,6 +252,69 @@ describe("Bitcoin blockchain", () => {
       const invalidAddress = address.slice(0, -1) + 
                             (address.at(-1) === 'a' ? 'b' : 'a');
       expect(blockchain.validateAddress!(invalidAddress)).toBe(false);
+    });
+  });
+  
+  describe("Testnet addresses", () => {
+    // Create bitcoin blockchain with testnet network option
+    const options: Options = { network: 'testnet' };
+    const testnetBlockchain = useBlockchain(bitcoin(options));
+    
+    it("should have a network property set to testnet", () => {
+      expect(testnetBlockchain.network).toBe('testnet');
+    });
+    
+    it("should generate testnet addresses with proper prefixes", () => {
+      const keyPrivate = testnetBlockchain.generateKeyPrivate();
+      const keyPublic = testnetBlockchain.getKeyPublic(keyPrivate);
+      
+      // Generate addresses for different types
+      const legacyAddress = testnetBlockchain.getAddress(keyPublic, 'legacy');
+      const p2shAddress = testnetBlockchain.getAddress(keyPublic, 'p2sh');
+      const segwitAddress = testnetBlockchain.getAddress(keyPublic, 'segwit');
+      const p2wshAddress = testnetBlockchain.getAddress(keyPublic, 'p2wsh');
+      const taprootAddress = testnetBlockchain.getAddress(keyPublic, 'taproot');
+      
+      // Testnet legacy addresses start with 'm' or 'n'
+      expect(legacyAddress.startsWith('m') || legacyAddress.startsWith('n')).toBe(true);
+      
+      // Testnet P2SH addresses start with '2'
+      expect(p2shAddress.startsWith('2')).toBe(true);
+      
+      // Testnet SegWit addresses start with 'tb1'
+      expect(segwitAddress.startsWith('tb1q')).toBe(true);
+      expect(p2wshAddress.startsWith('tb1q')).toBe(true);
+      expect(taprootAddress.startsWith('tb1p')).toBe(true);
+      
+      // All generated addresses should be valid
+      expect(testnetBlockchain.validateAddress!(legacyAddress)).toBe(true);
+      expect(testnetBlockchain.validateAddress!(p2shAddress)).toBe(true);
+      expect(testnetBlockchain.validateAddress!(segwitAddress)).toBe(true);
+      expect(testnetBlockchain.validateAddress!(p2wshAddress)).toBe(true);
+      expect(testnetBlockchain.validateAddress!(taprootAddress)).toBe(true);
+    });
+    
+    it("should validate testnet addresses but reject mainnet addresses", () => {
+      const keyPrivate = testnetBlockchain.generateKeyPrivate();
+      const keyPublic = testnetBlockchain.getKeyPublic(keyPrivate);
+      
+      // Generate a testnet address
+      const testnetAddress = testnetBlockchain.getAddress(keyPublic, 'legacy');
+      
+      // Generate a mainnet address using the same key
+      const mainnetAddress = blockchain.getAddress(keyPublic, 'legacy');
+      
+      // Testnet blockchain should validate testnet address
+      expect(testnetBlockchain.validateAddress!(testnetAddress)).toBe(true);
+      
+      // Testnet blockchain should reject mainnet address
+      expect(testnetBlockchain.validateAddress!(mainnetAddress)).toBe(false);
+      
+      // Mainnet blockchain should validate mainnet address
+      expect(blockchain.validateAddress!(mainnetAddress)).toBe(true);
+      
+      // Mainnet blockchain should reject testnet address
+      expect(blockchain.validateAddress!(testnetAddress)).toBe(false);
     });
   });
 });

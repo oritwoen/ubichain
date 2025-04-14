@@ -26,11 +26,12 @@ A TypeScript library for interacting with various blockchains, providing simple 
 Currently supported blockchains:
 
 - **Bitcoin** (secp256k1)
-  - Legacy addresses (P2PKH) - addresses starting with '1'
-  - P2SH addresses - addresses starting with '3'
-  - SegWit v0 P2WPKH addresses (bech32) - addresses starting with 'bc1q'
-  - SegWit v0 P2WSH addresses (bech32) - addresses starting with 'bc1q'
-  - SegWit v1 addresses (bech32m/Taproot) - addresses starting with 'bc1p'
+  - Legacy addresses (P2PKH) - addresses starting with '1' (mainnet) or 'm'/'n' (testnet)
+  - P2SH addresses - addresses starting with '3' (mainnet) or '2' (testnet)
+  - SegWit v0 P2WPKH addresses (bech32) - addresses starting with 'bc1q' (mainnet) or 'tb1q' (testnet)
+  - SegWit v0 P2WSH addresses (bech32) - addresses starting with 'bc1q' (mainnet) or 'tb1q' (testnet)
+  - SegWit v1 addresses (bech32m/Taproot) - addresses starting with 'bc1p' (mainnet) or 'tb1p' (testnet)
+  - Testnet support for all address types
 - **Ethereum** (secp256k1)
   - Standard addresses (Keccak-256 hash of public key)
   - EIP-55 checksum support
@@ -83,7 +84,11 @@ console.log('Solana uses curve:', solanaChain.curve);          // ed25519
 import { useBlockchain } from 'ubichain';
 import bitcoin from 'ubichain/blockchains/bitcoin';
 
+// Mainnet blockchain instance (default)
 const chain = useBlockchain(bitcoin());
+
+// Testnet blockchain instance
+const testnet = useBlockchain(bitcoin({ network: 'testnet' }));
 
 // Generate a single private key
 const privateKey = chain.generateKeyPrivate();
@@ -97,22 +102,33 @@ console.log('Public Key:', publicKey);
 const uncompressedPublicKey = chain.getKeyPublic(privateKey, { compressed: false });
 console.log('Uncompressed Public Key:', uncompressedPublicKey);
 
-// Generate address from public key
+// Generate mainnet addresses
 const address = chain.getAddress(publicKey);
-console.log('Address:', address);
+console.log('Mainnet Legacy Address:', address);
 
-// Generate different types of Bitcoin addresses
+// Generate different types of Bitcoin mainnet addresses
 const p2shAddress = chain.getAddress(publicKey, 'p2sh');
 const p2wshAddress = chain.getAddress(publicKey, 'p2wsh');
 const taprootAddress = chain.getAddress(publicKey, 'taproot');
 
-console.log('P2SH Address:', p2shAddress);
-console.log('P2WSH Address:', p2wshAddress);
-console.log('Taproot Address:', taprootAddress);
+console.log('Mainnet P2SH Address:', p2shAddress);
+console.log('Mainnet P2WSH Address:', p2wshAddress);
+console.log('Mainnet Taproot Address:', taprootAddress);
+
+// Generate testnet addresses
+const testnetAddress = testnet.getAddress(publicKey);
+console.log('Testnet Legacy Address:', testnetAddress);
+
+const testnetSegwit = testnet.getAddress(publicKey, 'segwit');
+console.log('Testnet SegWit Address:', testnetSegwit);
 
 // Validate an address
 const isValid = chain.validateAddress?.(address);
-console.log('Is Valid Address:', isValid);
+console.log('Is Valid Mainnet Address:', isValid);
+
+// Validate testnet address
+const isValidTestnet = testnet.validateAddress?.(testnetAddress);
+console.log('Is Valid Testnet Address:', isValidTestnet);
 ```
 
 ### Generating Key Pairs and Wallets
@@ -225,7 +241,7 @@ pnpm run lint
 - [x] Add SegWit (bech32) address support
 - [x] Add SegWit v1 (bech32m/Taproot) address support
 - [x] Add P2WSH address support
-- [ ] Add Testnet address support
+- [x] Add Testnet address support
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add HD wallet support (BIP32/BIP44)
 - [ ] Add transaction creation and signing

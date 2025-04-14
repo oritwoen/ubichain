@@ -3,11 +3,19 @@ import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { generateKeyPublic as getSecp256k1KeyPublic } from '../utils/secp256k1'
 import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
-import type { Curve } from '../types'
+import type { Curve, Options } from '../types'
 
-export default function sui() {
+/**
+ * Sui blockchain implementation
+ * 
+ * @param options - Optional configuration parameters
+ * @param options.network - Network to use (mainnet, testnet, devnet)
+ * @returns An object implementing the Blockchain interface for Sui
+ */
+export default function sui(options?: Options) {
   const name = "sui";
   const curve: Curve[] = ["ed25519", "secp256k1"];
+  const network = options?.network || 'mainnet';
   
   /**
    * Flag bytes for different signature schemes in Sui
@@ -41,10 +49,11 @@ export default function sui() {
   /**
    * Get Sui address from public key
    * Sui address is derived by hashing signature scheme flag + public key bytes using BLAKE2b
+   * The address format is the same for mainnet, testnet, and devnet
    * 
    * @param keyPublic - The public key as a hex string
    * @param scheme - Signature scheme (ed25519, secp256k1)
-   * @returns Sui address (base58 encoded BLAKE2b hash)
+   * @returns Sui address (hex encoded BLAKE2b hash with 0x prefix)
    */
   function getAddress(keyPublic: string, type?: string): string {
     // Convert public key to bytes
@@ -71,6 +80,7 @@ export default function sui() {
    * - Start with '0x'
    * - Are 66 characters long (0x + 64 hex chars)
    * - Contain only valid hex characters
+   * The validation is the same for mainnet, testnet, and devnet
    * 
    * @param address - The address to validate
    * @returns Whether the address is valid
@@ -86,6 +96,7 @@ export default function sui() {
   return {
     name,
     curve,
+    network,
     getKeyPublic,
     getAddress,
     validateAddress,

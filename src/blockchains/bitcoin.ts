@@ -4,92 +4,131 @@ import {
   generateAddressP2SH, validateAddressP2SH,
   generateAddressSegWit, validateAddressSegWit
 } from '../utils/address'
-import type { Curve } from '../types'
+import type { Curve, Options } from '../types'
 
-export default function bitcoin () {
+export default function bitcoin (options?: Options) {
   const name = "bitcoin";
   const curve: Curve = "secp256k1";
+  const network = options?.network || 'mainnet';
+  
+  // Network-specific parameters for address generation and validation
+  const networkParams = {
+    mainnet: {
+      hrpSegWit: 'bc',
+      prefixSegWitV0: 'bc1q',
+      prefixSegWitV1: 'bc1p',
+      bytesVersionP2PKH: 0x00,
+      bytesVersionP2SH: 0x05
+    },
+    testnet: {
+      hrpSegWit: 'tb',
+      prefixSegWitV0: 'tb1q',
+      prefixSegWitV1: 'tb1p',
+      bytesVersionP2PKH: 0x6f, // 111 in decimal
+      bytesVersionP2SH: 0xc4    // 196 in decimal
+    }
+  };
+  
+  // Get parameters for the current network
+  const params = network === 'testnet' ? networkParams.testnet : networkParams.mainnet;
   
   /**
    * Get Bitcoin address from public key
    * Supports following formats:
-   * - 'legacy' (P2PKH) - addresses starting with '1'
-   * - 'p2sh' - addresses starting with '3'
-   * - 'segwit' - addresses starting with 'bc1q' with short data (bech32, v0, P2WPKH)
-   * - 'p2wsh' - addresses starting with 'bc1q' with longer data (bech32, v0, P2WSH)
-   * - 'taproot' - addresses starting with 'bc1p' (bech32m, v1, Taproot)
+   * - 'legacy' (P2PKH) - addresses starting with '1' (mainnet) or 'm'/'n' (testnet)
+   * - 'p2sh' - addresses starting with '3' (mainnet) or '2' (testnet)
+   * - 'segwit' - addresses starting with 'bc1q' (mainnet) or 'tb1q' (testnet) with short data (P2WPKH)
+   * - 'p2wsh' - addresses starting with 'bc1q' (mainnet) or 'tb1q' (testnet) with longer data (P2WSH)
+   * - 'taproot' - addresses starting with 'bc1p' (mainnet) or 'tb1p' (testnet) (SegWit v1)
    * 
    * @param keyPublic - The public key as a hex string
    * @param type - Address type (legacy, p2sh, segwit, p2wsh, or taproot)
    * @returns Bitcoin address
    */
-  function getAddress(keyPublic: string, type?: string): string {
-    // Check for taproot address type (SegWit v1, bech32m)
-    if (type === 'taproot') {
-      // Bitcoin mainnet bech32m prefix is 'bc' and witness version is 1
-      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 1 })
+  function getAddress(keyPublic: string, type = 'legacy'): string {
+    const addressType = type;
+    
+    // Handle SegWit address types
+    if (['segwit', 'p2wsh', 'taproot'].includes(addressType)) {
+      const segwitOptions = { 
+        hrp: params.hrpSegWit,
+        witnessVersion: addressType === 'taproot' ? 1 : 0
+      };
+      
+      const segwitType = addressType === 'p2wsh' ? 'p2wsh' : 'p2wpkh';
+      return generateAddressSegWit(keyPublic, segwitOptions, segwitType);
     }
     
-    // Check for p2wsh address type (SegWit v0 P2WSH)
-    if (type === 'p2wsh') {
-      // Bitcoin mainnet bech32 prefix is 'bc' and witness version is 0
-      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 0 }, 'p2wsh')
-    }
-    
-    // Check for segwit address type (bech32, v0, P2WPKH)
-    if (type === 'segwit') {
-      // Bitcoin mainnet bech32 prefix is 'bc' and witness version is 0
-      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 0 }, 'p2wpkh')
-    }
-    
-    // Check for p2sh address type
-    if (type === 'p2sh') {
-      // Bitcoin mainnet P2SH version byte is 0x05
-      return generateAddressP2SH(keyPublic, { bytesVersion: 0x05 })
+    // Handle P2SH address type
+    if (addressType === 'p2sh') {
+      return generateAddressP2SH(keyPublic, { 
+        bytesVersion: params.bytesVersionP2SH 
+      });
     }
     
     // Default to legacy (P2PKH)
-    // Bitcoin mainnet P2PKH version byte is 0x00
-    return generateAddressLegacy(keyPublic, { bytesVersion: 0x00 })
+    return generateAddressLegacy(keyPublic, { 
+      bytesVersion: params.bytesVersionP2PKH 
+    });
   }
 
   /**
    * Validate a Bitcoin address
    * Supports:
-   * - Legacy (P2PKH) addresses starting with '1'
-   * - P2SH addresses starting with '3'
-   * - SegWit v0 P2WPKH (bech32) addresses starting with 'bc1q' (20-byte program)
-   * - SegWit v0 P2WSH (bech32) addresses starting with 'bc1q' (32-byte program)
-   * - SegWit v1 (bech32m) addresses starting with 'bc1p' (Taproot)
+   * - Legacy (P2PKH) addresses starting with '1' (mainnet) or 'm'/'n' (testnet)
+   * - P2SH addresses starting with '3' (mainnet) or '2' (testnet)
+   * - SegWit v0 P2WPKH (bech32) addresses starting with 'bc1q' (mainnet) or 'tb1q' (testnet) with 20-byte program
+   * - SegWit v0 P2WSH (bech32) addresses starting with 'bc1q' (mainnet) or 'tb1q' (testnet) with 32-byte program
+   * - SegWit v1 (bech32m) addresses starting with 'bc1p' (mainnet) or 'tb1p' (testnet) (Taproot)
    * 
    * @param address - The address to validate
    * @returns Whether the address is valid
    */
   function validateAddress(address: string): boolean {
-    // Check for SegWit address
-    if (address.startsWith('bc1')) {
-      // Taproot addresses typically start with 'bc1p' (specific to witness v1)
-      if (address.startsWith('bc1p')) {
-        return validateAddressSegWit(address, { hrp: 'bc', witnessVersion: 1 })
+    // Check for SegWit addresses
+    const hrpSegWit = params.hrpSegWit;
+    const segwitPrefix = hrpSegWit + '1';
+    
+    if (address.startsWith(segwitPrefix)) {
+      const prefixV1 = params.prefixSegWitV1;
+      
+      // Check for Taproot address (witness version 1)
+      if (address.startsWith(prefixV1)) {
+        return validateAddressSegWit(address, { hrp: hrpSegWit, witnessVersion: 1 });
       }
-      // Handle typical v0 SegWit addresses (bech32)
-      return validateAddressSegWit(address, { hrp: 'bc', witnessVersion: 0 })
+      
+      // Handle SegWit v0 addresses (bech32)
+      return validateAddressSegWit(address, { hrp: hrpSegWit, witnessVersion: 0 });
     }
     
-    // Check for P2SH address
-    if (address.startsWith('3')) {
-      // Bitcoin mainnet P2SH version byte is 0x05
-      return validateAddressP2SH(address, { bytesVersion: 0x05 })
+    // For mainnet, look for '3' prefix for P2SH
+    if (network === 'mainnet' && address.startsWith('3')) {
+      return validateAddressP2SH(address, { bytesVersion: params.bytesVersionP2SH });
     }
     
-    // Default to legacy (P2PKH)
-    // Bitcoin mainnet P2PKH version byte is 0x00
-    return validateAddressLegacy(address, { bytesVersion: 0x00 })
+    // For testnet, look for '2' prefix for P2SH
+    if (network === 'testnet' && address.startsWith('2')) {
+      return validateAddressP2SH(address, { bytesVersion: params.bytesVersionP2SH });
+    }
+    
+    // For mainnet, legacy addresses start with '1'
+    if (network === 'mainnet' && address.startsWith('1')) {
+      return validateAddressLegacy(address, { bytesVersion: params.bytesVersionP2PKH });
+    }
+    
+    // For testnet, legacy addresses start with 'm' or 'n'
+    if (network === 'testnet' && (address.startsWith('m') || address.startsWith('n'))) {
+      return validateAddressLegacy(address, { bytesVersion: params.bytesVersionP2PKH });
+    }
+    
+    // If none of the above, address is invalid for the current network
+    return false;
   }
 
   return {
     name,
     curve,
+    network,
     getKeyPublic,
     getAddress,
     validateAddress,

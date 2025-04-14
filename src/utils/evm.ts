@@ -116,12 +116,16 @@ export function validateAddress(address: string): boolean {
  * Factory function that creates a blockchain implementation for an EVM chain
  * 
  * @param name - The name of the blockchain
+ * @param options - Optional configuration parameters
  * @returns An object implementing the Blockchain interface for EVM chains
  */
-export function createEVMBlockchain(name: string) {
+export function createEVMBlockchain(name: string, options?: { network?: string }) {
+  const network = options?.network || 'mainnet';
+  
   return {
     name,
     curve: "secp256k1" as const,
+    network,
     getKeyPublic: getSecp256k1KeyPublic,
     getAddress: generateAddress,
     validateAddress,

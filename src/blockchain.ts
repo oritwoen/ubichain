@@ -13,6 +13,7 @@ import { bytesToHex } from '@noble/hashes/utils'
 export function useBlockchain(blockchain: {
   name: string;
   curve: Blockchain['curve'];
+  network?: string;
   getKeyPublic: NonNullable<Blockchain['getKeyPublic']>;
   getAddress: NonNullable<Blockchain['getAddress']>;
   validateAddress?: Blockchain['validateAddress'];
@@ -70,6 +71,7 @@ export function useBlockchain(blockchain: {
   const response: Blockchain = {
     name: blockchain.name,
     curve: blockchain.curve,
+    network: blockchain.network,
     generateKeyPrivate,
     getKeyPublic: blockchain.getKeyPublic,
     getAddress: blockchain.getAddress,
