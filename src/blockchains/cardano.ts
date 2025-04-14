@@ -1,5 +1,5 @@
 import { blake2b } from '@noble/hashes/blake2b'
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { base58 } from '@scure/base'
 import type { Curve, KeyOptions } from '../types'
@@ -8,8 +8,8 @@ export default function cardano() {
   const name = "cardano";
   const curve: Curve = "ed25519";
   
-  // Cardano network constants
-  const NETWORK = {
+  // Cardano network constants (keep for future use)
+  const _NETWORK = {
     MAINNET: 1,
     TESTNET: 0
   };
@@ -29,7 +29,7 @@ export default function cardano() {
    * @param options - Optional parameters
    * @returns Public key as hex string
    */
-  function getKeyPublic(keyPrivate: string, options?: KeyOptions): string {
+  function getKeyPublic(keyPrivate: string, _options?: KeyOptions): string {
     return getEd25519KeyPublic(keyPrivate);
   }
   
@@ -63,15 +63,24 @@ export default function cardano() {
     // Create different address types with prefixes
     let prefix = '';
     
-    if (type === ADDRESS_TYPE.STAKE) {
-      prefix = 'stake1';
-    } else if (type === ADDRESS_TYPE.TESTNET) {
-      prefix = 'addr_test1';
-    } else if (type === ADDRESS_TYPE.ENTERPRISE) {
-      prefix = 'addr1e';
-    } else {
-      // Default base payment address
-      prefix = 'addr1';
+    switch (type) {
+      case ADDRESS_TYPE.STAKE: {
+        prefix = 'stake1';
+        break;
+      }
+      case ADDRESS_TYPE.TESTNET: {
+        prefix = 'addr_test1';
+        break;
+      }
+      case ADDRESS_TYPE.ENTERPRISE: {
+        prefix = 'addr1e';
+        break;
+      }
+      default: {
+        // Default base payment address
+        prefix = 'addr1';
+        break;
+      }
     }
     
     // Convert key hash to base58 for shorter addresses that pass validation
@@ -101,15 +110,15 @@ export default function cardano() {
     let base58Part = '';
     
     if (address.startsWith('addr1e')) {
-      base58Part = address.substring(6);
+      base58Part = address.slice(6);
     } else if (address.startsWith('addr1')) {
-      base58Part = address.substring(5);
+      base58Part = address.slice(5);
     } else if (address.startsWith('stake1')) {
-      base58Part = address.substring(6);
+      base58Part = address.slice(6);
     } else if (address.startsWith('addr_test1')) {
-      base58Part = address.substring(10);
+      base58Part = address.slice(10);
     } else if (address.startsWith('stake_test1')) {
-      base58Part = address.substring(11);
+      base58Part = address.slice(11);
     }
     
     // Check if the base58 part is valid and can be decoded
