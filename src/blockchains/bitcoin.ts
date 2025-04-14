@@ -15,11 +15,12 @@ export default function bitcoin () {
    * Supports following formats:
    * - 'legacy' (P2PKH) - addresses starting with '1'
    * - 'p2sh' - addresses starting with '3'
-   * - 'segwit' - addresses starting with 'bc1' with short data (bech32, v0)
+   * - 'segwit' - addresses starting with 'bc1q' with short data (bech32, v0, P2WPKH)
+   * - 'p2wsh' - addresses starting with 'bc1q' with longer data (bech32, v0, P2WSH)
    * - 'taproot' - addresses starting with 'bc1p' (bech32m, v1, Taproot)
    * 
    * @param keyPublic - The public key as a hex string
-   * @param type - Address type (legacy, p2sh, segwit, or taproot)
+   * @param type - Address type (legacy, p2sh, segwit, p2wsh, or taproot)
    * @returns Bitcoin address
    */
   function getAddress(keyPublic: string, type?: string): string {
@@ -29,10 +30,16 @@ export default function bitcoin () {
       return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 1 })
     }
     
-    // Check for segwit address type (bech32, v0)
+    // Check for p2wsh address type (SegWit v0 P2WSH)
+    if (type === 'p2wsh') {
+      // Bitcoin mainnet bech32 prefix is 'bc' and witness version is 0
+      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 0 }, 'p2wsh')
+    }
+    
+    // Check for segwit address type (bech32, v0, P2WPKH)
     if (type === 'segwit') {
       // Bitcoin mainnet bech32 prefix is 'bc' and witness version is 0
-      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 0 })
+      return generateAddressSegWit(keyPublic, { hrp: 'bc', witnessVersion: 0 }, 'p2wpkh')
     }
     
     // Check for p2sh address type
@@ -51,7 +58,8 @@ export default function bitcoin () {
    * Supports:
    * - Legacy (P2PKH) addresses starting with '1'
    * - P2SH addresses starting with '3'
-   * - SegWit v0 (bech32) addresses starting with 'bc1q'
+   * - SegWit v0 P2WPKH (bech32) addresses starting with 'bc1q' (20-byte program)
+   * - SegWit v0 P2WSH (bech32) addresses starting with 'bc1q' (32-byte program)
    * - SegWit v1 (bech32m) addresses starting with 'bc1p' (Taproot)
    * 
    * @param address - The address to validate

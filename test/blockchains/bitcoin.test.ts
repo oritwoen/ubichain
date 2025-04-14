@@ -137,6 +137,25 @@ describe("Bitcoin blockchain", () => {
       expect(blockchain.validateAddress!(address)).toBe(true);
     });
     
+    it("should generate a P2WSH address from a public key", () => {
+      const keyPrivate = blockchain.generateKeyPrivate();
+      const keyPublic = blockchain.getKeyPublic(keyPrivate);
+      const address = blockchain.getAddress(keyPublic, 'p2wsh');
+      
+      // P2WSH address should start with bc1q
+      expect(address.startsWith('bc1q')).toBe(true);
+      
+      // Should be a valid address
+      expect(blockchain.validateAddress!(address)).toBe(true);
+      
+      // P2WSH should be different from P2WPKH for the same key
+      const p2wpkhAddress = blockchain.getAddress(keyPublic, 'segwit');
+      expect(address).not.toBe(p2wpkhAddress);
+      
+      // P2WSH addresses are longer than P2WPKH addresses because they use a 32-byte hash
+      expect(address.length).toBeGreaterThan(p2wpkhAddress.length);
+    });
+    
     it("should validate valid SegWit v0 addresses", () => {
       // Test known valid SegWit addresses
       const validAddresses = [
@@ -162,6 +181,27 @@ describe("Bitcoin blockchain", () => {
       
       for (const address of invalidAddresses) {
         expect(blockchain.validateAddress!(address)).toBe(false);
+      }
+    });
+    
+    it("should generate different P2WPKH and P2WSH addresses from the same key", () => {
+      for (let i = 0; i < 5; i++) {
+        const keyPrivate = blockchain.generateKeyPrivate();
+        const keyPublic = blockchain.getKeyPublic(keyPrivate);
+        
+        const p2wpkhAddress = blockchain.getAddress(keyPublic, 'segwit');
+        const p2wshAddress = blockchain.getAddress(keyPublic, 'p2wsh');
+        
+        // Addresses should be different
+        expect(p2wpkhAddress).not.toBe(p2wshAddress);
+        
+        // Both should be valid
+        expect(blockchain.validateAddress!(p2wpkhAddress)).toBe(true);
+        expect(blockchain.validateAddress!(p2wshAddress)).toBe(true);
+        
+        // Both should start with bc1q (SegWit v0)
+        expect(p2wpkhAddress.startsWith('bc1q')).toBe(true);
+        expect(p2wshAddress.startsWith('bc1q')).toBe(true);
       }
     });
   });

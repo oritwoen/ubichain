@@ -136,16 +136,34 @@ export function validateAddressP2SH(address: string, options: OptionsAddressP2SH
  * Generate SegWit (bech32 or bech32m) address for Bitcoin-like blockchains
  * @param keyPublic - The public key as a hex string
  * @param options - Options for SegWit address generation
+ * @param type - Optional type of SegWit address ('p2wpkh' or 'p2wsh')
  * @returns SegWit address (bech32 or bech32m format, depending on witness version)
  */
-export function generateAddressSegWit(keyPublic: string, options: OptionsAddressSegWit): string {
+export function generateAddressSegWit(
+  keyPublic: string, 
+  options: OptionsAddressSegWit, 
+  type: 'p2wpkh' | 'p2wsh' = 'p2wpkh'
+): string {
   // Convert public key to bytes
   const bytesKeyPublic = hexToBytes(keyPublic)
   
-  // Determine program bytes based on witness version
-  const programBytes = options.witnessVersion === 1
-    ? sha256(bytesKeyPublic) // For Taproot (v1), use SHA256 hash (simplified)
-    : hash160(bytesKeyPublic); // For v0 SegWit, use hash160
+  let programBytes: Uint8Array;
+  
+  if (options.witnessVersion === 1) {
+    // For Taproot (v1), use SHA256 hash (simplified)
+    programBytes = sha256(bytesKeyPublic);
+  } else if (type === 'p2wsh') {
+    // For P2WSH, we hash the script (in this case, a simple pubkey script)
+    const script = new Uint8Array(bytesKeyPublic.length + 2);
+    script[0] = 0x21; // Length of pubkey (33 bytes)
+    script.set(bytesKeyPublic, 1);
+    script[script.length - 1] = 0xac; // OP_CHECKSIG
+    
+    programBytes = sha256(script);
+  } else {
+    // For P2WPKH, use hash160
+    programBytes = hash160(bytesKeyPublic);
+  }
   
   // Convert program bytes to 5-bit words
   const words = options.witnessVersion === 0 

@@ -28,7 +28,8 @@ Currently supported blockchains:
 - **Bitcoin** (secp256k1)
   - Legacy addresses (P2PKH) - addresses starting with '1'
   - P2SH addresses - addresses starting with '3'
-  - SegWit v0 addresses (bech32) - addresses starting with 'bc1q'
+  - SegWit v0 P2WPKH addresses (bech32) - addresses starting with 'bc1q'
+  - SegWit v0 P2WSH addresses (bech32) - addresses starting with 'bc1q'
   - SegWit v1 addresses (bech32m/Taproot) - addresses starting with 'bc1p'
 - **Ethereum** (secp256k1)
   - Standard addresses (Keccak-256 hash of public key)
@@ -100,9 +101,14 @@ console.log('Uncompressed Public Key:', uncompressedPublicKey);
 const address = chain.getAddress(publicKey);
 console.log('Address:', address);
 
-// Generate a different type of address (e.g., Bitcoin P2SH)
+// Generate different types of Bitcoin addresses
 const p2shAddress = chain.getAddress(publicKey, 'p2sh');
+const p2wshAddress = chain.getAddress(publicKey, 'p2wsh');
+const taprootAddress = chain.getAddress(publicKey, 'taproot');
+
 console.log('P2SH Address:', p2shAddress);
+console.log('P2WSH Address:', p2wshAddress);
+console.log('Taproot Address:', taprootAddress);
 
 // Validate an address
 const isValid = chain.validateAddress?.(address);
@@ -218,7 +224,7 @@ pnpm run lint
 - [x] Create hierarchical data model for keys and wallets
 - [x] Add SegWit (bech32) address support
 - [x] Add SegWit v1 (bech32m/Taproot) address support
-- [ ] Add P2WSH address support
+- [x] Add P2WSH address support
 - [ ] Add Testnet address support
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add HD wallet support (BIP32/BIP44)
