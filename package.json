@@ -4,7 +4,7 @@
   "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
   "repository": {
     "type": "git",
-    "url": "https://github.com/oritwoen/ubichain"
+    "url": "git+https://github.com/oritwoen/ubichain.git"
   },
   "homepage": "https://github.com/oritwoen/ubichain",
   "bugs": {
