@@ -56,14 +56,15 @@
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
     "test:types": "tsc --noEmit --skipLibCheck",
     "playground": "tsx",
-    "playground:bip32": "tsx playground/bip32-demo.ts"
+    "playground:bip32": "tsx playground/bip32-demo.ts",
+    "playground:slip10": "tsx playground/slip10-demo.ts"
   },
   "dependencies": {
+    "@noble/curves": "1.8.1",
+    "@noble/hashes": "1.7.1",
     "@scure/base": "1.2.4",
     "@scure/bip32": "1.6.2",
-
-    "@noble/curves": "1.8.1",
-    "@noble/hashes": "1.7.1"
+    "micro-key-producer": "^0.7.5"
   },
   "devDependencies": {
     "@types/node": "22.14.1",

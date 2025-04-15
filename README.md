@@ -24,7 +24,7 @@ A TypeScript library for interacting with various blockchains, providing simple 
 - 💼 **Wallet generation** - generate complete crypto wallets in one step 
 - 🔄 **Consistent API** - uniform interface across all blockchains
 - 🌐 **EVM support** - common implementation for all EVM chains
-- 🌲 **Hierarchical derivation** - BIP32 support for HD wallets
+- 🌲 **Hierarchical derivation** - BIP32 & SLIP-0010 support for HD wallets
 - 🧪 **Playground examples** - ready-to-run code snippets for common tasks
 
 ## Supported Blockchains
@@ -211,7 +211,7 @@ The library is designed to be modular and extensible:
 - **Shared Implementations** - Common code for similar blockchains (e.g., EVM chains)
 - **Type Definitions** - Strong TypeScript typing for all interfaces and data structures
 - **Hierarchical Data Model** - Structured representation of keys and wallets
-- **BIP Standards** - Implementation of BIP32/BIP39/BIP44 standards
+- **HD Wallet Standards** - Implementation of BIP32/SLIP-0010/BIP39/BIP44 standards
 - **Playground Examples** - Ready-to-run code examples showcasing library features
 
 ## Development
@@ -243,6 +243,7 @@ pnpm run lint
 
 # Run playground examples
 pnpm playground:bip32  # Run BIP32 demo
+pnpm playground:slip10 # Run SLIP-0010 demo
 pnpm playground <file> # Run any TypeScript file in playground folder
 ```
 
@@ -258,7 +259,7 @@ pnpm playground <file> # Run any TypeScript file in playground folder
 - [x] Add P2WSH address support
 - [x] Add Testnet address support
 - [x] Add HD wallet support for secp256k1 chains (BIP32)
-- [ ] Add SLIP-0010 support for ed25519 chains (Solana, Aptos, etc.)
+- [x] Add SLIP-0010 support for ed25519 chains (Solana, Aptos, etc.)
 - [ ] Add support for BIP39 mnemonic phrases
 - [ ] Add support for BIP44 derivation paths
 - [ ] Add transaction creation and signing
@@ -273,6 +274,7 @@ This library leverages high-quality, audited cryptographic packages:
 - [@noble/curves](https://github.com/paulmillr/noble-curves) - Audited implementation of elliptic curves
 - [@scure/base](https://github.com/paulmillr/scure-base) - Secure encoding implementations
 - [@scure/bip32](https://github.com/paulmillr/scure-bip32) - Audited implementation of BIP32 HD wallets
+- [micro-key-producer](https://github.com/paulmillr/micro-key-producer) - Cryptographic key generation including SLIP-0010 for ed25519
 
 These dependencies were chosen for their security, performance, and reliability in cryptographic operations.
 
