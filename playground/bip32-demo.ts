@@ -2,13 +2,14 @@ import { HDKey, getMasterKeyFromSeed, deriveHDKey, formatIndex, HARDENED_OFFSET 
 import { hexToBytes } from '@noble/hashes/utils';
 import { sha256 } from '@noble/hashes/sha256';
 
-// Generate a seed from random bytes or use a fixed seed for demonstration
-const getRandomSeed = (): Uint8Array => {
-  // In production, use a secure random source
-  const randomBytes = new Uint8Array(32);
-  crypto.getRandomValues(randomBytes);
-  return randomBytes;
-};
+// Commented out but kept for reference
+// Generate a seed from random bytes
+// const getRandomSeed = (): Uint8Array => {
+//   // In production, use a secure random source
+//   const randomBytes = new Uint8Array(32);
+//   crypto.getRandomValues(randomBytes);
+//   return randomBytes;
+// };
 
 // Use a static seed for reproducible results in this example
 const testSeed = hexToBytes('000102030405060708090a0b0c0d0e0f');

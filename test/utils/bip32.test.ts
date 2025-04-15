@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { HDKey, HARDENED_OFFSET, getMasterKeyFromSeed, getHDKeyFromExtended, deriveHDKey, deriveHDChild, hardenedIndex, isHardenedIndex, formatIndex } from '../../src/utils/bip32';
+import { HARDENED_OFFSET, getMasterKeyFromSeed, getHDKeyFromExtended, deriveHDKey, deriveHDChild, hardenedIndex, isHardenedIndex, formatIndex } from '../../src/utils/bip32';
 import { hexToBytes } from '@noble/hashes/utils';
 
 describe('BIP32 Utils', () => {
@@ -39,8 +39,8 @@ describe('BIP32 Utils', () => {
   });
 
   it('creates hardened index', () => {
-    expect(hardenedIndex(0)).toBe(0x80000000);
-    expect(hardenedIndex(44)).toBe(0x8000002c);
+    expect(hardenedIndex(0)).toBe(0x80_00_00_00);
+    expect(hardenedIndex(44)).toBe(0x80_00_00_2c);
   });
 
   it('checks if index is hardened', () => {

@@ -1,9 +1,8 @@
 import { HDKey } from '@scure/bip32';
-
 export { HDKey };
 
 // BIP32 hardened offset constant
-export const HARDENED_OFFSET = 0x80000000;
+export const HARDENED_OFFSET = 0x80_00_00_00;
 
 /**
  * Creates a BIP32 master key from seed bytes

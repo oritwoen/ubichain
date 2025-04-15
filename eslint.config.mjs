@@ -5,7 +5,7 @@ export default unjs({
     // ignore paths
   ],
   rules: {
-    // rule overrides
+    "unicorn/prefer-export-from": "off"
   },
   markdown: {
     rules: {
