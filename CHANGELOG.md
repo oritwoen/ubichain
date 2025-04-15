@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.1.3
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.2...v0.1.3)
+
+### 🚀 Enhancements
+
+- Add support for P2WSH addresses and update SegWit address generation in Bitcoin implementation ([f7811e3](https://github.com/oritwoen/ubichain/commit/f7811e3))
+- Add network option & testnets to blockchain implementations ([7f0a450](https://github.com/oritwoen/ubichain/commit/7f0a450))
+- Enhance blockchain interface with implementation types and address formats ([eda307a](https://github.com/oritwoen/ubichain/commit/eda307a))
+
+### 🩹 Fixes
+
+- Update repository URL format in package.json to include git protocol ([ee7a5d1](https://github.com/oritwoen/ubichain/commit/ee7a5d1))
+
+### 💅 Refactors
+
+- Update TypeScript configuration for module handling and resolution ([fc0030c](https://github.com/oritwoen/ubichain/commit/fc0030c))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.1.2
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.1...v0.1.2)
