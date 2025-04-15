@@ -6,6 +6,10 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/oritwoen/ubichain/ci.yml?branch=main&color=black)](https://github.com/oritwoen/ubichain/actions)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/ubichain?color=black)](https://bundlephobia.com/package/ubichain)
 
+> [!WARNING]
+> This library is under active development and the API may change significantly between minor versions until reaching 1.0.0.
+> Each release will be documented in the CHANGELOG.md file, but please keep this in mind when integrating the library.
+
 A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets.
 
 ## Features
@@ -20,6 +24,8 @@ A TypeScript library for interacting with various blockchains, providing simple 
 - 💼 **Wallet generation** - generate complete crypto wallets in one step 
 - 🔄 **Consistent API** - uniform interface across all blockchains
 - 🌐 **EVM support** - common implementation for all EVM chains
+- 🌲 **Hierarchical derivation** - BIP32 support for HD wallets
+- 🧪 **Playground examples** - ready-to-run code snippets for common tasks
 
 ## Supported Blockchains
 
@@ -58,6 +64,9 @@ pnpm add ubichain
 ```
 
 ## Usage
+
+> [!TIP] 
+> For detailed example code, check the `playground` folder in the repository
 
 ### Basic Usage
 
@@ -202,6 +211,8 @@ The library is designed to be modular and extensible:
 - **Shared Implementations** - Common code for similar blockchains (e.g., EVM chains)
 - **Type Definitions** - Strong TypeScript typing for all interfaces and data structures
 - **Hierarchical Data Model** - Structured representation of keys and wallets
+- **BIP Standards** - Implementation of BIP32/BIP39/BIP44 standards
+- **Playground Examples** - Ready-to-run code examples showcasing library features
 
 ## Development
 
@@ -229,6 +240,10 @@ pnpm run build
 
 # Lint the code
 pnpm run lint
+
+# Run playground examples
+pnpm playground:bip32  # Run BIP32 demo
+pnpm playground <file> # Run any TypeScript file in playground folder
 ```
 
 ## Roadmap
@@ -242,11 +257,13 @@ pnpm run lint
 - [x] Add SegWit v1 (bech32m/Taproot) address support
 - [x] Add P2WSH address support
 - [x] Add Testnet address support
+- [x] Add HD wallet support for secp256k1 chains (BIP32)
+- [ ] Add SLIP-0010 support for ed25519 chains (Solana, Aptos, etc.)
 - [ ] Add support for BIP39 mnemonic phrases
-- [ ] Add HD wallet support (BIP32/BIP44)
+- [ ] Add support for BIP44 derivation paths
 - [ ] Add transaction creation and signing
 - [ ] Add support for more EVM blockchains (Polygon, Arbitrum, Optimism, etc.)
-- [ ] Add support for additional blockchains (Cardano, Polkadot, etc.)
+- [ ] Add support for additional blockchains (Polkadot, Cosmos, etc.)
 
 ## Security & Dependencies
 
@@ -255,6 +272,7 @@ This library leverages high-quality, audited cryptographic packages:
 - [@noble/hashes](https://github.com/paulmillr/noble-hashes) - Audited, high-performance cryptographic hashing for the web
 - [@noble/curves](https://github.com/paulmillr/noble-curves) - Audited implementation of elliptic curves
 - [@scure/base](https://github.com/paulmillr/scure-base) - Secure encoding implementations
+- [@scure/bip32](https://github.com/paulmillr/scure-bip32) - Audited implementation of BIP32 HD wallets
 
 These dependencies were chosen for their security, performance, and reliability in cryptographic operations.
 

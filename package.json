@@ -54,10 +54,14 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
-    "test:types": "tsc --noEmit --skipLibCheck"
+    "test:types": "tsc --noEmit --skipLibCheck",
+    "playground": "tsx",
+    "playground:bip32": "tsx playground/bip32-demo.ts"
   },
   "dependencies": {
     "@scure/base": "1.2.4",
+    "@scure/bip32": "1.6.2",
+
     "@noble/curves": "1.8.1",
     "@noble/hashes": "1.7.1"
   },
@@ -67,6 +71,7 @@
     "changelogen": "0.6.1",
     "eslint": "9.24.0",
     "eslint-config-unjs": "0.4.2",
+    "tsx": "^4.19.3",
     "typescript": "5.8.2",
     "unbuild": "3.5.0",
     "vitest": "3.1.1"
