@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.3...v0.1.4)
+
+### 🚀 Enhancements
+
+- Add BIP32 support ([d28aabb](https://github.com/oritwoen/ubichain/commit/d28aabb))
+- Implement SLIP-0010 support with new utilities and demo ([0aab41b](https://github.com/oritwoen/ubichain/commit/0aab41b))
+
+### 🩹 Fixes
+
+- Update BIP32 hardened offset constant format and clean up demo code ([e2e3599](https://github.com/oritwoen/ubichain/commit/e2e3599))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.1.3
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.2...v0.1.3)
