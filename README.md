@@ -244,6 +244,7 @@ pnpm run lint
 # Run playground examples
 pnpm playground:bip32  # Run BIP32 demo
 pnpm playground:slip10 # Run SLIP-0010 demo
+pnpm playground:bip39  # Run BIP39 demo
 pnpm playground <file> # Run any TypeScript file in playground folder
 ```
 
@@ -260,7 +261,7 @@ pnpm playground <file> # Run any TypeScript file in playground folder
 - [x] Add Testnet address support
 - [x] Add HD wallet support for secp256k1 chains (BIP32)
 - [x] Add SLIP-0010 support for ed25519 chains (Solana, Aptos, etc.)
-- [ ] Add support for BIP39 mnemonic phrases
+- [x] Add support for BIP39 mnemonic phrases
 - [ ] Add support for BIP44 derivation paths
 - [ ] Add transaction creation and signing
 - [ ] Add support for more EVM blockchains (Polygon, Arbitrum, Optimism, etc.)
