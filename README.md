@@ -170,6 +170,66 @@ const p2shWallet = bitcoinChain.generateWallet({}, 'p2sh');
 console.log('Bitcoin P2SH Address:', p2shWallet.address); // Starts with '3'
 ```
 
+### Working with Hierarchical Deterministic (HD) Wallets
+
+```typescript
+import { useBlockchain, getBIP44Path, BIP44 } from 'ubichain';
+import bitcoin from 'ubichain/blockchains/bitcoin';
+import ethereum from 'ubichain/blockchains/ethereum';
+import { mnemonicToSeed } from 'ubichain/utils/bip39';
+import { getMasterKeyFromSeed, deriveHDKey } from 'ubichain/utils/bip32';
+
+// Generate a mnemonic phrase (or use your existing one)
+// import { generateMnemonic } from 'ubichain/utils/bip39';
+// const mnemonic = generateMnemonic(); 
+const mnemonic = 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+
+// Convert mnemonic to seed
+const seed = mnemonicToSeed(mnemonic);
+
+// Get master key from seed
+const masterKey = getMasterKeyFromSeed(seed);
+
+// Create blockchain instances
+const bitcoinChain = useBlockchain(bitcoin());
+const ethereumChain = useBlockchain(ethereum());
+
+// Get BIP44 paths for different blockchains
+const bitcoinPath = getBIP44Path(BIP44.BITCOIN);  // m/44'/0'/0'/0/0
+const ethereumPath = getBIP44Path(BIP44.ETHEREUM); // m/44'/60'/0'/0/0
+
+// Derive keys for Bitcoin
+const bitcoinKey = deriveHDKey(masterKey, bitcoinPath);
+const bitcoinPrivateKey = Buffer.from(bitcoinKey.privateKey!).toString('hex');
+console.log('Bitcoin Derived Private Key:', bitcoinPrivateKey);
+
+// Derive keys for Ethereum
+const ethereumKey = deriveHDKey(masterKey, ethereumPath);
+const ethereumPrivateKey = Buffer.from(ethereumKey.privateKey!).toString('hex');
+console.log('Ethereum Derived Private Key:', ethereumPrivateKey);
+
+// Generate wallets from derived private keys
+const bitcoinWallet = bitcoinChain.generateWallet({ privateKey: bitcoinPrivateKey });
+const ethereumWallet = ethereumChain.generateWallet({ privateKey: ethereumPrivateKey });
+
+console.log('Bitcoin Address:', bitcoinWallet.address);
+console.log('Ethereum Address:', ethereumWallet.address);
+
+// For ed25519 curves (like Solana), use SLIP-10 instead of BIP32
+import solana from 'ubichain/blockchains/solana';
+import { getMasterKeyFromSeed as slip10MasterKey, deriveHDKey as slip10Derive } from 'ubichain/utils/slip10';
+
+const solanaChain = useBlockchain(solana());
+const solanaPath = getBIP44Path(BIP44.SOLANA);  // m/44'/501'/0'/0/0
+
+// Derive ed25519 keys using SLIP-10
+const slip10Master = slip10MasterKey(seed);
+const solanaKey = slip10Derive(slip10Master, solanaPath, true);
+const solanaPrivateKey = Buffer.from(solanaKey.privateKey).toString('hex');
+
+console.log('Solana Derived Private Key:', solanaPrivateKey);
+```
+
 ### Working with EVM Blockchains
 
 ```typescript
