@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.5
+
+[compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.4...v0.1.5)
+
+### 🚀 Enhancements
+
+- Add BIP39 support ([4372a7f](https://github.com/oritwoen/ubichain/commit/4372a7f))
+- Add BIP44 support with derivation paths and blockchain integration ([893685c](https://github.com/oritwoen/ubichain/commit/893685c))
+
+### ❤️ Contributors
+
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.1.4
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.3...v0.1.4)
