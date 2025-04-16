@@ -15,6 +15,7 @@ export default function aptos(options?: Options) {
   const name = "aptos";
   const curve: Curve = "ed25519";
   const network = options?.network || 'mainnet';
+  const bip44 = 637; // SLIP-0044 index for Aptos
   
   /**
    * Get Aptos address from public key
@@ -62,6 +63,7 @@ export default function aptos(options?: Options) {
     name,
     curve,
     network,
+    bip44,
     getKeyPublic,
     getAddress,
     validateAddress,

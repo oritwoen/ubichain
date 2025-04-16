@@ -14,6 +14,7 @@ export default function solana(options?: Options) {
   const name = "solana";
   const curve: Curve = "ed25519";
   const network = options?.network || 'mainnet';
+  const bip44 = 501; // SLIP-0044 index for Solana
   
   /**
    * Get Solana address from public key
@@ -53,6 +54,7 @@ export default function solana(options?: Options) {
     name,
     curve,
     network,
+    bip44,
     getKeyPublic,
     getAddress,
     validateAddress,

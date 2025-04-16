@@ -58,7 +58,8 @@
     "playground": "tsx",
     "playground:bip32": "tsx playground/bip32-demo.ts",
     "playground:slip10": "tsx playground/slip10-demo.ts",
-    "playground:bip39": "tsx playground/bip39-demo.ts"
+    "playground:bip39": "tsx playground/bip39-demo.ts",
+    "playground:bip44": "tsx playground/bip44-demo.ts"
   },
   "dependencies": {
     "@noble/curves": "1.8.1",

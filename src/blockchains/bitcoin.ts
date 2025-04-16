@@ -19,6 +19,7 @@ export default function bitcoin (options?: Options) {
   const name = "bitcoin";
   const curve: Curve = "secp256k1";
   const network = options?.network || 'mainnet';
+  const bip44 = 0; // SLIP-0044 index for Bitcoin
   
   // Network-specific parameters for address generation and validation
   const networkParams: Record<string, NetworkParams> = {
@@ -138,6 +139,7 @@ export default function bitcoin (options?: Options) {
     name,
     curve,
     network,
+    bip44,
     getKeyPublic,
     getAddress,
     validateAddress,

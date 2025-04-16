@@ -16,6 +16,7 @@ export default function sui(options?: Options) {
   const name = "sui";
   const curve: Curve[] = ["ed25519", "secp256k1"];
   const network = options?.network || 'mainnet';
+  const bip44 = 784; // SLIP-0044 index for Sui
   
   /**
    * Flag bytes for different signature schemes in Sui
@@ -97,6 +98,7 @@ export default function sui(options?: Options) {
     name,
     curve,
     network,
+    bip44,
     getKeyPublic,
     getAddress,
     validateAddress,

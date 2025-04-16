@@ -8,6 +8,7 @@ export default function cardano(options?: Options) {
   const name = "cardano";
   const curve: Curve = "ed25519";
   const network = options?.network || 'mainnet';
+  const bip44 = 1815; // SLIP-0044 index for Cardano
   
   // Cardano network constants
   const _NETWORK = {
@@ -162,6 +163,7 @@ export default function cardano(options?: Options) {
     name,
     curve,
     network,
+    bip44,
     getKeyPublic,
     getAddress,
     validateAddress,

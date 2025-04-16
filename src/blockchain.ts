@@ -65,6 +65,7 @@ export function useBlockchain(blockchain: BlockchainImplementation): Blockchain 
     name: blockchain.name,
     curve: blockchain.curve,
     network: blockchain.network,
+    bip44: blockchain.bip44,
     generateKeyPrivate,
     getKeyPublic: blockchain.getKeyPublic,
     getAddress: blockchain.getAddress,

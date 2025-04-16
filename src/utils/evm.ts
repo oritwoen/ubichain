@@ -120,13 +120,15 @@ export function validateAddress(address: string): boolean {
  * @param options - Optional configuration parameters
  * @returns An object implementing the Blockchain interface for EVM chains
  */
-export function createEVMBlockchain(name: string, options?: { network?: string }): BlockchainImplementation {
-  const network = options?.network || 'mainnet';
+export function createEVMBlockchain(name: string, options: { network?: string, bip44: number }): BlockchainImplementation {
+  const network = options.network || 'mainnet';
+  const bip44 = options.bip44;
   
   return {
     name,
     curve: "secp256k1" as const,
     network,
+    bip44,
     getKeyPublic: getSecp256k1KeyPublic,
     getAddress: generateAddress,
     validateAddress,

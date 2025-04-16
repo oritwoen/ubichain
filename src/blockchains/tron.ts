@@ -16,6 +16,7 @@ export default function tron(options?: Options) {
   const name = "tron";
   const curve: Curve = "secp256k1";
   const network = options?.network || 'mainnet';
+  const bip44 = 195; // SLIP-0044 index for TRON
   
   // Network-specific parameters for address generation and validation
   type NetworkParams = {
@@ -81,6 +82,7 @@ export default function tron(options?: Options) {
     name,
     curve,
     network,
+    bip44,
     getKeyPublic,
     getAddress,
     validateAddress,

@@ -97,6 +97,12 @@ export interface BlockchainImplementation {
   network?: string;
   
   /**
+   * The BIP44 coin type (SLIP-0044) used for derivation paths.
+   * Each blockchain must have a registered index in SLIP-0044.
+   */
+  bip44: number;
+  
+  /**
    * Gets a public key derived from a private key
    */
   getKeyPublic: (keyPrivate: string, options?: KeyOptions) => string;
