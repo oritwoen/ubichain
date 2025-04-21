@@ -3,7 +3,8 @@ import { hexToBytes } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
 import { addSchemeByte } from '../utils/address'
 import { encodeBase58Check, validateBase58Check } from '../utils/encoding'
-import type { Curve, Options, BlockchainImplementation } from '../types'
+import { evmSignMessage, evmVerifyMessage } from '../utils/evm'
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from '../types'
 
 /**
  * Tron blockchain implementation
@@ -78,6 +79,31 @@ export default function tron(options?: Options) {
     return validateBase58Check(address, params.prefixByte, params.prefixChar)
   }
 
+  /**
+   * Signs a message using secp256k1 for TRON
+   * 
+   * @param message - The message to sign
+   * @param keyPrivate - The private key
+   * @param options - Optional parameters
+   * @returns The signature as a hex string
+   */
+  function signMessage(message: string | Uint8Array, keyPrivate: string, options?: KeyOptions): string {
+    return evmSignMessage(message, keyPrivate, options);
+  }
+
+  /**
+   * Verifies a message signature for TRON
+   * 
+   * @param message - The original message
+   * @param signature - The signature to verify
+   * @param keyPublic - The public key
+   * @param options - Optional parameters
+   * @returns Whether the signature is valid
+   */
+  function verifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, options?: KeyOptions): boolean {
+    return evmVerifyMessage(message, signature, keyPublic, options);
+  }
+
   return {
     name,
     curve,
@@ -86,5 +112,7 @@ export default function tron(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
+    signMessage,
+    verifyMessage
   } satisfies BlockchainImplementation;
 }

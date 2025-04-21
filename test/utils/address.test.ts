@@ -4,9 +4,10 @@ import {
   generateAddressLegacy, validateAddressLegacy,
   generateAddressP2SH, validateAddressP2SH 
 } from "../../src/utils/address";
+import { secp256k1TestVectors } from "../fixtures";
 
 describe("Address utilities", () => {
-  const testPublicKey = "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd";
+  const testPublicKey = secp256k1TestVectors.publicKeyCompressed;
   
   describe("hash160", () => {
     it("should hash data properly", () => {

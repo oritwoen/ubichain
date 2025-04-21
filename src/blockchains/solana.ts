@@ -1,7 +1,9 @@
 import { base58 } from '@scure/base'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
-import type { Curve, Options, BlockchainImplementation } from '../types'
+import { solanaSignMessage, solanaVerifyMessage } from '../utils/ed25519-chains'
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from '../types'
+import { BIP44 } from '../utils/bip44'
 
 /**
  * Solana blockchain implementation
@@ -14,7 +16,7 @@ export default function solana(options?: Options) {
   const name = "solana";
   const curve: Curve = "ed25519";
   const network = options?.network || 'mainnet';
-  const bip44 = 501; // SLIP-0044 index for Solana
+  const bip44 = BIP44.SOLANA;
   
   /**
    * Get Solana address from public key
@@ -50,6 +52,31 @@ export default function solana(options?: Options) {
     }
   }
 
+  /**
+   * Signs a message using Ed25519 for Solana
+   * 
+   * @param message - The message to sign
+   * @param keyPrivate - The private key
+   * @param options - Optional parameters
+   * @returns The signature as a hex string
+   */
+  function signMessage(message: string | Uint8Array, keyPrivate: string, _options?: KeyOptions): string {
+    return solanaSignMessage(message, keyPrivate);
+  }
+
+  /**
+   * Verifies a message signature for Solana
+   * 
+   * @param message - The original message
+   * @param signature - The signature to verify
+   * @param keyPublic - The public key
+   * @param options - Optional parameters
+   * @returns Whether the signature is valid
+   */
+  function verifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, _options?: KeyOptions): boolean {
+    return solanaVerifyMessage(message, signature, keyPublic);
+  }
+
   return {
     name,
     curve,
@@ -58,5 +85,7 @@ export default function solana(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
+    signMessage,
+    verifyMessage
   } satisfies BlockchainImplementation;
 }

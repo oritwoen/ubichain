@@ -70,7 +70,9 @@ export function useBlockchain(blockchain: BlockchainImplementation): Blockchain 
     getKeyPublic: blockchain.getKeyPublic,
     getAddress: blockchain.getAddress,
     generateKeys,
-    generateWallet
+    generateWallet,
+    signMessage: blockchain.signMessage,
+    verifyMessage: blockchain.verifyMessage
   }
   
   // Add address validation if blockchain implements it

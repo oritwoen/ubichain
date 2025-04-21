@@ -4,7 +4,8 @@ import {
   generateAddressP2SH, validateAddressP2SH,
   generateAddressSegWit, validateAddressSegWit
 } from '../utils/address'
-import type { Curve, Options, BlockchainImplementation } from '../types'
+import { evmSignMessage, evmVerifyMessage } from '../utils/evm'
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from '../types'
 
 // Define network parameters interface
 type NetworkParams = {
@@ -135,6 +136,31 @@ export default function bitcoin (options?: Options) {
     return false;
   }
 
+  /**
+   * Signs a message using secp256k1 for Bitcoin
+   * 
+   * @param message - The message to sign
+   * @param keyPrivate - The private key
+   * @param options - Optional parameters
+   * @returns The signature as a hex string
+   */
+  function signMessage(message: string | Uint8Array, keyPrivate: string, options?: KeyOptions): string {
+    return evmSignMessage(message, keyPrivate, options);
+  }
+
+  /**
+   * Verifies a message signature for Bitcoin
+   * 
+   * @param message - The original message
+   * @param signature - The signature to verify
+   * @param keyPublic - The public key
+   * @param options - Optional parameters
+   * @returns Whether the signature is valid
+   */
+  function verifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, options?: KeyOptions): boolean {
+    return evmVerifyMessage(message, signature, keyPublic, options);
+  }
+
   return {
     name,
     curve,
@@ -143,5 +169,7 @@ export default function bitcoin (options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
+    signMessage,
+    verifyMessage
   } satisfies BlockchainImplementation;
 }

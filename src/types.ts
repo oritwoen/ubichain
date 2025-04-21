@@ -116,6 +116,25 @@ export interface BlockchainImplementation {
    * Validates a blockchain address
    */
   validateAddress?: (address: string) => boolean;
+  
+  /**
+   * Signs a message using a private key
+   * @param message - The message to sign (string or Uint8Array)
+   * @param keyPrivate - The private key as a hex string
+   * @param options - Optional parameters for signing
+   * @returns The signature as a hex string
+   */
+  signMessage: (message: string | Uint8Array, keyPrivate: string, options?: KeyOptions) => string;
+  
+  /**
+   * Verifies a message signature
+   * @param message - The original message (string or Uint8Array)
+   * @param signature - The signature as a hex string
+   * @param keyPublic - The public key as a hex string
+   * @param options - Optional parameters for verification
+   * @returns Whether the signature is valid
+   */
+  verifyMessage: (message: string | Uint8Array, signature: string, keyPublic: string, options?: KeyOptions) => boolean;
 }
 
 /**

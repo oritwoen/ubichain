@@ -11,6 +11,13 @@ export {
   getBlockchainPath 
 } from './utils/bip44'
 
+// Export Signing utilities
+export {
+  signMessage,
+  verifyMessage,
+  type SigningOptions
+} from './utils/signing'
+
 export type { 
   Blockchain, 
   BlockchainImplementation, 

@@ -59,7 +59,8 @@
     "playground:bip32": "tsx playground/bip32-demo.ts",
     "playground:slip10": "tsx playground/slip10-demo.ts",
     "playground:bip39": "tsx playground/bip39-demo.ts",
-    "playground:bip44": "tsx playground/bip44-demo.ts"
+    "playground:bip44": "tsx playground/bip44-demo.ts",
+    "playground:signing": "tsx playground/signing-demo.ts"
   },
   "dependencies": {
     "@noble/curves": "1.8.1",
@@ -70,11 +71,13 @@
     "micro-key-producer": "^0.7.5"
   },
   "devDependencies": {
+    "@solana/web3.js": "^1.98.0",
     "@types/node": "22.14.1",
     "@vitest/coverage-v8": "3.1.1",
     "changelogen": "0.6.1",
     "eslint": "9.24.0",
     "eslint-config-unjs": "0.4.2",
+    "ethers": "^6.13.5",
     "tsx": "^4.19.3",
     "typescript": "5.8.2",
     "unbuild": "3.5.0",

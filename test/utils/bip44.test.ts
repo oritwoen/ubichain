@@ -63,17 +63,17 @@ describe('BIP44 Path Parsing', () => {
 
   test('should return null for invalid BIP44 path with wrong purpose', () => {
     const result = parseBIP44Path("m/43'/60'/0'/0/0")
-    expect(result).toBeNull()
+    expect(result).toBeUndefined()
   })
 
   test('should return null for path with wrong structure', () => {
     const result = parseBIP44Path("m/44'/60'/0'/0")
-    expect(result).toBeNull()
+    expect(result).toBeUndefined()
   })
 
   test('should return null when non-hardened path segments are incorrect', () => {
     const result = parseBIP44Path("m/44'/60'/0'/0'/0")
-    expect(result).toBeNull()
+    expect(result).toBeUndefined()
   })
 })
 

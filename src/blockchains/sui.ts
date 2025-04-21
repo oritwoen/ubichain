@@ -3,7 +3,9 @@ import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { generateKeyPublic as getSecp256k1KeyPublic } from '../utils/secp256k1'
 import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
-import type { Curve, Options, BlockchainImplementation } from '../types'
+import { ed25519SignMessage, ed25519VerifyMessage } from '../utils/ed25519-chains'
+import { evmSignMessage, evmVerifyMessage } from '../utils/evm'
+import type { Curve, KeyOptions, Options, BlockchainImplementation } from '../types'
 
 /**
  * Sui blockchain implementation
@@ -35,7 +37,7 @@ export default function sui(options?: Options) {
    * @param scheme - Signature scheme (ed25519, secp256k1)
    * @returns Public key as hex string
    */
-  function getKeyPublic(keyPrivate: string, options?: Record<string, any>): string {
+  function getKeyPublic(keyPrivate: string, options?: KeyOptions): string {
     // Extract scheme from options or use default 'ed25519'
     const scheme = options?.scheme || 'ed25519';
     
@@ -94,6 +96,47 @@ export default function sui(options?: Options) {
     });
   }
 
+  /**
+   * Signs a message using the appropriate algorithm for Sui based on the scheme
+   * 
+   * @param message - The message to sign
+   * @param keyPrivate - The private key
+   * @param options - Optional parameters including scheme
+   * @returns The signature as a hex string
+   */
+  function signMessage(message: string | Uint8Array, keyPrivate: string, options?: KeyOptions): string {
+    // Extract scheme from options or use default 'ed25519'
+    const scheme = options?.scheme || 'ed25519';
+    
+    if (scheme.toLowerCase() === 'secp256k1') {
+      return evmSignMessage(message, keyPrivate, options);
+    }
+    
+    // Default to Ed25519
+    return ed25519SignMessage(message, keyPrivate, options);
+  }
+
+  /**
+   * Verifies a message signature for Sui based on the scheme
+   * 
+   * @param message - The original message
+   * @param signature - The signature to verify
+   * @param keyPublic - The public key
+   * @param options - Optional parameters including scheme
+   * @returns Whether the signature is valid
+   */
+  function verifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, options?: KeyOptions): boolean {
+    // Extract scheme from options or use default 'ed25519'
+    const scheme = options?.scheme || 'ed25519';
+    
+    if (scheme.toLowerCase() === 'secp256k1') {
+      return evmVerifyMessage(message, signature, keyPublic, options);
+    }
+    
+    // Default to Ed25519
+    return ed25519VerifyMessage(message, signature, keyPublic, options);
+  }
+
   return {
     name,
     curve,
@@ -102,5 +145,7 @@ export default function sui(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
+    signMessage,
+    verifyMessage
   } satisfies BlockchainImplementation;
 }

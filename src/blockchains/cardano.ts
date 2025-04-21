@@ -1,6 +1,7 @@
 import { blake2b } from '@noble/hashes/blake2b'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
+import { ed25519SignMessage, ed25519VerifyMessage } from '../utils/ed25519-chains'
 import { base58 } from '@scure/base'
 import type { Curve, KeyOptions, Options, BlockchainImplementation } from '../types'
 
@@ -158,6 +159,31 @@ export default function cardano(options?: Options) {
       return false;
     }
   }
+
+  /**
+   * Signs a message using Ed25519 for Cardano
+   * 
+   * @param message - The message to sign
+   * @param keyPrivate - The private key
+   * @param options - Optional parameters
+   * @returns The signature as a hex string
+   */
+  function signMessage(message: string | Uint8Array, keyPrivate: string, options?: KeyOptions): string {
+    return ed25519SignMessage(message, keyPrivate, options);
+  }
+
+  /**
+   * Verifies a message signature for Cardano
+   * 
+   * @param message - The original message
+   * @param signature - The signature to verify
+   * @param keyPublic - The public key
+   * @param options - Optional parameters
+   * @returns Whether the signature is valid
+   */
+  function verifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, options?: KeyOptions): boolean {
+    return ed25519VerifyMessage(message, signature, keyPublic, options);
+  }
   
   return {
     name,
@@ -167,5 +193,7 @@ export default function cardano(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
+    signMessage,
+    verifyMessage
   } satisfies BlockchainImplementation;
 }

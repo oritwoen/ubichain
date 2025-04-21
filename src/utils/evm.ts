@@ -2,7 +2,8 @@ import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
 import { keccak_256 } from '@noble/hashes/sha3'
 import { secp256k1 } from '@noble/curves/secp256k1'
 import { generateKeyPublic as getSecp256k1KeyPublic } from './secp256k1'
-import type { BlockchainImplementation } from '../types'
+import { signMessage, verifyMessage } from './signing'
+import type { BlockchainImplementation, KeyOptions } from '../types'
 
 /**
  * Generate an EVM compatible address from a public key
@@ -114,6 +115,75 @@ export function validateAddress(address: string): boolean {
 }
 
 /**
+ * Signs a message using secp256k1 for EVM chains
+ * For Ethereum, generally uses the keccak256 hash and a specific preamble
+ * 
+ * @param message - The message to sign
+ * @param keyPrivate - The private key
+ * @param options - Optional parameters
+ * @returns The signature as a hex string
+ */
+export function evmSignMessage(message: string | Uint8Array, keyPrivate: string, options: KeyOptions = {}): string {
+  // A standard EVM message preamble (used by MetaMask and others)
+  const preamble = "\u0019Ethereum Signed Message:\n";
+  
+  // Get the message length
+  const messageBytes = typeof message === 'string' 
+    ? new TextEncoder().encode(message) 
+    : message;
+  
+  // Add preamble with message length
+  const fullMessage = new TextEncoder().encode(preamble + messageBytes.length.toString() + (typeof message === 'string' ? message : bytesToHex(message)));
+  
+  // Use keccak256 for hashing (standard for EVM chains)
+  const hash = keccak_256(fullMessage);
+  
+  // Use the signing utility with secp256k1, but specify to use our pre-hashed message
+  return signMessage(hash, keyPrivate, {
+    curve: 'secp256k1',
+    hash: false, // We already hashed it with keccak256
+    ...options
+  });
+}
+
+/**
+ * Verifies a message signature for EVM chains
+ * 
+ * @param message - The original message
+ * @param signature - The signature to verify
+ * @param keyPublic - The public key
+ * @param options - Optional parameters
+ * @returns Whether the signature is valid
+ */
+export function evmVerifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, options: KeyOptions = {}): boolean {
+  // A standard EVM message preamble (used by MetaMask and others)
+  const preamble = "\u0019Ethereum Signed Message:\n";
+  
+  // Get the message length
+  const messageBytes = typeof message === 'string' 
+    ? new TextEncoder().encode(message) 
+    : message;
+  
+  // Add preamble with message length
+  const fullMessage = new TextEncoder().encode(preamble + messageBytes.length.toString() + (typeof message === 'string' ? message : bytesToHex(message)));
+  
+  // Use keccak256 for hashing (standard for EVM chains)
+  const hash = keccak_256(fullMessage);
+  
+  try {
+    // Use the verification utility with secp256k1, but specify to use our pre-hashed message
+    return verifyMessage(hash, signature, keyPublic, {
+      curve: 'secp256k1',
+      hash: false, // We already hashed it with keccak256
+      ...options
+    });
+  } catch (error) {
+    console.error('EVM verification error:', error);
+    return false;
+  }
+}
+
+/**
  * Factory function that creates a blockchain implementation for an EVM chain
  * 
  * @param name - The name of the blockchain
@@ -132,5 +202,7 @@ export function createEVMBlockchain(name: string, options: { network?: string, b
     getKeyPublic: getSecp256k1KeyPublic,
     getAddress: generateAddress,
     validateAddress,
+    signMessage: evmSignMessage,
+    verifyMessage: evmVerifyMessage
   }
 }

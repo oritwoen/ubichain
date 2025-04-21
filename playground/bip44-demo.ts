@@ -1,4 +1,4 @@
-import { useBlockchain, BIP44, BIP44Change, getBIP44Path, getBlockchainPath } from '../src';
+import { useBlockchain, BIP44Change, getBlockchainPath } from '../src';
 import bitcoin from '../src/blockchains/bitcoin';
 import ethereum from '../src/blockchains/ethereum';
 import solana from '../src/blockchains/solana';
@@ -26,16 +26,16 @@ const chains = [
 
 // Display BIP44 codes for each blockchain
 console.log('BIP44 Coin Types:');
-chains.forEach(chain => {
+for (const chain of chains) {
   console.log(`${chain.name}: ${chain.bip44}`);
-});
+}
 
 // Generate BIP44 paths for different blockchains
 console.log('\nBIP44 Derivation Paths:');
-chains.forEach(chain => {
+for (const chain of chains) {
   const path = getBlockchainPath(chain);
   console.log(`${chain.name}: ${path}`);
-});
+}
 
 // Create paths with different accounts and address indexes
 console.log('\nBIP44 Paths for Bitcoin with different accounts:');
@@ -69,11 +69,11 @@ const slipMasterKey = slip10MasterKey(testSeed);
 console.log('\nMulti-chain wallet from single seed:');
 
 // Derive keys for each blockchain
-chains.forEach(chain => {
+for (const chain of chains) {
   const path = getBlockchainPath(chain);
   if (!path) {
     console.log(`${chain.name}: Path derivation not supported`);
-    return;
+    continue;
   }
 
   try {
@@ -92,4 +92,4 @@ chains.forEach(chain => {
   } catch (error) {
     console.log(`${chain.name}: Error deriving key - ${error.message}`);
   }
-});
+}

@@ -85,10 +85,10 @@ export function parseBIP44Path(path: string): {
   account: number;
   change: number;
   addressIndex: number;
-} | null {
+} | undefined {
   // Check if the path starts with 'm/'
   if (!path.startsWith('m/')) {
-    return null;
+    return undefined;
   }
 
   // Remove 'm/' and split the path
@@ -96,7 +96,7 @@ export function parseBIP44Path(path: string): {
   
   // BIP44 requires exactly 5 segments
   if (segments.length !== 5) {
-    return null;
+    return undefined;
   }
 
   // Parse each segment
@@ -108,22 +108,22 @@ export function parseBIP44Path(path: string): {
 
   // Validate purpose is 44'
   if (purpose !== BIP44_PURPOSE) {
-    return null;
+    return undefined;
   }
 
   // Validate hardened status: purpose, coin_type, account should be hardened
   if (purpose < HARDENED_OFFSET || coinType < HARDENED_OFFSET || account < HARDENED_OFFSET) {
-    return null;
+    return undefined;
   }
 
   // Validate change is 0 or 1 and not hardened
   if (change !== 0 && change !== 1 || change >= HARDENED_OFFSET) {
-    return null;
+    return undefined;
   }
 
   // Validate address index is not hardened
   if (addressIndex >= HARDENED_OFFSET) {
-    return null;
+    return undefined;
   }
 
   return {
@@ -142,13 +142,9 @@ export function parseBIP44Path(path: string): {
  * @returns Parsed number value
  */
 function parseSegment(segment: string): number {
-  if (segment.endsWith("'")) {
-    // Hardened key - add hardened offset
-    return parseInt(segment.slice(0, -1), 10) + HARDENED_OFFSET;
-  } else {
-    // Non-hardened key
-    return parseInt(segment, 10);
-  }
+  return segment.endsWith("'")
+    ? Number.parseInt(segment.slice(0, -1), 10) + HARDENED_OFFSET
+    : Number.parseInt(segment, 10);
 }
 
 /**

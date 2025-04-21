@@ -2,7 +2,8 @@ import { sha3_256 } from '@noble/hashes/sha3'
 import { hexToBytes } from '@noble/hashes/utils'
 import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
 import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'
-import type { Curve, Options, BlockchainImplementation } from '../types'
+import { ed25519SignMessage, ed25519VerifyMessage } from '../utils/ed25519-chains'
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from '../types'
 
 /**
  * Aptos blockchain implementation
@@ -59,6 +60,31 @@ export default function aptos(options?: Options) {
     }
   }
 
+  /**
+   * Signs a message using Ed25519 for Aptos
+   * 
+   * @param message - The message to sign
+   * @param keyPrivate - The private key
+   * @param options - Optional parameters
+   * @returns The signature as a hex string
+   */
+  function signMessage(message: string | Uint8Array, keyPrivate: string, options?: KeyOptions): string {
+    return ed25519SignMessage(message, keyPrivate, options);
+  }
+
+  /**
+   * Verifies a message signature for Aptos
+   * 
+   * @param message - The original message
+   * @param signature - The signature to verify
+   * @param keyPublic - The public key
+   * @param options - Optional parameters
+   * @returns Whether the signature is valid
+   */
+  function verifyMessage(message: string | Uint8Array, signature: string, keyPublic: string, options?: KeyOptions): boolean {
+    return ed25519VerifyMessage(message, signature, keyPublic, options);
+  }
+
   return {
     name,
     curve,
@@ -67,5 +93,7 @@ export default function aptos(options?: Options) {
     getKeyPublic,
     getAddress,
     validateAddress,
+    signMessage,
+    verifyMessage
   } satisfies BlockchainImplementation;
 }
