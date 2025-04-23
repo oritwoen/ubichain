@@ -1,5 +1,6 @@
 export { useBlockchain } from './blockchain'
 
+// Export lazy-loaded blockchain implementations
 export { blockchains } from './_blockchains'
 
 // Export BIP44 utilities
