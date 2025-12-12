@@ -116,43 +116,44 @@ describe('Signing Integration Tests', () => {
     })
     
     it('should verify messages between libraries', () => {
-      // Private key
+      // Use same private key for both libraries
       const privateKeyHex = secp256k1TestVectors.privateKeyWith0x
-      const _privateKeyNoPrefix = privateKeyHex.slice(2)
-      
-      // Create Ethereum instance
+      const privateKeyNoPrefix = privateKeyHex.slice(2)
+
+      // Create Ethereum instance and derive keys from the same private key
       const ethereumBlockchain = useBlockchain(ethereum())
-      const wallet = ethereumBlockchain.generateWallet({ compressed: false })
-      
-      // Message to sign
-      const message = testMessages.medium
-      
-      // Sign using ubichain
-      const ubichainSignature = ethereumBlockchain.signMessage(message, wallet.keys.private)
-      
-      // Create ethers.js wallet
+      const publicKey = ethereumBlockchain.getKeyPublic(privateKeyNoPrefix, { compressed: false })
+      const ubichainAddress = ethereumBlockchain.getAddress(publicKey)
+
+      // Create ethers.js wallet from same private key
       const ethersWallet = new Wallet(privateKeyHex)
-      
-      // Compare addresses
-      const ubichainAddress = wallet.address.toLowerCase()
-      const ethersAddress = ethersWallet.address.toLowerCase()
-      
+      const ethersAddress = ethersWallet.address
+
+      // Addresses MUST match
+      expect(ubichainAddress.toLowerCase()).toBe(ethersAddress.toLowerCase())
+
       console.log('\nEthereum Addresses:')
       console.log(`Ubichain: ${ubichainAddress}`)
       console.log(`Ethers: ${ethersAddress}`)
-      
+
+      // Message to sign
+      const message = testMessages.medium
+
+      // Sign using ubichain
+      const ubichainSignature = ethereumBlockchain.signMessage(message, privateKeyNoPrefix)
+
       // Verify signature using ubichain
       const ubichainVerified = ethereumBlockchain.verifyMessage(
-        message, 
-        ubichainSignature, 
-        wallet.keys.public
+        message,
+        ubichainSignature,
+        publicKey
       )
-      
+
       console.log('\nEthereum Signatures:')
       console.log(`Message: "${message}"`)
       console.log(`Ubichain Signature: ${ubichainSignature}`)
       console.log(`Verification result: ${ubichainVerified}`)
-      
+
       // Check if verification succeeded
       expect(ubichainVerified).toBe(true)
     })
