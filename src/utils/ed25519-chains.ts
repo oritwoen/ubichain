@@ -1,5 +1,5 @@
-import { ed25519 } from '@noble/curves/ed25519'
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { ed25519 } from '@noble/curves/ed25519.js'
+import { hexToBytes, bytesToHex } from '@noble/hashes/utils.js'
 import { signMessage, verifyMessage } from './signing'
 import type { KeyOptions } from '../types'
 

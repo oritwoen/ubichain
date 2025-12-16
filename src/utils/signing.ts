@@ -1,7 +1,7 @@
-import { secp256k1 } from '@noble/curves/secp256k1'
-import { ed25519 } from '@noble/curves/ed25519'
-import { bytesToHex, hexToBytes } from '@noble/hashes/utils'
-import { sha256 } from '@noble/hashes/sha256'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
+import { ed25519 } from '@noble/curves/ed25519.js'
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js'
+import { sha256 } from '@noble/hashes/sha2.js'
 import type { Curve, KeyOptions } from '../types'
 
 export interface SigningOptions extends KeyOptions {
@@ -41,8 +41,9 @@ export function signMessage(
       messageBytes = sha256(messageBytes)
     }
     
+    // In @noble/curves v2, sign() returns Uint8Array directly (compact format)
     const signature = secp256k1.sign(messageBytes, keyPrivateBytes)
-    return signature.toCompactHex()
+    return bytesToHex(signature)
   } 
   else if (curve === 'ed25519') {
     // Ed25519 doesn't typically prehash the message
@@ -88,8 +89,9 @@ export function verifyMessage(
     }
     
     try {
-      const signatureObj = secp256k1.Signature.fromCompact(hexToBytes(signature))
-      return secp256k1.verify(signatureObj, messageBytes, keyPublicBytes)
+      // In @noble/curves v2, verify() accepts Uint8Array signature directly
+      const signatureBytes = hexToBytes(signature)
+      return secp256k1.verify(signatureBytes, messageBytes, keyPublicBytes)
     } catch (error) {
       console.error('Verification error:', error)
       return false

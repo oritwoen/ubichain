@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { HARDENED_OFFSET, getMasterKeyFromSeed, getHDKeyFromExtended, deriveHDKey, deriveHDChild, hardenedIndex, isHardenedIndex, formatIndex } from '../../src/utils/bip32';
-import { hexToBytes } from '@noble/hashes/utils';
+import { hexToBytes } from '@noble/hashes/utils.js';
 
 describe('BIP32 Utils', () => {
   // Vector 1 from BIP32 test vectors

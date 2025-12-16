@@ -1,5 +1,5 @@
-import { blake2b } from '@noble/hashes/blake2b'
-import { hexToBytes } from '@noble/hashes/utils'
+import { blake2b } from '@noble/hashes/blake2.js'
+import { hexToBytes } from '@noble/hashes/utils.js'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { ed25519SignMessage, ed25519VerifyMessage } from '../utils/ed25519-chains'
 import { base58 } from '@scure/base'

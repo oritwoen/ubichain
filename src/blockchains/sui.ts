@@ -1,5 +1,5 @@
-import { blake2b } from '@noble/hashes/blake2b'
-import { hexToBytes } from '@noble/hashes/utils'
+import { blake2b } from '@noble/hashes/blake2.js'
+import { hexToBytes } from '@noble/hashes/utils.js'
 import { generateKeyPublic as getEd25519KeyPublic } from '../utils/ed25519'
 import { generateKeyPublic as getSecp256k1KeyPublic } from '../utils/secp256k1'
 import { validateAddressHex, addSchemeByte, createPrefixedAddress } from '../utils/address'

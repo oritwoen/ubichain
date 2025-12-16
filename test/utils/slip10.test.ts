@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { HARDENED_OFFSET, getMasterKeyFromSeed, deriveHDKey, deriveHDChild, hardenedIndex, isHardenedIndex, formatIndex } from '../../src/utils/slip10';
-import { hexToBytes } from '@noble/hashes/utils';
+import { hexToBytes } from '@noble/hashes/utils.js';
 
 describe('SLIP-0010 Utils', () => {
   // Test vector from SLIP-0010 (ed25519)

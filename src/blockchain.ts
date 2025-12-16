@@ -1,6 +1,6 @@
 import type { Blockchain, BlockchainImplementation, Keys, Wallet, KeyOptions, AddressType } from "./types"
 import { webcrypto } from 'node:crypto'
-import { bytesToHex } from '@noble/hashes/utils'
+import { bytesToHex } from '@noble/hashes/utils.js'
 
 /**
  * Creates and returns an interface using the specified blockchain implementation.

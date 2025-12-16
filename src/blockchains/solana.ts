@@ -1,5 +1,5 @@
 import { base58 } from '@scure/base'
-import { hexToBytes } from '@noble/hashes/utils'
+import { hexToBytes } from '@noble/hashes/utils.js'
 import { generateKeyPublic as getKeyPublic } from '../utils/ed25519'
 import { solanaSignMessage, solanaVerifyMessage } from '../utils/ed25519-chains'
 import type { Curve, Options, BlockchainImplementation, KeyOptions } from '../types'

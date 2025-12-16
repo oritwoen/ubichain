@@ -1,6 +1,6 @@
 import { generateKeyPublic as getKeyPublic } from '../utils/secp256k1'
-import { hexToBytes } from '@noble/hashes/utils'
-import { keccak_256 } from '@noble/hashes/sha3'
+import { hexToBytes } from '@noble/hashes/utils.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { addSchemeByte } from '../utils/address'
 import { encodeBase58Check, validateBase58Check } from '../utils/encoding'
 import { evmSignMessage, evmVerifyMessage } from '../utils/evm'

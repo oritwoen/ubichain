@@ -1,9 +1,8 @@
-import { hexToBytes } from '@noble/hashes/utils'
-import { sha256 } from '@noble/hashes/sha256'
-import { ripemd160 } from '@noble/hashes/ripemd160'
-import { keccak_256 } from '@noble/hashes/sha3'
-import { blake2b } from '@noble/hashes/blake2b'
-import { sha3_256 } from '@noble/hashes/sha3'
+import { hexToBytes } from '@noble/hashes/utils.js'
+import { sha256 } from '@noble/hashes/sha2.js'
+import { ripemd160 } from '@noble/hashes/legacy.js'
+import { keccak_256, sha3_256 } from '@noble/hashes/sha3.js'
+import { blake2b } from '@noble/hashes/blake2.js'
 
 /**
  * Unified hash function types that are commonly used in blockchains

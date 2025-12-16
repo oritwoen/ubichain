@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { signMessage, verifyMessage } from '../../src/utils/signing'
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { hexToBytes, bytesToHex } from '@noble/hashes/utils.js'
 import { evmSignMessage } from '../../src/utils/evm'
 import { ed25519SignMessage, ed25519VerifyMessage } from '../../src/utils/ed25519-chains'
 import { 

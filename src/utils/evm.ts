@@ -1,6 +1,6 @@
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
-import { keccak_256 } from '@noble/hashes/sha3'
-import { secp256k1 } from '@noble/curves/secp256k1'
+import { hexToBytes, bytesToHex } from '@noble/hashes/utils.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
 import { generateKeyPublic as getSecp256k1KeyPublic } from './secp256k1'
 import { signMessage, verifyMessage } from './signing'
 import type { BlockchainImplementation, KeyOptions } from '../types'
@@ -26,8 +26,8 @@ export function generateAddress(keyPublic: string): string {
   if (keyPublicBytes.length === 33) {
     // Compressed format (33 bytes starting with 02 or 03)
     // We need to decompress it manually without trying to regenerate from private key
-    const point = secp256k1.ProjectivePoint.fromHex(keyPublicBytes)
-    const uncompressedKey = point.toRawBytes(false) // false = uncompressed
+    const point = secp256k1.Point.fromBytes(keyPublicBytes)
+    const uncompressedKey = point.toBytes(false) // false = uncompressed
     publicKeyForHashing = uncompressedKey.slice(1) // Remove the 0x04 prefix
   } else if (keyPublicBytes.length === 65) {
     // Already uncompressed (65 bytes starting with 04)
@@ -59,8 +59,8 @@ export function toChecksumAddress(address: string): string {
   // Convert address to lowercase
   const lowercaseAddress = address.toLowerCase()
   
-  // Hash the lowercase address
-  const addressHash = bytesToHex(keccak_256(lowercaseAddress))
+  // Hash the lowercase address (keccak_256 requires Uint8Array in v2)
+  const addressHash = bytesToHex(keccak_256(new TextEncoder().encode(lowercaseAddress)))
   
   // Apply checksum rules - using array for better performance
   const result = Array.from({length: lowercaseAddress.length})

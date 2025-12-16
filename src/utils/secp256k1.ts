@@ -1,6 +1,6 @@
-import { secp256k1 } from '@noble/curves/secp256k1'
-import { bytesToHex, hexToBytes } from '@noble/hashes/utils'
-import { sha256 } from '@noble/hashes/sha256'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js'
+import { sha256 } from '@noble/hashes/sha2.js'
 
 type KeyPublicOptions = {
   compressed?: boolean
@@ -51,11 +51,11 @@ export function signMessage(message: string | Uint8Array, keyPrivate: string, op
     messageBytes = sha256(messageBytes)
   }
   
-  // Sign the message
+  // Sign the message (in @noble/curves v2, returns Uint8Array directly)
   const signature = secp256k1.sign(messageBytes, keyPrivateBytes)
-  
+
   // Return hex string
-  return signature.toCompactHex()
+  return bytesToHex(signature)
 }
 
 /**
@@ -74,23 +74,23 @@ export function verifyMessage(
   options: { hash?: boolean } = {}
 ): boolean {
   const { hash = true } = options
-  
-  // Convert signature from hex string to signature object
-  const signatureObj = secp256k1.Signature.fromCompact(hexToBytes(signature))
-  
+
+  // Convert signature from hex string to Uint8Array (v2 accepts bytes directly)
+  const signatureBytes = hexToBytes(signature)
+
   // Convert public key from hex string to Uint8Array
   const keyPublicBytes = hexToBytes(keyPublic)
-  
+
   // Convert message to Uint8Array if it's a string
-  let messageBytes = typeof message === 'string' 
-    ? new TextEncoder().encode(message) 
+  let messageBytes = typeof message === 'string'
+    ? new TextEncoder().encode(message)
     : message
-  
+
   // Hash the message with SHA-256 if hash option is true
   if (hash) {
     messageBytes = sha256(messageBytes)
   }
-  
+
   // Verify the signature
-  return secp256k1.verify(signatureObj, messageBytes, keyPublicBytes)
+  return secp256k1.verify(signatureBytes, messageBytes, keyPublicBytes)
 }

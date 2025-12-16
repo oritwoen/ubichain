@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { Keypair } from '@solana/web3.js'
 import { SigningKey, Wallet } from 'ethers'
-import { hexToBytes, bytesToHex } from '@noble/hashes/utils'
+import { hexToBytes, bytesToHex } from '@noble/hashes/utils.js'
 import { useBlockchain } from '../../src/blockchain'
 import ethereum from '../../src/blockchains/ethereum'
 import solana from '../../src/blockchains/solana'
-import { ed25519 } from '@noble/curves/ed25519'
+import { ed25519 } from '@noble/curves/ed25519.js'
 import { 
   secp256k1TestVectors, 
   testMessages 

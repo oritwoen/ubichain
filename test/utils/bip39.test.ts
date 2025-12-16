@@ -6,7 +6,7 @@ import {
   mnemonicToEntropy,
   entropyToMnemonic
 } from '../../src/utils/bip39';
-import { hexToBytes } from '@noble/hashes/utils';
+import { hexToBytes } from '@noble/hashes/utils.js';
 import { bip39TestVectors } from '../fixtures';
 
 describe('BIP39 Utils', () => {
