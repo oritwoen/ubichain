@@ -1,86 +1,29 @@
-import type { Options } from './types'
+import type { Options, BlockchainImplementation } from './types'
+
+type BlockchainFactory = (options?: Options) => BlockchainImplementation
+type BlockchainModule = { default: BlockchainFactory }
+
+/**
+ * Creates a lazy-loaded blockchain factory.
+ * The import is deferred until the returned async function is called.
+ */
+function lazy(loader: () => Promise<BlockchainModule>) {
+  return (options?: Options) => async (): Promise<BlockchainImplementation> => {
+    const { default: create } = await loader()
+    return create(options)
+  }
+}
 
 /**
  * Blockchain implementations with lazy loading for improved performance and reduced bundle size
  */
 export const blockchains = {
-  /**
-   * Bitcoin blockchain implementation
-   */
-  bitcoin: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/bitcoin')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Solana blockchain implementation
-   */
-  solana: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/solana')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Aptos blockchain implementation
-   */
-  aptos: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/aptos')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Tron blockchain implementation
-   */
-  tron: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/tron')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Sui blockchain implementation
-   */
-  sui: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/sui')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Ethereum blockchain implementation
-   */
-  ethereum: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/ethereum')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Base blockchain implementation
-   */
-  base: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/base')
-      return impl(options)
-    }
-  },
-
-  /**
-   * Cardano blockchain implementation
-   */
-  cardano: (options?: Options) => {
-    return async () => {
-      const { default: impl } = await import('./blockchains/cardano')
-      return impl(options)
-    }
-  }
+  bitcoin: lazy(() => import('./blockchains/bitcoin')),
+  solana: lazy(() => import('./blockchains/solana')),
+  aptos: lazy(() => import('./blockchains/aptos')),
+  tron: lazy(() => import('./blockchains/tron')),
+  sui: lazy(() => import('./blockchains/sui')),
+  ethereum: lazy(() => import('./blockchains/ethereum')),
+  base: lazy(() => import('./blockchains/base')),
+  cardano: lazy(() => import('./blockchains/cardano')),
 }
