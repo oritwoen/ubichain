@@ -92,14 +92,17 @@ export function verifyMessage(
       // In @noble/curves v2, verify() accepts Uint8Array signature directly
       const signatureBytes = hexToBytes(signature)
       return secp256k1.verify(signatureBytes, messageBytes, keyPublicBytes)
-    } catch (error) {
-      console.error('Verification error:', error)
+    } catch {
       return false
     }
   } 
   else if (curve === 'ed25519') {
     // Ed25519 doesn't typically prehash the message
-    return ed25519.verify(hexToBytes(signature), messageBytes, keyPublicBytes)
+    try {
+      return ed25519.verify(hexToBytes(signature), messageBytes, keyPublicBytes)
+    } catch {
+      return false
+    }
   }
   
   throw new Error(`Unsupported curve: ${curve}`)
