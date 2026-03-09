@@ -1,4 +1,5 @@
 # ubichain
+
 [![npm version](https://img.shields.io/npm/v/ubichain?style=flat&colorA=130f40&colorB=474787)](https://npmjs.com/package/ubichain)
 [![npm downloads](https://img.shields.io/npm/dm/ubichain?style=flat&colorA=130f40&colorB=474787)](https://npm.chart.dev/ubichain)
 [![license](https://img.shields.io/github/license/oritwoen/ubichain?style=flat&colorA=130f40&colorB=474787)](https://github.com/oritwoen/ubichain/blob/main/LICENSE.md)
@@ -30,76 +31,76 @@ Blockchain implementations are lazy-loaded. The double-call pattern `blockchains
 ### Generate a wallet
 
 ```ts
-import { useBlockchain, blockchains } from 'ubichain'
+import { useBlockchain, blockchains } from "ubichain";
 
-const impl = await blockchains.ethereum()()
-const chain = useBlockchain(impl)
+const impl = await blockchains.ethereum()();
+const chain = useBlockchain(impl);
 
-const wallet = chain.generateWallet()
-console.log(wallet.keys.private) // hex private key
-console.log(wallet.keys.public)  // hex public key
-console.log(wallet.address)      // 0x... checksum address
+const wallet = chain.generateWallet();
+console.log(wallet.keys.private); // hex private key
+console.log(wallet.keys.public); // hex public key
+console.log(wallet.address); // 0x... checksum address
 ```
 
 ### Bitcoin address types
 
 ```ts
-import { useBlockchain, blockchains } from 'ubichain'
+import { useBlockchain, blockchains } from "ubichain";
 
-const btc = useBlockchain(await blockchains.bitcoin()())
+const btc = useBlockchain(await blockchains.bitcoin()());
 
-const privateKey = btc.generateKeyPrivate()
-const publicKey = btc.getKeyPublic(privateKey)
+const privateKey = btc.generateKeyPrivate();
+const publicKey = btc.getKeyPublic(privateKey);
 
-btc.getAddress(publicKey)            // legacy (1...)
-btc.getAddress(publicKey, 'segwit')  // native segwit (bc1q...)
-btc.getAddress(publicKey, 'taproot') // taproot (bc1p...)
-btc.getAddress(publicKey, 'p2sh')    // pay-to-script-hash (3...)
-btc.getAddress(publicKey, 'p2wsh')   // witness script hash
+btc.getAddress(publicKey); // legacy (1...)
+btc.getAddress(publicKey, "segwit"); // native segwit (bc1q...)
+btc.getAddress(publicKey, "taproot"); // taproot (bc1p...)
+btc.getAddress(publicKey, "p2sh"); // pay-to-script-hash (3...)
+btc.getAddress(publicKey, "p2wsh"); // witness script hash
 
 // testnet
-const testnet = useBlockchain(await blockchains.bitcoin({ network: 'testnet' })())
-testnet.getAddress(publicKey, 'segwit') // tb1q...
+const testnet = useBlockchain(await blockchains.bitcoin({ network: "testnet" })());
+testnet.getAddress(publicKey, "segwit"); // tb1q...
 ```
 
 ### Sign and verify messages
 
 ```ts
-import { useBlockchain, blockchains } from 'ubichain'
+import { useBlockchain, blockchains } from "ubichain";
 
-const chain = useBlockchain(await blockchains.solana()())
+const chain = useBlockchain(await blockchains.solana()());
 
-const { keys } = chain.generateKeys()
-const signature = chain.signMessage('hello', keys.private)
-const valid = chain.verifyMessage('hello', signature, keys.public) // true
+const { keys } = chain.generateKeys();
+const signature = chain.signMessage("hello", keys.private);
+const valid = chain.verifyMessage("hello", signature, keys.public); // true
 ```
 
 ### EVM chains share addresses
 
 ```ts
-import { useBlockchain, blockchains } from 'ubichain'
+import { useBlockchain, blockchains } from "ubichain";
 
-const eth = useBlockchain(await blockchains.ethereum()())
-const base = useBlockchain(await blockchains.base()())
+const eth = useBlockchain(await blockchains.ethereum()());
+const base = useBlockchain(await blockchains.base()());
 
-const privateKey = eth.generateKeyPrivate()
-const pubKey = eth.getKeyPublic(privateKey)
+const privateKey = eth.generateKeyPrivate();
+const pubKey = eth.getKeyPublic(privateKey);
 
-eth.getAddress(pubKey) === base.getAddress(pubKey) // true
+eth.getAddress(pubKey) === base.getAddress(pubKey); // true
 ```
 
 ## Supported Blockchains
 
-| Chain | Curve | Address Formats | Testnet |
-|-------|-------|-----------------|---------|
-| **Bitcoin** | secp256k1 | legacy, p2sh, segwit, p2wsh, taproot | ✅ |
-| **Ethereum** | secp256k1 | EIP-55 checksum | - |
-| **Base** | secp256k1 | EVM-compatible | - |
-| **Solana** | ed25519 | base58 | - |
-| **Aptos** | ed25519 | 0x-prefixed hex | - |
-| **Cardano** | ed25519 | payment, stake, enterprise | ✅ |
-| **SUI** | ed25519, secp256k1 | 0x-prefixed hex (blake2b) | - |
-| **TRON** | secp256k1 | base58check | ✅ |
+| Chain        | Curve              | Address Formats                      | Testnet |
+| ------------ | ------------------ | ------------------------------------ | ------- |
+| **Bitcoin**  | secp256k1          | legacy, p2sh, segwit, p2wsh, taproot | ✅      |
+| **Ethereum** | secp256k1          | EIP-55 checksum                      | -       |
+| **Base**     | secp256k1          | EVM-compatible                       | -       |
+| **Solana**   | ed25519            | base58                               | -       |
+| **Aptos**    | ed25519            | 0x-prefixed hex                      | -       |
+| **Cardano**  | ed25519            | payment, stake, enterprise           | ✅      |
+| **SUI**      | ed25519, secp256k1 | 0x-prefixed hex (blake2b)            | -       |
+| **TRON**     | secp256k1          | base58check                          | ✅      |
 
 All chains support key generation, address derivation, address validation, and message signing.
 
