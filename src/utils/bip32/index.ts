@@ -1,4 +1,4 @@
-import { HDKey } from '@scure/bip32';
+import { HDKey } from "@scure/bip32";
 export { HDKey };
 
 // BIP32 hardened offset constant
@@ -66,7 +66,5 @@ export function isHardenedIndex(index: number): boolean {
  * @returns Formatted string representation
  */
 export function formatIndex(index: number): string {
-  return isHardenedIndex(index) 
-    ? `${index - HARDENED_OFFSET}'` 
-    : `${index}`;
+  return isHardenedIndex(index) ? `${index - HARDENED_OFFSET}'` : `${index}`;
 }

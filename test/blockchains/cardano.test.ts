@@ -1,234 +1,231 @@
-import { describe, it, expect } from 'vitest'
-import { useBlockchain } from '../../src/blockchain'
-import cardano from '../../src/blockchains/cardano'
-import type { Options } from '../../src/types'
+import { describe, it, expect } from "vitest";
+import { useBlockchain } from "../../src/blockchain";
+import cardano from "../../src/blockchains/cardano";
+import type { Options } from "../../src/types";
 
-describe('Cardano blockchain', () => {
-  describe('Mainnet', () => {
-    const blockchain = useBlockchain(cardano())
+describe("Cardano blockchain", () => {
+  describe("Mainnet", () => {
+    const blockchain = useBlockchain(cardano());
 
     // Ensure validateAddress is defined for TypeScript
     const validateAddress = (address: string): boolean => {
       if (!blockchain.validateAddress) {
-        throw new Error('validateAddress function is not defined')
+        throw new Error("validateAddress function is not defined");
       }
-      return blockchain.validateAddress(address)
-    }
+      return blockchain.validateAddress(address);
+    };
 
-  describe('blockchain interface', () => {
-    it('has correct name', () => {
-      expect(blockchain.name).toBe('cardano')
-    })
+    describe("blockchain interface", () => {
+      it("has correct name", () => {
+        expect(blockchain.name).toBe("cardano");
+      });
 
-    it('uses the Ed25519 curve', () => {
-      expect(blockchain.curve).toBe('ed25519')
-    })
-  })
+      it("uses the Ed25519 curve", () => {
+        expect(blockchain.curve).toBe("ed25519");
+      });
+    });
 
-  describe('generateKeyPrivate', () => {
-    it('generates a 64-character hex private key', () => {
-      const privateKey = blockchain.generateKeyPrivate()
-      expect(privateKey).toMatch(/^[0-9a-f]{64}$/)
-    })
-  })
+    describe("generateKeyPrivate", () => {
+      it("generates a 64-character hex private key", () => {
+        const privateKey = blockchain.generateKeyPrivate();
+        expect(privateKey).toMatch(/^[0-9a-f]{64}$/);
+      });
+    });
 
-  describe('getKeyPublic', () => {
-    it('derives a 64-character hex public key from private key', () => {
-      const privateKey = blockchain.generateKeyPrivate()
-      const publicKey = blockchain.getKeyPublic(privateKey)
-      expect(publicKey).toMatch(/^[0-9a-f]{64}$/)
-    })
+    describe("getKeyPublic", () => {
+      it("derives a 64-character hex public key from private key", () => {
+        const privateKey = blockchain.generateKeyPrivate();
+        const publicKey = blockchain.getKeyPublic(privateKey);
+        expect(publicKey).toMatch(/^[0-9a-f]{64}$/);
+      });
 
-    it('produces deterministic results for the same private key', () => {
-      const privateKey = '0000000000000000000000000000000000000000000000000000000000000001'
-      const publicKey1 = blockchain.getKeyPublic(privateKey)
-      const publicKey2 = blockchain.getKeyPublic(privateKey)
-      expect(publicKey1).toBe(publicKey2)
-    })
-  })
+      it("produces deterministic results for the same private key", () => {
+        const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
+        const publicKey1 = blockchain.getKeyPublic(privateKey);
+        const publicKey2 = blockchain.getKeyPublic(privateKey);
+        expect(publicKey1).toBe(publicKey2);
+      });
+    });
 
-  describe('getAddress', () => {
-    it('generates a valid base address', () => {
-      const privateKey = blockchain.generateKeyPrivate()
-      const publicKey = blockchain.getKeyPublic(privateKey)
-      const address = blockchain.getAddress(publicKey)
+    describe("getAddress", () => {
+      it("generates a valid base address", () => {
+        const privateKey = blockchain.generateKeyPrivate();
+        const publicKey = blockchain.getKeyPublic(privateKey);
+        const address = blockchain.getAddress(publicKey);
 
-      expect(address).toMatch(/^addr1[a-zA-Z0-9]+$/)
-      expect(validateAddress(address)).toBe(true)
-    })
+        expect(address).toMatch(/^addr1[a-zA-Z0-9]+$/);
+        expect(validateAddress(address)).toBe(true);
+      });
 
-    it('generates a valid enterprise address', () => {
-      const privateKey = blockchain.generateKeyPrivate()
-      const publicKey = blockchain.getKeyPublic(privateKey)
-      const address = blockchain.getAddress(publicKey, 'enterprise')
+      it("generates a valid enterprise address", () => {
+        const privateKey = blockchain.generateKeyPrivate();
+        const publicKey = blockchain.getKeyPublic(privateKey);
+        const address = blockchain.getAddress(publicKey, "enterprise");
 
-      expect(address).toMatch(/^addr1e[a-zA-Z0-9]+$/)
-      expect(validateAddress(address)).toBe(true)
-    })
+        expect(address).toMatch(/^addr1e[a-zA-Z0-9]+$/);
+        expect(validateAddress(address)).toBe(true);
+      });
 
-    it('generates a valid reward (stake) address', () => {
-      const privateKey = blockchain.generateKeyPrivate()
-      const publicKey = blockchain.getKeyPublic(privateKey)
-      const address = blockchain.getAddress(publicKey, 'stake')
+      it("generates a valid reward (stake) address", () => {
+        const privateKey = blockchain.generateKeyPrivate();
+        const publicKey = blockchain.getKeyPublic(privateKey);
+        const address = blockchain.getAddress(publicKey, "stake");
 
-      expect(address).toMatch(/^stake1[a-zA-Z0-9]+$/)
-      expect(validateAddress(address)).toBe(true)
-    })
+        expect(address).toMatch(/^stake1[a-zA-Z0-9]+$/);
+        expect(validateAddress(address)).toBe(true);
+      });
 
+      it("produces deterministic results for the same public key", () => {
+        const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
+        const publicKey = blockchain.getKeyPublic(privateKey);
 
-    it('produces deterministic results for the same public key', () => {
-      const privateKey = '0000000000000000000000000000000000000000000000000000000000000001'
-      const publicKey = blockchain.getKeyPublic(privateKey)
+        const address1 = blockchain.getAddress(publicKey);
+        const address2 = blockchain.getAddress(publicKey);
+        expect(address1).toBe(address2);
+      });
+    });
 
-      const address1 = blockchain.getAddress(publicKey)
-      const address2 = blockchain.getAddress(publicKey)
-      expect(address1).toBe(address2)
-    })
-  })
+    describe("validateAddress", () => {
+      it("validates cardano mainnet addresses generated by the library", () => {
+        const privateKey = blockchain.generateKeyPrivate();
+        const publicKey = blockchain.getKeyPublic(privateKey);
 
-  describe('validateAddress', () => {
-    it('validates cardano mainnet addresses generated by the library', () => {
-      const privateKey = blockchain.generateKeyPrivate()
-      const publicKey = blockchain.getKeyPublic(privateKey)
-      
-      const addressBase = blockchain.getAddress(publicKey)
-      const addressEnterprise = blockchain.getAddress(publicKey, 'enterprise')
-      const addressStake = blockchain.getAddress(publicKey, 'stake')
-      
-      expect(validateAddress(addressBase)).toBe(true)
-      expect(validateAddress(addressEnterprise)).toBe(true)
-      expect(validateAddress(addressStake)).toBe(true)
-    })
+        const addressBase = blockchain.getAddress(publicKey);
+        const addressEnterprise = blockchain.getAddress(publicKey, "enterprise");
+        const addressStake = blockchain.getAddress(publicKey, "stake");
 
+        expect(validateAddress(addressBase)).toBe(true);
+        expect(validateAddress(addressEnterprise)).toBe(true);
+        expect(validateAddress(addressStake)).toBe(true);
+      });
 
-    it('rejects invalid cardano addresses', () => {
-      const invalidAddresses = [
-        '', // empty string
-        'not-an-address',
-        'addr1zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
-        'addr_test1', // too short
-        'Addr1vpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5eg0yu80w', // wrong case
-        'addr1vpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5eg0yu80w0', // extra character
-        'addr2vpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5eg0yu80w', // wrong prefix
-        'stake2uyehkck0lajq8gr28t9uxnuvgcqrc6070x3k9r8048z8y5gh6ffgw', // wrong prefix
-        '0xc2a8f92a4776bb5c0ad9cce856f2deebd5571ba0', // Ethereum address
-        '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', // Bitcoin address
-      ]
+      it("rejects invalid cardano addresses", () => {
+        const invalidAddresses = [
+          "", // empty string
+          "not-an-address",
+          "addr1zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+          "addr_test1", // too short
+          "Addr1vpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5eg0yu80w", // wrong case
+          "addr1vpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5eg0yu80w0", // extra character
+          "addr2vpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5eg0yu80w", // wrong prefix
+          "stake2uyehkck0lajq8gr28t9uxnuvgcqrc6070x3k9r8048z8y5gh6ffgw", // wrong prefix
+          "0xc2a8f92a4776bb5c0ad9cce856f2deebd5571ba0", // Ethereum address
+          "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", // Bitcoin address
+        ];
 
-      for (const address of invalidAddresses) {
-        expect(validateAddress(address)).toBe(false)
-      }
-    })
-  })
+        for (const address of invalidAddresses) {
+          expect(validateAddress(address)).toBe(false);
+        }
+      });
+    });
 
-  describe('generateKeys', () => {
-    it('generates valid key pairs', () => {
-      const { keys } = blockchain.generateKeys()
-      expect(keys.private).toMatch(/^[0-9a-f]{64}$/)
-      expect(keys.public).toMatch(/^[0-9a-f]{64}$/)
-    })
-  })
+    describe("generateKeys", () => {
+      it("generates valid key pairs", () => {
+        const { keys } = blockchain.generateKeys();
+        expect(keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(keys.public).toMatch(/^[0-9a-f]{64}$/);
+      });
+    });
 
-  describe('generateWallet', () => {
-    it('generates a valid wallet with base address', () => {
-      const wallet = blockchain.generateWallet()
-      expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/)
-      expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/)
-      expect(wallet.address).toMatch(/^addr1[a-zA-Z0-9]+$/)
-      expect(validateAddress(wallet.address)).toBe(true)
-    })
+    describe("generateWallet", () => {
+      it("generates a valid wallet with base address", () => {
+        const wallet = blockchain.generateWallet();
+        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.address).toMatch(/^addr1[a-zA-Z0-9]+$/);
+        expect(validateAddress(wallet.address)).toBe(true);
+      });
 
-    it('generates a valid wallet with enterprise address', () => {
-      const wallet = blockchain.generateWallet(undefined, 'enterprise')
-      expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/)
-      expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/)
-      expect(wallet.address).toMatch(/^addr1e[a-zA-Z0-9]+$/)
-      expect(validateAddress(wallet.address)).toBe(true)
-    })
+      it("generates a valid wallet with enterprise address", () => {
+        const wallet = blockchain.generateWallet(undefined, "enterprise");
+        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.address).toMatch(/^addr1e[a-zA-Z0-9]+$/);
+        expect(validateAddress(wallet.address)).toBe(true);
+      });
 
-    it('generates a valid wallet with reward address', () => {
-      const wallet = blockchain.generateWallet(undefined, 'stake')
-      expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/)
-      expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/)
-      expect(wallet.address).toMatch(/^stake1[a-zA-Z0-9]+$/)
-      expect(validateAddress(wallet.address)).toBe(true)
-    })
+      it("generates a valid wallet with reward address", () => {
+        const wallet = blockchain.generateWallet(undefined, "stake");
+        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.address).toMatch(/^stake1[a-zA-Z0-9]+$/);
+        expect(validateAddress(wallet.address)).toBe(true);
+      });
+    });
+  });
 
-  })
-  })
-  
-  describe('Testnet', () => {
-    const options: Options = { network: 'testnet' };
+  describe("Testnet", () => {
+    const options: Options = { network: "testnet" };
     const testnetBlockchain = useBlockchain(cardano(options));
-    
+
     // Ensure validateAddress is defined for TypeScript
     const validateAddress = (address: string): boolean => {
       if (!testnetBlockchain.validateAddress) {
-        throw new Error('validateAddress function is not defined')
+        throw new Error("validateAddress function is not defined");
       }
-      return testnetBlockchain.validateAddress(address)
-    }
-    
-    describe('blockchain interface', () => {
-      it('has correct name', () => {
-        expect(testnetBlockchain.name).toBe('cardano')
-      })
-      
-      it('uses the Ed25519 curve', () => {
-        expect(testnetBlockchain.curve).toBe('ed25519')
-      })
-      
-      it('has network property set to testnet', () => {
-        expect(testnetBlockchain.network).toBe('testnet')
-      })
-    })
-    
-    describe('getAddress', () => {
-      it('generates valid testnet addresses', () => {
-        const privateKey = testnetBlockchain.generateKeyPrivate()
-        const publicKey = testnetBlockchain.getKeyPublic(privateKey)
-        
+      return testnetBlockchain.validateAddress(address);
+    };
+
+    describe("blockchain interface", () => {
+      it("has correct name", () => {
+        expect(testnetBlockchain.name).toBe("cardano");
+      });
+
+      it("uses the Ed25519 curve", () => {
+        expect(testnetBlockchain.curve).toBe("ed25519");
+      });
+
+      it("has network property set to testnet", () => {
+        expect(testnetBlockchain.network).toBe("testnet");
+      });
+    });
+
+    describe("getAddress", () => {
+      it("generates valid testnet addresses", () => {
+        const privateKey = testnetBlockchain.generateKeyPrivate();
+        const publicKey = testnetBlockchain.getKeyPublic(privateKey);
+
         // Generate addresses for different types
-        const baseAddress = testnetBlockchain.getAddress(publicKey)
-        const enterpriseAddress = testnetBlockchain.getAddress(publicKey, 'enterprise')
-        const stakeAddress = testnetBlockchain.getAddress(publicKey, 'stake')
-        
+        const baseAddress = testnetBlockchain.getAddress(publicKey);
+        const enterpriseAddress = testnetBlockchain.getAddress(publicKey, "enterprise");
+        const stakeAddress = testnetBlockchain.getAddress(publicKey, "stake");
+
         // Check address format
-        expect(baseAddress).toMatch(/^addr_test1[a-zA-Z0-9]+$/)
-        expect(enterpriseAddress).toMatch(/^addr_test1e[a-zA-Z0-9]+$/)
-        expect(stakeAddress).toMatch(/^stake_test1[a-zA-Z0-9]+$/)
-        
+        expect(baseAddress).toMatch(/^addr_test1[a-zA-Z0-9]+$/);
+        expect(enterpriseAddress).toMatch(/^addr_test1e[a-zA-Z0-9]+$/);
+        expect(stakeAddress).toMatch(/^stake_test1[a-zA-Z0-9]+$/);
+
         // Validate addresses
-        expect(validateAddress(baseAddress)).toBe(true)
-        expect(validateAddress(enterpriseAddress)).toBe(true)
-        expect(validateAddress(stakeAddress)).toBe(true)
-      })
-    })
-    
-    describe('generateWallet', () => {
-      it('generates a valid testnet wallet with base address', () => {
-        const wallet = testnetBlockchain.generateWallet()
-        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/)
-        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/)
-        expect(wallet.address).toMatch(/^addr_test1[a-zA-Z0-9]+$/)
-        expect(validateAddress(wallet.address)).toBe(true)
-      })
-      
-      it('generates a valid testnet wallet with enterprise address', () => {
-        const wallet = testnetBlockchain.generateWallet(undefined, 'enterprise')
-        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/)
-        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/)
-        expect(wallet.address).toMatch(/^addr_test1e[a-zA-Z0-9]+$/)
-        expect(validateAddress(wallet.address)).toBe(true)
-      })
-      
-      it('generates a valid testnet wallet with stake address', () => {
-        const wallet = testnetBlockchain.generateWallet(undefined, 'stake')
-        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/)
-        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/)
-        expect(wallet.address).toMatch(/^stake_test1[a-zA-Z0-9]+$/)
-        expect(validateAddress(wallet.address)).toBe(true)
-      })
-    })
-  })
-})
+        expect(validateAddress(baseAddress)).toBe(true);
+        expect(validateAddress(enterpriseAddress)).toBe(true);
+        expect(validateAddress(stakeAddress)).toBe(true);
+      });
+    });
+
+    describe("generateWallet", () => {
+      it("generates a valid testnet wallet with base address", () => {
+        const wallet = testnetBlockchain.generateWallet();
+        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.address).toMatch(/^addr_test1[a-zA-Z0-9]+$/);
+        expect(validateAddress(wallet.address)).toBe(true);
+      });
+
+      it("generates a valid testnet wallet with enterprise address", () => {
+        const wallet = testnetBlockchain.generateWallet(undefined, "enterprise");
+        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.address).toMatch(/^addr_test1e[a-zA-Z0-9]+$/);
+        expect(validateAddress(wallet.address)).toBe(true);
+      });
+
+      it("generates a valid testnet wallet with stake address", () => {
+        const wallet = testnetBlockchain.generateWallet(undefined, "stake");
+        expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
+        expect(wallet.address).toMatch(/^stake_test1[a-zA-Z0-9]+$/);
+        expect(validateAddress(wallet.address)).toBe(true);
+      });
+    });
+  });
+});

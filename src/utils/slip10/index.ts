@@ -1,4 +1,4 @@
-import slip10 from 'micro-key-producer/slip10.js';
+import slip10 from "micro-key-producer/slip10.js";
 
 // Reexport the SLIP10 implementation
 const HDKeyImpl = slip10;
@@ -23,11 +23,7 @@ export function getMasterKeyFromSeed(seed: Uint8Array): any {
  * @param forceHardened - Whether to force hardened derivation for ed25519
  * @returns Derived HDKey instance
  */
-export function deriveHDKey(
-  parent: any, 
-  path: string, 
-  forceHardened = true
-): any {
+export function deriveHDKey(parent: any, path: string, forceHardened = true): any {
   return parent.derive(path, forceHardened);
 }
 
@@ -65,7 +61,5 @@ export function isHardenedIndex(index: number): boolean {
  * @returns Formatted string representation
  */
 export function formatIndex(index: number): string {
-  return isHardenedIndex(index) 
-    ? `${index - HARDENED_OFFSET}'` 
-    : `${index}`;
+  return isHardenedIndex(index) ? `${index - HARDENED_OFFSET}'` : `${index}`;
 }

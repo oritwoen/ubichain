@@ -8,7 +8,5 @@
       "ubichain/blockchains/*": ["./src/blockchains/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

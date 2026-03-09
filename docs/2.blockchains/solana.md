@@ -13,8 +13,8 @@ Solana implementation using the ed25519 curve, with simple base58-encoded addres
 **Driver name:** `solana`
 
 ```js
-import { useBlockchain } from 'ubichain';
-import solana from 'ubichain/blockchains/solana';
+import { useBlockchain } from "ubichain";
+import solana from "ubichain/blockchains/solana";
 
 const solanaChain = useBlockchain(solana());
 ```
@@ -31,27 +31,27 @@ const solanaChain = useBlockchain(solana());
 
 ```js
 const wallet = solanaChain.generateWallet();
-console.log('Private Key:', wallet.keys.private);
-console.log('Public Key:', wallet.keys.public);
-console.log('Address:', wallet.address); // Base58-encoded public key
+console.log("Private Key:", wallet.keys.private);
+console.log("Public Key:", wallet.keys.public);
+console.log("Address:", wallet.address); // Base58-encoded public key
 ```
 
 ### Generate Address from Known Private Key
 
 ```js
-const privateKey = 'your_private_key_as_hex';
+const privateKey = "your_private_key_as_hex";
 const publicKey = solanaChain.getKeyPublic(privateKey);
 const address = solanaChain.getAddress(publicKey);
 
-console.log('Address:', address);
+console.log("Address:", address);
 ```
 
 ### Validate an Address
 
 ```js
 // Validate a Solana address
-const isValid = solanaChain.validateAddress?.('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin');
-console.log('Is valid:', isValid); // true or false
+const isValid = solanaChain.validateAddress?.("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin");
+console.log("Is valid:", isValid); // true or false
 ```
 
 ## Technical Details
@@ -70,6 +70,7 @@ This means that for Solana, the address is simply the public key encoded in Base
 ### Validation
 
 A Solana address is valid if:
+
 - It can be decoded as Base58
 - The decoded bytes are exactly 32 bytes (the size of an Ed25519 public key)
 
@@ -107,6 +108,7 @@ function validateAddress(address) {
 ## Future Plans
 
 Future updates may include support for:
+
 - Account/program derivation (PDAs)
 - Multisig addresses
 - Transaction creation and signing

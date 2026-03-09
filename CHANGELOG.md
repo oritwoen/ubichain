@@ -1,6 +1,5 @@
 # Changelog
 
-
 ## v0.2.0
 
 [compare changes](https://github.com/oritwoen/ubichain/compare/v0.1.5...v0.2.0)
@@ -9,11 +8,11 @@
 
 - Add tests for BIP44 path generation, parsing, and blockchain integration ([5dd7aae](https://github.com/oritwoen/ubichain/commit/5dd7aae))
 - **tests:** Add integration tests for Solana and Ethereum signing compatibility ([54fa891](https://github.com/oritwoen/ubichain/commit/54fa891))
-- ⚠️  Implement lazy loading ([bd5b6e2](https://github.com/oritwoen/ubichain/commit/bd5b6e2))
+- ⚠️ Implement lazy loading ([bd5b6e2](https://github.com/oritwoen/ubichain/commit/bd5b6e2))
 
 #### ⚠️ Breaking Changes
 
-- ⚠️  Implement lazy loading ([bd5b6e2](https://github.com/oritwoen/ubichain/commit/bd5b6e2))
+- ⚠️ Implement lazy loading ([bd5b6e2](https://github.com/oritwoen/ubichain/commit/bd5b6e2))
 
 ### ❤️ Contributors
 
@@ -258,4 +257,3 @@
 - Dominik Opyd <dominik.opyd@gmail.com>
 
 ## v0.0.1
-

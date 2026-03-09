@@ -13,8 +13,8 @@ Base implementation using the secp256k1 curve, with EIP-55 checksum support for 
 **Driver name:** `base`
 
 ```js
-import { useBlockchain } from 'ubichain';
-import base from 'ubichain/blockchains/base';
+import { useBlockchain } from "ubichain";
+import base from "ubichain/blockchains/base";
 
 const baseChain = useBlockchain(base());
 ```
@@ -33,36 +33,36 @@ const baseChain = useBlockchain(base());
 
 ```js
 const wallet = baseChain.generateWallet();
-console.log('Private Key:', wallet.keys.private);
-console.log('Public Key:', wallet.keys.public);
-console.log('Address:', wallet.address); // 0x-prefixed address with EIP-55 checksum
+console.log("Private Key:", wallet.keys.private);
+console.log("Public Key:", wallet.keys.public);
+console.log("Address:", wallet.address); // 0x-prefixed address with EIP-55 checksum
 ```
 
 ### Generate Address with Known Private Key
 
 ```js
 // Private key with decimal value 1
-const privateKey = '0000000000000000000000000000000000000000000000000000000000000001';
+const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
 const publicKey = baseChain.getKeyPublic(privateKey);
 const address = baseChain.getAddress(publicKey);
 
-console.log('Address:', address); // 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+console.log("Address:", address); // 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
 ```
 
 ### Validate an Address
 
 ```js
 // Validate a checksummed address
-const isValidChecksum = baseChain.validateAddress?.('0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf');
-console.log('Is valid:', isValidChecksum); // true
+const isValidChecksum = baseChain.validateAddress?.("0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf");
+console.log("Is valid:", isValidChecksum); // true
 
 // Validate a lowercase address (also valid)
-const isValidLowercase = baseChain.validateAddress?.('0x7e5f4552091a69125d5dfcb7b8c2659029395bdf');
-console.log('Is valid:', isValidLowercase); // true
+const isValidLowercase = baseChain.validateAddress?.("0x7e5f4552091a69125d5dfcb7b8c2659029395bdf");
+console.log("Is valid:", isValidLowercase); // true
 
 // Invalid checksum (wrong case)
-const isInvalidChecksum = baseChain.validateAddress?.('0x7e5F4552091A69125d5DfCb7b8C2659029395Bdf');
-console.log('Is valid:', isInvalidChecksum); // false
+const isInvalidChecksum = baseChain.validateAddress?.("0x7e5F4552091A69125d5DfCb7b8C2659029395Bdf");
+console.log("Is valid:", isInvalidChecksum); // false
 ```
 
 ## Technical Details
@@ -78,7 +78,7 @@ Base is an EVM (Ethereum Virtual Machine) compatible blockchain, which means:
 Base is implemented using the common EVM module in ubichain:
 
 ```js
-import { createEVMBlockchain } from '../utils/evm';
+import { createEVMBlockchain } from "../utils/evm";
 
 export default function base() {
   return createEVMBlockchain("base");
@@ -94,16 +94,18 @@ Base addresses are generated following the Ethereum standard:
    - Remove the first byte (0x04) from the uncompressed public key
 
 2. **Address Derivation**:
+
    ```
    hash = Keccak-256(publicKeyWithoutPrefix)
    address = '0x' + last20Bytes(hash) // With EIP-55 checksum applied
    ```
 
 3. **EIP-55 Checksum**:
+
    ```
    lowercase = address without '0x' prefix, in lowercase
    hash = Keccak-256(lowercase)
-   
+
    for each character in lowercase:
      if corresponding hash character >= 8:
        make character uppercase
@@ -124,7 +126,7 @@ The Base implementation is located in `src/blockchains/base.ts` and uses the com
 
 ```js
 // Base implementation
-import { createEVMBlockchain } from '../utils/evm';
+import { createEVMBlockchain } from "../utils/evm";
 
 export default function base() {
   return createEVMBlockchain("base");

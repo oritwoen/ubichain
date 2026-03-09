@@ -1,196 +1,196 @@
-import { describe, it, expect } from 'vitest'
-import type { Blockchain } from '../src/types'
+import { describe, it, expect } from "vitest";
+import type { Blockchain } from "../src/types";
 
 // Helper function to check proper implementation of interfaces
 function isBlockchain(obj: any): obj is Blockchain {
   return (
-    typeof obj.name === 'string' &&
-    (typeof obj.curve === 'string' || Array.isArray(obj.curve)) &&
-    typeof obj.getKeyPublic === 'function' &&
-    typeof obj.getAddress === 'function' &&
-    (obj.validateAddress === undefined || typeof obj.validateAddress === 'function')
-  )
+    typeof obj.name === "string" &&
+    (typeof obj.curve === "string" || Array.isArray(obj.curve)) &&
+    typeof obj.getKeyPublic === "function" &&
+    typeof obj.getAddress === "function" &&
+    (obj.validateAddress === undefined || typeof obj.validateAddress === "function")
+  );
 }
 
 function isCompleteBlockchain(obj: any): obj is Blockchain {
   return (
-    typeof obj.name === 'string' &&
-    (typeof obj.curve === 'string' || Array.isArray(obj.curve)) &&
-    typeof obj.generateKeyPrivate === 'function' &&
-    typeof obj.getKeyPublic === 'function' &&
-    typeof obj.getAddress === 'function' &&
-    (obj.validateAddress === undefined || typeof obj.validateAddress === 'function') &&
-    typeof obj.generateKeys === 'function' &&
-    typeof obj.generateWallet === 'function'
-  )
+    typeof obj.name === "string" &&
+    (typeof obj.curve === "string" || Array.isArray(obj.curve)) &&
+    typeof obj.generateKeyPrivate === "function" &&
+    typeof obj.getKeyPublic === "function" &&
+    typeof obj.getAddress === "function" &&
+    (obj.validateAddress === undefined || typeof obj.validateAddress === "function") &&
+    typeof obj.generateKeys === "function" &&
+    typeof obj.generateWallet === "function"
+  );
 }
 
-describe('Types', () => {
-  describe('Blockchain interface', () => {
-    it('should detect valid Blockchain implementation', () => {
+describe("Types", () => {
+  describe("Blockchain interface", () => {
+    it("should detect valid Blockchain implementation", () => {
       const validBlockchain = {
-        name: 'test-chain',
-        curve: 'secp256k1',
-        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
-      }
-      
-      expect(isBlockchain(validBlockchain)).toBe(true)
-    })
-    
-    it('should detect valid Blockchain implementation with validateAddress', () => {
-      const validBlockchain = {
-        name: 'test-chain',
-        curve: 'secp256k1',
+        name: "test-chain",
+        curve: "secp256k1",
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,
-        validateAddress: (address: string) => address.startsWith('addr-')
-      }
-      
-      expect(isBlockchain(validBlockchain)).toBe(true)
-    })
-    
-    it('should reject invalid Blockchain implementations', () => {
+      };
+
+      expect(isBlockchain(validBlockchain)).toBe(true);
+    });
+
+    it("should detect valid Blockchain implementation with validateAddress", () => {
+      const validBlockchain = {
+        name: "test-chain",
+        curve: "secp256k1",
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+        validateAddress: (address: string) => address.startsWith("addr-"),
+      };
+
+      expect(isBlockchain(validBlockchain)).toBe(true);
+    });
+
+    it("should reject invalid Blockchain implementations", () => {
       const missingName = {
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
-      }
-      
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+      };
+
       const missingGenerateKeyPublic = {
-        name: 'test-chain',
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
-      }
-      
+        name: "test-chain",
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+      };
+
       const missingGenerateAddress = {
-        name: 'test-chain',
-        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
-      }
-      
+        name: "test-chain",
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+      };
+
       const validateAddressWrongType = {
-        name: 'test-chain',
+        name: "test-chain",
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,
-        validateAddress: 'not-a-function'
-      }
-      
-      expect(isBlockchain(missingName)).toBe(false)
-      expect(isBlockchain(missingGenerateKeyPublic)).toBe(false)
-      expect(isBlockchain(missingGenerateAddress)).toBe(false)
-      expect(isBlockchain(validateAddressWrongType)).toBe(false)
-    })
-  })
-  
-  describe('Complete Blockchain interface', () => {
-    it('should detect valid complete Blockchain implementation', () => {
+        validateAddress: "not-a-function",
+      };
+
+      expect(isBlockchain(missingName)).toBe(false);
+      expect(isBlockchain(missingGenerateKeyPublic)).toBe(false);
+      expect(isBlockchain(missingGenerateAddress)).toBe(false);
+      expect(isBlockchain(validateAddressWrongType)).toBe(false);
+    });
+  });
+
+  describe("Complete Blockchain interface", () => {
+    it("should detect valid complete Blockchain implementation", () => {
       const validBlockchain = {
-        name: 'test-chain',
-        curve: 'secp256k1',
-        generateKeyPrivate: () => 'priv-key',
+        name: "test-chain",
+        curve: "secp256k1",
+        generateKeyPrivate: () => "priv-key",
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,
         generateKeys: () => ({
           keys: {
-            private: 'priv-key',
-            public: 'pub-key'
-          }
+            private: "priv-key",
+            public: "pub-key",
+          },
         }),
         generateWallet: () => ({
           keys: {
-            private: 'priv-key',
-            public: 'pub-key'
+            private: "priv-key",
+            public: "pub-key",
           },
-          address: 'addr-pub-key'
-        })
-      }
-      
-      expect(isCompleteBlockchain(validBlockchain)).toBe(true)
-      
+          address: "addr-pub-key",
+        }),
+      };
+
+      expect(isCompleteBlockchain(validBlockchain)).toBe(true);
+
       // Create an instance that looks like the interface to test type safety
       const usedBlockchain: Blockchain = {
-        name: 'test-chain-2',
-        curve: 'ed25519',
-        generateKeyPrivate: () => 'private-key',
-        getKeyPublic: (keyPrivate: string) => `public-${keyPrivate}`, 
+        name: "test-chain-2",
+        curve: "ed25519",
+        generateKeyPrivate: () => "private-key",
+        getKeyPublic: (keyPrivate: string) => `public-${keyPrivate}`,
         getAddress: (keyPublic: string) => `address-${keyPublic}`,
-        validateAddress: (address: string) => address.startsWith('address-'),
+        validateAddress: (address: string) => address.startsWith("address-"),
         generateKeys: () => ({
           keys: {
-            private: 'private-key',
-            public: 'public-key'
-          }
+            private: "private-key",
+            public: "public-key",
+          },
         }),
         generateWallet: () => ({
           keys: {
-            private: 'private-key',
-            public: 'public-key'
+            private: "private-key",
+            public: "public-key",
           },
-          address: 'address-key'
-        })
-      }
-      
-      expect(usedBlockchain.name).toBe('test-chain-2')
-      expect(usedBlockchain.generateKeyPrivate()).toBe('private-key')
-      expect(usedBlockchain.getKeyPublic('test')).toBe('public-test')
-      expect(usedBlockchain.getAddress('pub-key')).toBe('address-pub-key')
-      expect(usedBlockchain.validateAddress?.('address-xyz')).toBe(true)
-      expect(usedBlockchain.validateAddress?.('invalid')).toBe(false)
-    })
-    
-    it('should detect valid complete Blockchain with validateAddress', () => {
+          address: "address-key",
+        }),
+      };
+
+      expect(usedBlockchain.name).toBe("test-chain-2");
+      expect(usedBlockchain.generateKeyPrivate()).toBe("private-key");
+      expect(usedBlockchain.getKeyPublic("test")).toBe("public-test");
+      expect(usedBlockchain.getAddress("pub-key")).toBe("address-pub-key");
+      expect(usedBlockchain.validateAddress?.("address-xyz")).toBe(true);
+      expect(usedBlockchain.validateAddress?.("invalid")).toBe(false);
+    });
+
+    it("should detect valid complete Blockchain with validateAddress", () => {
       const validBlockchain = {
-        name: 'test-chain',
-        curve: 'secp256k1',
-        generateKeyPrivate: () => 'priv-key',
+        name: "test-chain",
+        curve: "secp256k1",
+        generateKeyPrivate: () => "priv-key",
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
         getAddress: (keyPublic: string) => `addr-${keyPublic}`,
-        validateAddress: (address: string) => address.startsWith('addr-'),
+        validateAddress: (address: string) => address.startsWith("addr-"),
         generateKeys: () => ({
           keys: {
-            private: 'priv-key',
-            public: 'pub-key'
-          }
+            private: "priv-key",
+            public: "pub-key",
+          },
         }),
         generateWallet: () => ({
           keys: {
-            private: 'priv-key',
-            public: 'pub-key'
+            private: "priv-key",
+            public: "pub-key",
           },
-          address: 'addr-pub-key'
-        })
-      }
-      
-      expect(isCompleteBlockchain(validBlockchain)).toBe(true)
-    })
-    
-    it('should reject invalid complete Blockchain implementations', () => {
+          address: "addr-pub-key",
+        }),
+      };
+
+      expect(isCompleteBlockchain(validBlockchain)).toBe(true);
+    });
+
+    it("should reject invalid complete Blockchain implementations", () => {
       const missingName = {
-        generateKeyPrivate: () => 'priv-key',
+        generateKeyPrivate: () => "priv-key",
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
-      }
-      
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+      };
+
       const missingGenerateKeyPrivate = {
-        name: 'test-chain',
+        name: "test-chain",
         getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
-      }
-      
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+      };
+
       const missingGenerateKeyPublic = {
-        name: 'test-chain',
-        generateKeyPrivate: () => 'priv-key',
-        getAddress: (keyPublic: string) => `addr-${keyPublic}`
-      }
-      
+        name: "test-chain",
+        generateKeyPrivate: () => "priv-key",
+        getAddress: (keyPublic: string) => `addr-${keyPublic}`,
+      };
+
       const missingGenerateAddress = {
-        name: 'test-chain',
-        generateKeyPrivate: () => 'priv-key',
-        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`
-      }
-      
-      expect(isCompleteBlockchain(missingName)).toBe(false)
-      expect(isCompleteBlockchain(missingGenerateKeyPrivate)).toBe(false)
-      expect(isCompleteBlockchain(missingGenerateKeyPublic)).toBe(false)
-      expect(isCompleteBlockchain(missingGenerateAddress)).toBe(false)
-    })
-  })
-})
+        name: "test-chain",
+        generateKeyPrivate: () => "priv-key",
+        getKeyPublic: (keyPrivate: string) => `pub-${keyPrivate}`,
+      };
+
+      expect(isCompleteBlockchain(missingName)).toBe(false);
+      expect(isCompleteBlockchain(missingGenerateKeyPrivate)).toBe(false);
+      expect(isCompleteBlockchain(missingGenerateKeyPublic)).toBe(false);
+      expect(isCompleteBlockchain(missingGenerateAddress)).toBe(false);
+    });
+  });
+});

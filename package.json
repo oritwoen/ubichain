@@ -2,36 +2,40 @@
   "name": "ubichain",
   "version": "0.2.0",
   "description": "A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/oritwoen/ubichain.git"
-  },
+  "keywords": [
+    "addresses",
+    "aptos",
+    "bitcoin",
+    "blockchain",
+    "cardano",
+    "crypto",
+    "cryptocurrency",
+    "cryptography",
+    "keys",
+    "solana",
+    "sui",
+    "tron",
+    "typescript",
+    "wallet"
+  ],
   "homepage": "https://github.com/oritwoen/ubichain",
   "bugs": {
     "url": "https://github.com/oritwoen/ubichain/issues"
   },
-  "keywords": [
-    "blockchain",
-    "crypto",
-    "bitcoin",
-    "tron",
-    "solana",
-    "aptos",
-    "sui",
-    "cardano",
-    "wallet",
-    "cryptocurrency",
-    "typescript",
-    "addresses",
-    "cryptography",
-    "keys"
-  ],
-  "author": "oritwoen",
   "license": "MIT",
-  "sideEffects": false,
+  "author": "oritwoen",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oritwoen/ubichain.git"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -42,17 +46,14 @@
       "default": "./dist/blockchains/*.mjs"
     }
   },
-  "types": "./dist/index.d.mts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "unbuild",
     "dev": "vitest dev",
     "prepack": "pnpm build",
     "release": "changelogen --release && git push --follow-tags && npm publish",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "fmt": "oxlint . --fix && oxfmt .",
+    "lint": "oxlint . && oxfmt --check .",
+    "lint:fix": "oxlint . --fix && oxfmt .",
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
     "test:types": "tsc --noEmit --skipLibCheck",
     "playground": "tsx",
@@ -75,9 +76,9 @@
     "@types/node": "25.0.2",
     "@vitest/coverage-v8": "4.0.15",
     "changelogen": "0.6.2",
-    "eslint": "9.39.2",
-    "eslint-config-unjs": "0.5.0",
     "ethers": "^6.16.0",
+    "oxfmt": "0.36.0",
+    "oxlint": "1.51.0",
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "unbuild": "3.6.1",
