@@ -8,25 +8,25 @@ Shared cryptographic primitives and encoding utilities. Everything here is inter
 
 **Plain files** (imported directly by blockchains):
 
-| File | Lines | Used By | Purpose |
-|------|-------|---------|---------|
-| `address.ts` | 312 | bitcoin, sui, aptos, tron | hash160, legacy/P2SH/SegWit address gen + validation, hex address validation |
-| `evm.ts` | 199 | ethereum, base, bitcoin, tron | EVM address gen, EIP-55 checksum, preamble signing, `createEVMBlockchain()` factory |
-| `signing.ts` | 109 | evm.ts, ed25519-chains.ts | Generic sign/verify dispatching by curve type |
-| `ed25519-chains.ts` | ~100 | solana, aptos, cardano, sui | Ed25519 signing variants (raw, Solana-specific) |
-| `secp256k1.ts` | ~100 | bitcoin, tron, sui, evm.ts | Public key generation (compressed/uncompressed) |
-| `ed25519.ts` | ~50 | solana, aptos, cardano, sui | Ed25519 public key generation |
-| `encoding.ts` | ~60 | address.ts, tron | Base58Check encode/decode/validate |
-| `crypto-hash.ts` | ~70 | (internal) | Hash function wrappers |
+| File                | Lines | Used By                       | Purpose                                                                             |
+| ------------------- | ----- | ----------------------------- | ----------------------------------------------------------------------------------- |
+| `address.ts`        | 312   | bitcoin, sui, aptos, tron     | hash160, legacy/P2SH/SegWit address gen + validation, hex address validation        |
+| `evm.ts`            | 199   | ethereum, base, bitcoin, tron | EVM address gen, EIP-55 checksum, preamble signing, `createEVMBlockchain()` factory |
+| `signing.ts`        | 109   | evm.ts, ed25519-chains.ts     | Generic sign/verify dispatching by curve type                                       |
+| `ed25519-chains.ts` | ~100  | solana, aptos, cardano, sui   | Ed25519 signing variants (raw, Solana-specific)                                     |
+| `secp256k1.ts`      | ~100  | bitcoin, tron, sui, evm.ts    | Public key generation (compressed/uncompressed)                                     |
+| `ed25519.ts`        | ~50   | solana, aptos, cardano, sui   | Ed25519 public key generation                                                       |
+| `encoding.ts`       | ~60   | address.ts, tron              | Base58Check encode/decode/validate                                                  |
+| `crypto-hash.ts`    | ~70   | (internal)                    | Hash function wrappers                                                              |
 
 **Subdirectories** (each has `index.ts`):
 
-| Dir | Purpose | Exports |
-|-----|---------|---------|
-| `bip32/` | HD key derivation (secp256k1) | `getMasterKeyFromSeed`, `deriveHDKey`, `HARDENED_OFFSET` |
-| `bip39/` | Mnemonic phrases | `generateMnemonic`, `mnemonicToSeed`, `validateMnemonic` |
-| `bip44/` | Derivation paths | `BIP44` enum, `getBIP44Path`, `parseBIP44Path`, `getBlockchainPath` |
-| `slip10/` | ED25519 HD derivation | `getMasterKeyFromSeed`, `deriveHDKey` |
+| Dir       | Purpose                       | Exports                                                             |
+| --------- | ----------------------------- | ------------------------------------------------------------------- |
+| `bip32/`  | HD key derivation (secp256k1) | `getMasterKeyFromSeed`, `deriveHDKey`, `HARDENED_OFFSET`            |
+| `bip39/`  | Mnemonic phrases              | `generateMnemonic`, `mnemonicToSeed`, `validateMnemonic`            |
+| `bip44/`  | Derivation paths              | `BIP44` enum, `getBIP44Path`, `parseBIP44Path`, `getBlockchainPath` |
+| `slip10/` | ED25519 HD derivation         | `getMasterKeyFromSeed`, `deriveHDKey`                               |
 
 ## DEPENDENCY FLOW
 

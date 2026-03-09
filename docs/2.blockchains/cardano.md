@@ -5,8 +5,8 @@ This document explains how to use the Cardano blockchain functionality in ubicha
 ## Importing
 
 ```javascript
-import { useBlockchain } from 'ubichain';
-import cardano from 'ubichain/blockchains/cardano';
+import { useBlockchain } from "ubichain";
+import cardano from "ubichain/blockchains/cardano";
 
 const cardanoBlockchain = useBlockchain(cardano());
 ```
@@ -25,12 +25,12 @@ Cardano implementation provides:
 
 Cardano has several address types:
 
-| Type | Description | Format |
-|------|-------------|--------|
-| Base | Default address that includes both payment and staking functionality | `addr1...` |
-| Enterprise | Address without staking capabilities (no stake rights) | `addr1e...` |
-| Reward/Stake | Used for receiving staking rewards | `stake1...` |
-| Testnet | Testnet versions of the above addresses | `addr_test1...` or `stake_test1...` |
+| Type         | Description                                                          | Format                              |
+| ------------ | -------------------------------------------------------------------- | ----------------------------------- |
+| Base         | Default address that includes both payment and staking functionality | `addr1...`                          |
+| Enterprise   | Address without staking capabilities (no stake rights)               | `addr1e...`                         |
+| Reward/Stake | Used for receiving staking rewards                                   | `stake1...`                         |
+| Testnet      | Testnet versions of the above addresses                              | `addr_test1...` or `stake_test1...` |
 
 ## Examples
 
@@ -58,15 +58,15 @@ const baseAddress = cardanoBlockchain.getAddress(publicKey);
 // 'addr1...'
 
 // Generate enterprise address
-const enterpriseAddress = cardanoBlockchain.getAddress(publicKey, 'enterprise');
+const enterpriseAddress = cardanoBlockchain.getAddress(publicKey, "enterprise");
 // 'addr1e...'
 
 // Generate reward/stake address
-const stakeAddress = cardanoBlockchain.getAddress(publicKey, 'stake');
+const stakeAddress = cardanoBlockchain.getAddress(publicKey, "stake");
 // 'stake1...'
 
 // Generate testnet address
-const testnetAddress = cardanoBlockchain.getAddress(publicKey, 'testnet');
+const testnetAddress = cardanoBlockchain.getAddress(publicKey, "testnet");
 // 'addr_test1...'
 ```
 
@@ -74,7 +74,9 @@ const testnetAddress = cardanoBlockchain.getAddress(publicKey, 'testnet');
 
 ```javascript
 // Validate an address
-const isValid = cardanoBlockchain.validateAddress('addr1q9kytfmxk3vdze7s5prpnrjl6j3qldqssvn7mkcpnpvd2p0ltsyswunewxmf58504d9tkqelz2vf02w0msgtvcuzdmsdhq0z4');
+const isValid = cardanoBlockchain.validateAddress(
+  "addr1q9kytfmxk3vdze7s5prpnrjl6j3qldqssvn7mkcpnpvd2p0ltsyswunewxmf58504d9tkqelz2vf02w0msgtvcuzdmsdhq0z4",
+);
 // true or false
 ```
 
@@ -86,15 +88,15 @@ const wallet = cardanoBlockchain.generateWallet();
 // { keys: { private: '...', public: '...' }, address: 'addr1...' }
 
 // Generate wallet with enterprise address
-const enterpriseWallet = cardanoBlockchain.generateWallet(undefined, 'enterprise');
+const enterpriseWallet = cardanoBlockchain.generateWallet(undefined, "enterprise");
 // { keys: { private: '...', public: '...' }, address: 'addr1e...' }
 
 // Generate wallet with reward/stake address
-const stakeWallet = cardanoBlockchain.generateWallet(undefined, 'stake');
+const stakeWallet = cardanoBlockchain.generateWallet(undefined, "stake");
 // { keys: { private: '...', public: '...' }, address: 'stake1...' }
 
 // Generate wallet with testnet address
-const testnetWallet = cardanoBlockchain.generateWallet(undefined, 'testnet');
+const testnetWallet = cardanoBlockchain.generateWallet(undefined, "testnet");
 // { keys: { private: '...', public: '...' }, address: 'addr_test1...' }
 ```
 

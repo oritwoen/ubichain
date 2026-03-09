@@ -13,8 +13,8 @@ Ethereum implementation using the secp256k1 curve, with EIP-55 checksum support 
 **Driver name:** `ethereum`
 
 ```js
-import { useBlockchain } from 'ubichain';
-import ethereum from 'ubichain/blockchains/ethereum';
+import { useBlockchain } from "ubichain";
+import ethereum from "ubichain/blockchains/ethereum";
 
 const ethereumChain = useBlockchain(ethereum());
 ```
@@ -33,33 +33,39 @@ const ethereumChain = useBlockchain(ethereum());
 
 ```js
 const wallet = ethereumChain.generateWallet();
-console.log('Private Key:', wallet.keys.private);
-console.log('Public Key:', wallet.keys.public);
-console.log('Address:', wallet.address); // 0x-prefixed address with EIP-55 checksum
+console.log("Private Key:", wallet.keys.private);
+console.log("Public Key:", wallet.keys.public);
+console.log("Address:", wallet.address); // 0x-prefixed address with EIP-55 checksum
 ```
 
 ### Generate Address with Known Private Key
 
 ```js
 // Private key with decimal value 1
-const privateKey = '0000000000000000000000000000000000000000000000000000000000000001';
+const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
 const publicKey = ethereumChain.getKeyPublic(privateKey);
 const address = ethereumChain.getAddress(publicKey);
 
-console.log('Address:', address); // 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+console.log("Address:", address); // 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
 ```
 
 ### Validate an Address
 
 ```js
 // Validate a checksummed address
-const isValidChecksum = ethereumChain.validateAddress?.('0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf');
+const isValidChecksum = ethereumChain.validateAddress?.(
+  "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+);
 
 // Validate a lowercase address (also valid)
-const isValidLowercase = ethereumChain.validateAddress?.('0x7e5f4552091a69125d5dfcb7b8c2659029395bdf');
+const isValidLowercase = ethereumChain.validateAddress?.(
+  "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+);
 
 // Invalid checksum (wrong case)
-const isInvalidChecksum = ethereumChain.validateAddress?.('0x7e5F4552091A69125d5DfCb7b8C2659029395Bdf');
+const isInvalidChecksum = ethereumChain.validateAddress?.(
+  "0x7e5F4552091A69125d5DfCb7b8C2659029395Bdf",
+);
 ```
 
 ## Technical Details
@@ -73,16 +79,18 @@ Ethereum addresses are generated as follows:
    - Remove the first byte (0x04) from the uncompressed public key
 
 2. **Address Derivation**:
+
    ```
    hash = Keccak-256(publicKeyWithoutPrefix)
    address = '0x' + last20Bytes(hash) // With EIP-55 checksum applied
    ```
 
 3. **EIP-55 Checksum**:
+
    ```
    lowercase = address without '0x' prefix, in lowercase
    hash = Keccak-256(lowercase)
-   
+
    for each character in lowercase:
      if corresponding hash character >= 8:
        make character uppercase
@@ -109,7 +117,7 @@ The Ethereum implementation is located in `src/blockchains/ethereum.ts` and uses
 
 ```js
 // Ethereum implementation
-import { createEVMBlockchain } from '../utils/evm';
+import { createEVMBlockchain } from "../utils/evm";
 
 export default function ethereum() {
   return createEVMBlockchain("ethereum");
@@ -123,13 +131,13 @@ The core EVM functions include:
 function generateAddress(keyPublic) {
   // Process public key
   const publicKeyForHashing = /* process public key */;
-  
+
   // Apply Keccak-256 hash
   const keccakHash = keccak_256(publicKeyForHashing);
-  
+
   // Take the last 20 bytes
   const addressBytes = keccakHash.slice(keccakHash.length - 20);
-  
+
   // Convert to hex and add checksum
   return '0x' + toChecksumAddress(bytesToHex(addressBytes));
 }
@@ -138,7 +146,7 @@ function generateAddress(keyPublic) {
 function toChecksumAddress(address) {
   const lowercaseAddress = address.toLowerCase();
   const addressHash = bytesToHex(keccak_256(lowercaseAddress));
-  
+
   let result = '';
   for (let i = 0; i < lowercaseAddress.length; i++) {
     if (parseInt(addressHash[i], 16) >= 8) {
@@ -147,7 +155,7 @@ function toChecksumAddress(address) {
       result += lowercaseAddress[i];
     }
   }
-  
+
   return result;
 }
 ```

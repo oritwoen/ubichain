@@ -30,17 +30,17 @@ ubichain/
 
 ## WHERE TO LOOK
 
-| Task | Location | Notes |
-|------|----------|-------|
-| Add new blockchain | `src/blockchains/` + `src/_blockchains.ts` | Factory pattern, register in lazy loader |
-| Add address format | `src/utils/address.ts` | Shared across chains (legacy, segwit, hex, base58) |
-| Add EVM chain | `src/utils/evm.ts` → `createEVMBlockchain()` | 3-line file, reuses factory |
-| Fix signing | `src/utils/signing.ts` (generic) or `evm.ts`/`ed25519-chains.ts` (chain-specific) | EVM uses preamble hash, ed25519 signs raw |
-| Change public API | `src/index.ts` | Re-exports only, never add logic here |
-| Add BIP/derivation | `src/utils/bip32/`, `bip39/`, `bip44/`, `slip10/` | Subdirs with index.ts |
-| Write tests | `test/` mirroring `src/` path | Use fixtures from `test/fixtures.ts` |
-| Integration test | `test-integration/` | Separate pnpm package, manual execution |
-| Run demos | `playground/*.ts` | Execute via `pnpm playground <file>` |
+| Task               | Location                                                                          | Notes                                              |
+| ------------------ | --------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Add new blockchain | `src/blockchains/` + `src/_blockchains.ts`                                        | Factory pattern, register in lazy loader           |
+| Add address format | `src/utils/address.ts`                                                            | Shared across chains (legacy, segwit, hex, base58) |
+| Add EVM chain      | `src/utils/evm.ts` → `createEVMBlockchain()`                                      | 3-line file, reuses factory                        |
+| Fix signing        | `src/utils/signing.ts` (generic) or `evm.ts`/`ed25519-chains.ts` (chain-specific) | EVM uses preamble hash, ed25519 signs raw          |
+| Change public API  | `src/index.ts`                                                                    | Re-exports only, never add logic here              |
+| Add BIP/derivation | `src/utils/bip32/`, `bip39/`, `bip44/`, `slip10/`                                 | Subdirs with index.ts                              |
+| Write tests        | `test/` mirroring `src/` path                                                     | Use fixtures from `test/fixtures.ts`               |
+| Integration test   | `test-integration/`                                                               | Separate pnpm package, manual execution            |
+| Run demos          | `playground/*.ts`                                                                 | Execute via `pnpm playground <file>`               |
 
 ## CONVENTIONS
 

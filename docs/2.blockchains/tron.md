@@ -13,8 +13,8 @@ TRON implementation using the secp256k1 curve, with Base58Check-encoded addresse
 **Driver name:** `tron`
 
 ```js
-import { useBlockchain } from 'ubichain';
-import tron from 'ubichain/blockchains/tron';
+import { useBlockchain } from "ubichain";
+import tron from "ubichain/blockchains/tron";
 
 const tronChain = useBlockchain(tron());
 ```
@@ -33,31 +33,31 @@ const tronChain = useBlockchain(tron());
 
 ```js
 const wallet = tronChain.generateWallet();
-console.log('Private Key:', wallet.keys.private);
-console.log('Public Key:', wallet.keys.public);
-console.log('Address:', wallet.address); // Address starting with 'T'
+console.log("Private Key:", wallet.keys.private);
+console.log("Public Key:", wallet.keys.public);
+console.log("Address:", wallet.address); // Address starting with 'T'
 ```
 
 ### Generate Address from Known Private Key
 
 ```js
-const privateKey = 'your_private_key_as_hex';
+const privateKey = "your_private_key_as_hex";
 const publicKey = tronChain.getKeyPublic(privateKey);
 const address = tronChain.getAddress(publicKey);
 
-console.log('Address:', address); // e.g., TJCnKsPa7y5okkXvQAidZBzqx3QyQ6sxMW
+console.log("Address:", address); // e.g., TJCnKsPa7y5okkXvQAidZBzqx3QyQ6sxMW
 ```
 
 ### Validate an Address
 
 ```js
 // Validate a TRON address
-const isValid = tronChain.validateAddress?.('TJCnKsPa7y5okkXvQAidZBzqx3QyQ6sxMW');
-console.log('Is valid:', isValid); // true
+const isValid = tronChain.validateAddress?.("TJCnKsPa7y5okkXvQAidZBzqx3QyQ6sxMW");
+console.log("Is valid:", isValid); // true
 
 // Invalid address (wrong prefix)
-const isInvalid = tronChain.validateAddress?.('1JCnKsPa7y5okkXvQAidZBzqx3QyQ6sxMW');
-console.log('Is valid:', isInvalid); // false (doesn't start with T)
+const isInvalid = tronChain.validateAddress?.("1JCnKsPa7y5okkXvQAidZBzqx3QyQ6sxMW");
+console.log("Is valid:", isInvalid); // false (doesn't start with T)
 ```
 
 ## Technical Details
@@ -67,6 +67,7 @@ console.log('Is valid:', isInvalid); // false (doesn't start with T)
 TRON addresses are generated as follows:
 
 1. **Public Key Processing**:
+
    ```
    hash = Keccak-256(publicKey)
    addressBytes = last 20 bytes of hash
@@ -83,6 +84,7 @@ The version byte 0x41 ensures that TRON addresses always start with 'T'.
 ### Validation
 
 A TRON address is valid if:
+
 - It starts with 'T'
 - It can be decoded using Base58Check
 - The decoded data has the correct version byte (0x41)
@@ -103,28 +105,29 @@ The TRON implementation is located in `src/blockchains/tron.ts`.
 function getAddress(keyPublic) {
   // Convert public key to bytes
   const keyPublicBytes = hexToBytes(keyPublic);
-  
+
   // Apply Keccak-256 hash to the public key
   const keccakHash = keccak_256(keyPublicBytes);
-  
+
   // Take the last 20 bytes of the hash result
   const addressBytes = keccakHash.slice(keccakHash.length - 20);
-  
+
   // Create versioned hash with TRON version byte 0x41
   const hashVersioned = createVersionedHash(addressBytes, 0x41);
-  
+
   // Encode with Base58Check
   return encodeBase58Check(hashVersioned);
 }
 
 function validateAddress(address) {
-  return validateBase58Check(address, 0x41, 'T');
+  return validateBase58Check(address, 0x41, "T");
 }
 ```
 
 ## TRON vs Ethereum
 
 TRON's address derivation is similar to Ethereum's, with these key differences:
+
 - TRON uses the Base58Check encoding (like Bitcoin) instead of hex encoding
 - TRON adds a version byte (0x41) to ensure addresses start with 'T'
 - TRON doesn't use an EIP-55 style checksum
@@ -134,6 +137,7 @@ Despite these differences, the core process (taking the last 20 bytes of the Kec
 ## Future Plans
 
 Future updates may include support for:
+
 - Transaction creation and signing
 - Smart contract interaction
 - TRC-10 and TRC-20 token support
