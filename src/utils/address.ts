@@ -103,7 +103,7 @@ export function generateAddressP2SH(keyPublic: string, options: OptionsAddressP2
   const hashPubKey = hash160(bytesKeyPublic);
 
   // Create redeem script (simplification, real P2SH would be more complex)
-  const redeemScript = new Uint8Array(hashPubKey.length + 3);
+  const redeemScript = new Uint8Array(hashPubKey.length + 2);
   redeemScript[0] = 0x00; // OP_0
   redeemScript[1] = 0x14; // 20 bytes length
   redeemScript.set(hashPubKey, 2);

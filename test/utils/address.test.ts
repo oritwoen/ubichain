@@ -52,6 +52,13 @@ describe("Address utilities", () => {
   });
 
   describe("P2SH addresses", () => {
+    it("should generate correct P2SH address for known public key", () => {
+      // Generator point G - known P2SH-P2WPKH address
+      const generatorKey = "0279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798";
+      const address = generateAddressP2SH(generatorKey, { bytesVersion: 0x05 });
+      expect(address).toBe("3JvL6Ymt8MVWiCNHC7oWU6nLeHNJKLZGLN");
+    });
+
     it("should generate a valid P2SH address with correct version byte", () => {
       const address = generateAddressP2SH(testPublicKey, { bytesVersion: 0x05 });
 
