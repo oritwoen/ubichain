@@ -200,9 +200,9 @@ export default function bitcoin(options?: Options) {
   ): string {
     const hash = hashWithBitcoinPreamble(message);
     return genericSignMessage(hash, keyPrivate, {
+      ...options,
       curve: "secp256k1",
       hash: false,
-      ...options,
     });
   }
 
@@ -224,9 +224,9 @@ export default function bitcoin(options?: Options) {
     const hash = hashWithBitcoinPreamble(message);
     try {
       return genericVerifyMessage(hash, signature, keyPublic, {
+        ...options,
         curve: "secp256k1",
         hash: false,
-        ...options,
       });
     } catch {
       return false;
