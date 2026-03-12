@@ -126,11 +126,10 @@ export function validateAddress(address: string): boolean {
 function hashWithPreamble(message: string | Uint8Array): Uint8Array {
   const preamble = "\u0019Ethereum Signed Message:\n";
   const messageBytes = typeof message === "string" ? new TextEncoder().encode(message) : message;
-  const fullMessage = new TextEncoder().encode(
-    preamble +
-      messageBytes.length.toString() +
-      (typeof message === "string" ? message : bytesToHex(message)),
-  );
+  const preambleBytes = new TextEncoder().encode(preamble + messageBytes.length.toString());
+  const fullMessage = new Uint8Array(preambleBytes.length + messageBytes.length);
+  fullMessage.set(preambleBytes);
+  fullMessage.set(messageBytes, preambleBytes.length);
   return keccak_256(fullMessage);
 }
 
