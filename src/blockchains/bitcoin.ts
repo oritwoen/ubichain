@@ -7,7 +7,10 @@ import {
   generateAddressSegWit,
   validateAddressSegWit,
 } from "../utils/address";
-import { signMessage as genericSignMessage, verifyMessage as genericVerifyMessage } from "../utils/signing";
+import {
+  signMessage as genericSignMessage,
+  verifyMessage as genericVerifyMessage,
+} from "../utils/signing";
 import { sha256 } from "@noble/hashes/sha2.js";
 import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types";
 
