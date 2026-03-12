@@ -254,6 +254,29 @@ describe("Bitcoin blockchain", () => {
     });
   });
 
+  describe("Message signing", () => {
+    it("should sign a message and return a hex string", () => {
+      const wallet = blockchain.generateWallet();
+      const signature = blockchain.signMessage("Test message", wallet.keys.private);
+
+      expect(signature).toBeTypeOf("string");
+      expect(signature).toMatch(/^[0-9a-f]+$/);
+    });
+
+    it("should produce different signatures than EVM for the same key and message", async () => {
+      const { default: ethereum } = await import("../../src/blockchains/ethereum");
+      const ethBlockchain = useBlockchain(ethereum());
+
+      const wallet = blockchain.generateWallet();
+      const message = "Test message";
+
+      const btcSig = blockchain.signMessage(message, wallet.keys.private);
+      const ethSig = ethBlockchain.signMessage(message, wallet.keys.private);
+
+      expect(btcSig).not.toBe(ethSig);
+    });
+  });
+
   describe("Testnet addresses", () => {
     // Create bitcoin blockchain with testnet network option
     const options: Options = { network: "testnet" };

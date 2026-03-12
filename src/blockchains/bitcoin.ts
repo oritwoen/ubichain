@@ -7,8 +7,35 @@ import {
   generateAddressSegWit,
   validateAddressSegWit,
 } from "../utils/address";
-import { evmSignMessage, evmVerifyMessage } from "../utils/evm";
+import {
+  signMessage as genericSignMessage,
+  verifyMessage as genericVerifyMessage,
+} from "../utils/signing";
+import { sha256 } from "@noble/hashes/sha2.js";
 import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types";
+
+/**
+ * Encode a number as a Bitcoin compact size (varint)
+ */
+function encodeCompactSize(n: number): Uint8Array {
+  if (n < 0xfd) {
+    return new Uint8Array([n]);
+  }
+  if (n <= 0xffff) {
+    const buf = new Uint8Array(3);
+    buf[0] = 0xfd;
+    buf[1] = n & 0xff;
+    buf[2] = (n >> 8) & 0xff;
+    return buf;
+  }
+  const buf = new Uint8Array(5);
+  buf[0] = 0xfe;
+  buf[1] = n & 0xff;
+  buf[2] = (n >> 8) & 0xff;
+  buf[3] = (n >> 16) & 0xff;
+  buf[4] = (n >> 24) & 0xff;
+  return buf;
+}
 
 // Define network parameters interface
 type NetworkParams = {
@@ -140,7 +167,26 @@ export default function bitcoin(options?: Options) {
   }
 
   /**
-   * Signs a message using secp256k1 for Bitcoin
+   * Hashes a message with Bitcoin's message preamble using double SHA-256
+   * Format: varint(24) + "Bitcoin Signed Message:\n" + varint(msgLen) + message
+   *
+   * @param message - The message to hash
+   * @returns The double SHA-256 hash of the prefixed message
+   */
+  function hashWithBitcoinPreamble(message: string | Uint8Array): Uint8Array {
+    const preamble = "\u0018Bitcoin Signed Message:\n";
+    const messageBytes = typeof message === "string" ? new TextEncoder().encode(message) : message;
+    const varint = encodeCompactSize(messageBytes.length);
+    const preambleBytes = new TextEncoder().encode(preamble);
+    const fullMessage = new Uint8Array(preambleBytes.length + varint.length + messageBytes.length);
+    fullMessage.set(preambleBytes);
+    fullMessage.set(varint, preambleBytes.length);
+    fullMessage.set(messageBytes, preambleBytes.length + varint.length);
+    return sha256(sha256(fullMessage));
+  }
+
+  /**
+   * Signs a message using secp256k1 with Bitcoin's message preamble
    *
    * @param message - The message to sign
    * @param keyPrivate - The private key
@@ -152,7 +198,12 @@ export default function bitcoin(options?: Options) {
     keyPrivate: string,
     options?: KeyOptions,
   ): string {
-    return evmSignMessage(message, keyPrivate, options);
+    const hash = hashWithBitcoinPreamble(message);
+    return genericSignMessage(hash, keyPrivate, {
+      ...options,
+      curve: "secp256k1",
+      hash: false,
+    });
   }
 
   /**
@@ -170,7 +221,16 @@ export default function bitcoin(options?: Options) {
     keyPublic: string,
     options?: KeyOptions,
   ): boolean {
-    return evmVerifyMessage(message, signature, keyPublic, options);
+    const hash = hashWithBitcoinPreamble(message);
+    try {
+      return genericVerifyMessage(hash, signature, keyPublic, {
+        ...options,
+        curve: "secp256k1",
+        hash: false,
+      });
+    } catch {
+      return false;
+    }
   }
 
   return {
