@@ -96,6 +96,25 @@ describe("Signing utilities", () => {
 
       expect(evmSig).not.toBe(basicSig);
     });
+
+    it("should produce identical hash for string and equivalent Uint8Array", () => {
+      const messageString = "Hello";
+      const messageBytes = new TextEncoder().encode(messageString);
+
+      const sigFromString = evmSignMessage(messageString, secp256k1TestPrivateKey);
+      const sigFromBytes = evmSignMessage(messageBytes, secp256k1TestPrivateKey);
+
+      expect(sigFromBytes).toBe(sigFromString);
+    });
+
+    it("should sign Uint8Array messages", () => {
+      const messageBytes = new TextEncoder().encode(testMessage);
+
+      const signature = evmSignMessage(messageBytes, secp256k1TestPrivateKey);
+
+      expect(signature).toBeTypeOf("string");
+      expect(hexToBytes(signature).length).toBeGreaterThanOrEqual(64);
+    });
   });
 
   describe("Ed25519 specific signing", () => {
