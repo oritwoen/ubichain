@@ -1,4 +1,4 @@
-import type { Options, BlockchainImplementation } from "./types";
+import type { Options, BlockchainImplementation } from "./types.ts";
 
 type BlockchainFactory = (options?: Options) => BlockchainImplementation;
 type BlockchainModule = { default: BlockchainFactory };
@@ -18,12 +18,12 @@ function lazy(loader: () => Promise<BlockchainModule>) {
  * Blockchain implementations with lazy loading for improved performance and reduced bundle size
  */
 export const blockchains = {
-  bitcoin: lazy(() => import("./blockchains/bitcoin")),
-  solana: lazy(() => import("./blockchains/solana")),
-  aptos: lazy(() => import("./blockchains/aptos")),
-  tron: lazy(() => import("./blockchains/tron")),
-  sui: lazy(() => import("./blockchains/sui")),
-  ethereum: lazy(() => import("./blockchains/ethereum")),
-  base: lazy(() => import("./blockchains/base")),
-  cardano: lazy(() => import("./blockchains/cardano")),
+  bitcoin: lazy(() => import("./blockchains/bitcoin.ts")),
+  solana: lazy(() => import("./blockchains/solana.ts")),
+  aptos: lazy(() => import("./blockchains/aptos.ts")),
+  tron: lazy(() => import("./blockchains/tron.ts")),
+  sui: lazy(() => import("./blockchains/sui.ts")),
+  ethereum: lazy(() => import("./blockchains/ethereum.ts")),
+  base: lazy(() => import("./blockchains/base.ts")),
+  cardano: lazy(() => import("./blockchains/cardano.ts")),
 };

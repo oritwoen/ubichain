@@ -42,12 +42,12 @@
       "default": "./dist/index.mjs"
     },
     "./blockchains/*": {
-      "types": "./dist/blockchains/*.d.ts",
+      "types": "./dist/blockchains/*.d.mts",
       "default": "./dist/blockchains/*.mjs"
     }
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild",
     "dev": "vitest dev",
     "prepack": "pnpm build",
     "release": "changelogen --release && git push --follow-tags && npm publish",
@@ -77,11 +77,11 @@
     "@vitest/coverage-v8": "4.1.7",
     "changelogen": "0.6.2",
     "ethers": "^6.16.0",
+    "obuild": "0.4.35",
     "oxfmt": "0.51.0",
     "oxlint": "1.66.0",
     "tsx": "^4.22.3",
-    "typescript": "5.9.3",
-    "unbuild": "3.6.1",
+    "typescript": "6.0.3",
     "vitest": "4.1.7"
   },
   "packageManager": "pnpm@10.8.0"

@@ -5,7 +5,7 @@ import type {
   Wallet,
   KeyOptions,
   AddressType,
-} from "./types";
+} from "./types.ts";
 import { webcrypto } from "node:crypto";
 import { bytesToHex } from "@noble/hashes/utils.js";
 

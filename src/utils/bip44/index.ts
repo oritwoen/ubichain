@@ -16,7 +16,7 @@
  * - address_index: address index, starting from 0
  */
 
-import { HARDENED_OFFSET, formatIndex } from "../bip32";
+import { HARDENED_OFFSET, formatIndex } from "../bip32/index.ts";
 
 // BIP44 path levels
 export enum BIP44Levels {

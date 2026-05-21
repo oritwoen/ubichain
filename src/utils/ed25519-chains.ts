@@ -1,7 +1,7 @@
 import { ed25519 } from "@noble/curves/ed25519.js";
 import { hexToBytes, bytesToHex } from "@noble/hashes/utils.js";
-import { signMessage, verifyMessage } from "./signing";
-import type { KeyOptions } from "../types";
+import { signMessage, verifyMessage } from "./signing.ts";
+import type { KeyOptions } from "../types.ts";
 
 /**
  * Signs a message using Ed25519 for Ed25519-based blockchains

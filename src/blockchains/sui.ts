@@ -1,11 +1,11 @@
 import { blake2b } from "@noble/hashes/blake2.js";
 import { hexToBytes } from "@noble/hashes/utils.js";
-import { generateKeyPublic as getEd25519KeyPublic } from "../utils/ed25519";
-import { generateKeyPublic as getSecp256k1KeyPublic } from "../utils/secp256k1";
-import { validateAddressHex, addSchemeByte, createPrefixedAddress } from "../utils/address";
-import { ed25519SignMessage, ed25519VerifyMessage } from "../utils/ed25519-chains";
-import { evmSignMessage, evmVerifyMessage } from "../utils/evm";
-import type { Curve, KeyOptions, Options, BlockchainImplementation } from "../types";
+import { generateKeyPublic as getEd25519KeyPublic } from "../utils/ed25519.ts";
+import { generateKeyPublic as getSecp256k1KeyPublic } from "../utils/secp256k1.ts";
+import { validateAddressHex, addSchemeByte, createPrefixedAddress } from "../utils/address.ts";
+import { ed25519SignMessage, ed25519VerifyMessage } from "../utils/ed25519-chains.ts";
+import { evmSignMessage, evmVerifyMessage } from "../utils/evm.ts";
+import type { Curve, KeyOptions, Options, BlockchainImplementation } from "../types.ts";
 
 /**
  * Sui blockchain implementation

@@ -53,7 +53,7 @@ ubichain/
 - **Shared fixtures** - test vectors live in `test/fixtures.ts`, not duplicated per test file
 - **ESM only** - `"type": "module"` in package.json, `.mjs` output
 - **eslint-config-unjs** - linting with unjs defaults, `unicorn/prefer-export-from` disabled
-- **unbuild** - auto-detects entry points, no config file needed
+- **obuild** - entry points are explicit in `build.config.mjs`; keep package `exports` aligned with emitted `.mjs`/`.d.mts` files
 
 ## ANTI-PATTERNS
 
@@ -69,7 +69,7 @@ ubichain/
 pnpm dev              # vitest watch mode
 pnpm test             # lint + type check + vitest with coverage
 pnpm test:types       # tsc --noEmit --skipLibCheck
-pnpm build            # unbuild (auto-detects entries)
+pnpm build            # obuild via build.config.mjs
 pnpm lint             # eslint
 pnpm lint:fix         # eslint --fix
 pnpm playground <f>   # run any TS file via tsx

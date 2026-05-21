@@ -1,9 +1,9 @@
 import { base58 } from "@scure/base";
 import { hexToBytes } from "@noble/hashes/utils.js";
-import { generateKeyPublic as getKeyPublic } from "../utils/ed25519";
-import { solanaSignMessage, solanaVerifyMessage } from "../utils/ed25519-chains";
-import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types";
-import { BIP44 } from "../utils/bip44";
+import { generateKeyPublic as getKeyPublic } from "../utils/ed25519.ts";
+import { solanaSignMessage, solanaVerifyMessage } from "../utils/ed25519-chains.ts";
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types.ts";
+import { BIP44 } from "../utils/bip44/index.ts";
 
 /**
  * Solana blockchain implementation

@@ -1,9 +1,9 @@
 import { blake2b } from "@noble/hashes/blake2.js";
 import { hexToBytes } from "@noble/hashes/utils.js";
-import { generateKeyPublic as getEd25519KeyPublic } from "../utils/ed25519";
-import { ed25519SignMessage, ed25519VerifyMessage } from "../utils/ed25519-chains";
+import { generateKeyPublic as getEd25519KeyPublic } from "../utils/ed25519.ts";
+import { ed25519SignMessage, ed25519VerifyMessage } from "../utils/ed25519-chains.ts";
 import { base58 } from "@scure/base";
-import type { Curve, KeyOptions, Options, BlockchainImplementation } from "../types";
+import type { Curve, KeyOptions, Options, BlockchainImplementation } from "../types.ts";
 
 export default function cardano(options?: Options) {
   const name = "cardano";

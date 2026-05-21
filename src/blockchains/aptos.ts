@@ -1,9 +1,9 @@
 import { sha3_256 } from "@noble/hashes/sha3.js";
 import { hexToBytes } from "@noble/hashes/utils.js";
-import { generateKeyPublic as getKeyPublic } from "../utils/ed25519";
-import { validateAddressHex, addSchemeByte, createPrefixedAddress } from "../utils/address";
-import { ed25519SignMessage, ed25519VerifyMessage } from "../utils/ed25519-chains";
-import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types";
+import { generateKeyPublic as getKeyPublic } from "../utils/ed25519.ts";
+import { validateAddressHex, addSchemeByte, createPrefixedAddress } from "../utils/address.ts";
+import { ed25519SignMessage, ed25519VerifyMessage } from "../utils/ed25519-chains.ts";
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types.ts";
 
 /**
  * Aptos blockchain implementation

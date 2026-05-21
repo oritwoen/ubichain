@@ -1,10 +1,10 @@
-import { generateKeyPublic as getKeyPublic } from "../utils/secp256k1";
+import { generateKeyPublic as getKeyPublic } from "../utils/secp256k1.ts";
 import { hexToBytes } from "@noble/hashes/utils.js";
 import { keccak_256 } from "@noble/hashes/sha3.js";
-import { addSchemeByte } from "../utils/address";
-import { encodeBase58Check, validateBase58Check } from "../utils/encoding";
-import { evmSignMessage, evmVerifyMessage } from "../utils/evm";
-import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types";
+import { addSchemeByte } from "../utils/address.ts";
+import { encodeBase58Check, validateBase58Check } from "../utils/encoding.ts";
+import { evmSignMessage, evmVerifyMessage } from "../utils/evm.ts";
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types.ts";
 
 /**
  * Tron blockchain implementation

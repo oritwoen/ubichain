@@ -1,6 +1,6 @@
-import { createEVMBlockchain } from "../utils/evm";
-import type { Options, BlockchainImplementation } from "../types";
-import { BIP44 } from "../utils/bip44";
+import { createEVMBlockchain } from "../utils/evm.ts";
+import type { Options, BlockchainImplementation } from "../types.ts";
+import { BIP44 } from "../utils/bip44/index.ts";
 
 /**
  * Ethereum blockchain implementation

@@ -1,9 +1,9 @@
 import { hexToBytes, bytesToHex } from "@noble/hashes/utils.js";
 import { keccak_256 } from "@noble/hashes/sha3.js";
 import { secp256k1 } from "@noble/curves/secp256k1.js";
-import { generateKeyPublic as getSecp256k1KeyPublic } from "./secp256k1";
-import { signMessage, verifyMessage } from "./signing";
-import type { BlockchainImplementation, KeyOptions } from "../types";
+import { generateKeyPublic as getSecp256k1KeyPublic } from "./secp256k1.ts";
+import { signMessage, verifyMessage } from "./signing.ts";
+import type { BlockchainImplementation, KeyOptions } from "../types.ts";
 
 /**
  * Generate an EVM compatible address from a public key

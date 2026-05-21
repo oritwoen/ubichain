@@ -1,4 +1,4 @@
-import { generateKeyPublic as getKeyPublic } from "../utils/secp256k1";
+import { generateKeyPublic as getKeyPublic } from "../utils/secp256k1.ts";
 import {
   generateAddressLegacy,
   validateAddressLegacy,
@@ -6,13 +6,13 @@ import {
   validateAddressP2SH,
   generateAddressSegWit,
   validateAddressSegWit,
-} from "../utils/address";
+} from "../utils/address.ts";
 import {
   signMessage as genericSignMessage,
   verifyMessage as genericVerifyMessage,
-} from "../utils/signing";
+} from "../utils/signing.ts";
 import { sha256 } from "@noble/hashes/sha2.js";
-import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types";
+import type { Curve, Options, BlockchainImplementation, KeyOptions } from "../types.ts";
 
 /**
  * Encode a number as a Bitcoin compact size (varint)

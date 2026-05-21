@@ -1,7 +1,7 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { ripemd160 } from "@noble/hashes/legacy.js";
 import { hexToBytes, bytesToHex } from "@noble/hashes/utils.js";
-import { encodeBase58Check, validateBase58Check } from "./encoding";
+import { encodeBase58Check, validateBase58Check } from "./encoding.ts";
 import { bech32, bech32m } from "@scure/base";
 
 /**

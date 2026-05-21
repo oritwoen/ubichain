@@ -1,13 +1,19 @@
-export { useBlockchain } from "./blockchain";
+export { useBlockchain } from "./blockchain.ts";
 
 // Export lazy-loaded blockchain implementations
-export { blockchains } from "./_blockchains";
+export { blockchains } from "./_blockchains.ts";
 
 // Export BIP44 utilities
-export { BIP44, BIP44Change, getBIP44Path, parseBIP44Path, getBlockchainPath } from "./utils/bip44";
+export {
+  BIP44,
+  BIP44Change,
+  getBIP44Path,
+  parseBIP44Path,
+  getBlockchainPath,
+} from "./utils/bip44/index.ts";
 
 // Export Signing utilities
-export { signMessage, verifyMessage, type SigningOptions } from "./utils/signing";
+export { signMessage, verifyMessage, type SigningOptions } from "./utils/signing.ts";
 
 export type {
   Blockchain,
@@ -18,4 +24,4 @@ export type {
   AddressType,
   NetworkType,
   AddressFormat,
-} from "./types";
+} from "./types.ts";
