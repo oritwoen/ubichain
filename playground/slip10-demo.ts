@@ -1,5 +1,5 @@
 import { getMasterKeyFromSeed, deriveHDKey } from "../src/utils/slip10";
-import { hexToBytes } from "@noble/hashes/utils";
+import { hexToBytes } from "@noble/hashes/utils.js";
 
 // Use a static seed for reproducible results
 const testSeed = hexToBytes("000102030405060708090a0b0c0d0e0f");

@@ -64,25 +64,25 @@
     "playground:signing": "tsx playground/signing-demo.ts"
   },
   "dependencies": {
-    "@noble/curves": "2.0.1",
-    "@noble/hashes": "2.0.1",
-    "@scure/base": "2.0.0",
-    "@scure/bip32": "2.0.1",
-    "@scure/bip39": "2.0.1",
-    "micro-key-producer": "0.8.2"
+    "@noble/curves": "2.2.0",
+    "@noble/hashes": "2.2.0",
+    "@scure/base": "2.2.0",
+    "@scure/bip32": "2.2.0",
+    "@scure/bip39": "2.2.0",
+    "micro-key-producer": "0.8.6"
   },
   "devDependencies": {
     "@solana/web3.js": "^1.98.4",
-    "@types/node": "25.0.2",
-    "@vitest/coverage-v8": "4.0.15",
+    "@types/node": "25.9.1",
+    "@vitest/coverage-v8": "4.1.7",
     "changelogen": "0.6.2",
     "ethers": "^6.16.0",
-    "oxfmt": "0.36.0",
-    "oxlint": "1.51.0",
-    "tsx": "^4.21.0",
+    "oxfmt": "0.51.0",
+    "oxlint": "1.66.0",
+    "tsx": "^4.22.3",
     "typescript": "5.9.3",
     "unbuild": "3.6.1",
-    "vitest": "4.0.15"
+    "vitest": "4.1.7"
   },
   "packageManager": "pnpm@10.8.0"
 }

@@ -1,5 +1,5 @@
 import { Keypair } from "@solana/web3.js";
-import { webcrypto as _webcrypto } from "node:crypto";
+import nacl from "tweetnacl";
 import * as ubichain from "../src";
 
 // Function to convert hex to byte array
@@ -17,64 +17,66 @@ function bytesToHex(bytes: Uint8Array): string {
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Create keys using Solana Web3.js
-const solanaKeypair = Keypair.generate();
-const solanaPrivateKeyHex = bytesToHex(solanaKeypair.secretKey.slice(0, 32));
-const solanaPublicKeyHex = bytesToHex(solanaKeypair.publicKey.toBytes());
-const solanaPublicKeyBase58 = solanaKeypair.publicKey.toBase58();
+void (async () => {
+  const solanaKeypair = Keypair.generate();
+  const solanaPrivateKeyHex = bytesToHex(solanaKeypair.secretKey.slice(0, 32));
+  const solanaPublicKeyHex = bytesToHex(solanaKeypair.publicKey.toBytes());
+  const solanaPublicKeyBase58 = solanaKeypair.publicKey.toBase58();
 
-console.log("===== Solana Web3.js Keys =====");
-console.log("Private Key (hex):", solanaPrivateKeyHex);
-console.log("Public Key (hex):", solanaPublicKeyHex);
-console.log("Public Key (base58):", solanaPublicKeyBase58);
+  console.log("===== Solana Web3.js Keys =====");
+  console.log("Private Key (hex):", solanaPrivateKeyHex);
+  console.log("Public Key (hex):", solanaPublicKeyHex);
+  console.log("Public Key (base58):", solanaPublicKeyBase58);
 
-// Create identical keys using ubichain
-const solanaBlockchain = ubichain.blockchains.solana();
-const ubichainPublicKey = solanaBlockchain.getKeyPublic(solanaPrivateKeyHex);
-const ubichainAddress = solanaBlockchain.getAddress(ubichainPublicKey);
+  const solanaBlockchain = ubichain.useBlockchain(await ubichain.blockchains.solana()());
+  const ubichainPublicKey = solanaBlockchain.getKeyPublic(solanaPrivateKeyHex);
+  const ubichainAddress = solanaBlockchain.getAddress(ubichainPublicKey);
 
-console.log("\n===== Ubichain Keys =====");
-console.log("Private Key (hex):", solanaPrivateKeyHex);
-console.log("Public Key (hex):", ubichainPublicKey);
-console.log("Address (base58):", ubichainAddress);
+  console.log("\n===== Ubichain Keys =====");
+  console.log("Private Key (hex):", solanaPrivateKeyHex);
+  console.log("Public Key (hex):", ubichainPublicKey);
+  console.log("Address (base58):", ubichainAddress);
 
-// Sign message using both libraries
-const message = "Test message for Solana signature";
+  const message = "Test message for Solana signature";
+  const messageBytes = new TextEncoder().encode(message);
+  const solanaSignature = nacl.sign.detached(messageBytes, solanaKeypair.secretKey);
 
-// Sign using Solana Web3.js
-const solanaSignature = Keypair.fromSecretKey(
-  new Uint8Array([...hexToBytes(solanaPrivateKeyHex), ...new Uint8Array(32)]),
-).sign(new TextEncoder().encode(message));
+  console.log("\n===== Signatures =====");
+  console.log("Solana/tweetnacl Signature (hex):", bytesToHex(solanaSignature));
 
-console.log("\n===== Signatures =====");
-console.log("Solana Web3.js Signature (hex):", bytesToHex(solanaSignature));
+  const ubichainSignature = solanaBlockchain.signMessage(message, solanaPrivateKeyHex);
+  console.log("Ubichain Signature (hex):", ubichainSignature);
 
-// Sign using ubichain
-const ubichainSignature = solanaBlockchain.signMessage(message, solanaPrivateKeyHex);
-console.log("Ubichain Signature (hex):", ubichainSignature);
+  const solanaVerified = nacl.sign.detached.verify(
+    messageBytes,
+    solanaSignature,
+    solanaKeypair.publicKey.toBytes(),
+  );
 
-// Verify signatures
-const solanaVerified = Keypair.fromSecretKey(
-  new Uint8Array([...hexToBytes(solanaPrivateKeyHex), ...new Uint8Array(32)]),
-).publicKey.verify(new TextEncoder().encode(message), solanaSignature);
+  const ubichainVerified = solanaBlockchain.verifyMessage(
+    message,
+    ubichainSignature,
+    ubichainPublicKey,
+  );
 
-const ubichainVerified = solanaBlockchain.verifyMessage(
-  message,
-  ubichainSignature,
-  ubichainPublicKey,
-);
+  console.log("\n===== Verification =====");
+  console.log("Solana/tweetnacl verification:", solanaVerified);
+  console.log("Ubichain verification:", ubichainVerified);
 
-console.log("\n===== Verification =====");
-console.log("Solana Web3.js verification:", solanaVerified);
-console.log("Ubichain verification:", ubichainVerified);
-
-// Check compatibility between libraries
-console.log("\n===== Cross Verification =====");
-try {
-  const crossVerified = Keypair.fromSecretKey(
-    new Uint8Array([...hexToBytes(solanaPrivateKeyHex), ...new Uint8Array(32)]),
-  ).publicKey.verify(new TextEncoder().encode(message), hexToBytes(ubichainSignature));
-  console.log("Ubichain signature verified by Solana Web3.js:", crossVerified);
-} catch (error) {
-  console.error("Error during cross verification:", error.message);
-}
+  console.log("\n===== Cross Verification =====");
+  const solanaSignatureVerifiedByUbichain = solanaBlockchain.verifyMessage(
+    message,
+    bytesToHex(solanaSignature),
+    solanaPublicKeyHex,
+  );
+  const ubichainSignatureVerifiedByNacl = nacl.sign.detached.verify(
+    messageBytes,
+    hexToBytes(ubichainSignature),
+    solanaKeypair.publicKey.toBytes(),
+  );
+  console.log(
+    "Solana/tweetnacl signature verified by ubichain:",
+    solanaSignatureVerifiedByUbichain,
+  );
+  console.log("Ubichain signature verified by tweetnacl:", ubichainSignatureVerifiedByNacl);
+})();

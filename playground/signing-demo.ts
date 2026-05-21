@@ -1,5 +1,5 @@
 import { webcrypto } from "node:crypto";
-import { bytesToHex } from "@noble/hashes/utils";
+import { bytesToHex } from "@noble/hashes/utils.js";
 import { useBlockchain } from "../src/blockchain";
 
 // Dynamiczne importy blockchainów

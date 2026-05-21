@@ -5,8 +5,8 @@ import {
   formatIndex,
   HARDENED_OFFSET,
 } from "../src/utils/bip32";
-import { hexToBytes } from "@noble/hashes/utils";
-import { sha256 } from "@noble/hashes/sha256";
+import { hexToBytes } from "@noble/hashes/utils.js";
+import { sha256 } from "@noble/hashes/sha2.js";
 
 // Commented out but kept for reference
 // Generate a seed from random bytes

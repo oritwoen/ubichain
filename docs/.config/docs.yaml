@@ -3,6 +3,7 @@ name: ubichain
 shortDescription: Universal Blockchain Interface.
 description: A TypeScript library for interacting with various blockchains, providing simple and consistent interfaces for generating keys, addresses, and managing crypto wallets.
 github: oritwoen/ubichain
+url: https://github.com/oritwoen/ubichain
 themeColor: amber
 landing:
   contributors: true
