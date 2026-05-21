@@ -208,15 +208,13 @@ describe("Bitcoin blockchain", () => {
   });
 
   describe("SegWit v1 (bech32m/Taproot) addresses", () => {
-    it("should generate a Taproot address from a public key", () => {
-      const keyPrivate = blockchain.generateKeyPrivate();
-      const keyPublic = blockchain.getKeyPublic(keyPrivate);
-      const address = blockchain.getAddress(keyPublic, "taproot");
+    it("should generate the BIP341 Taproot address for a known public key", () => {
+      const address = blockchain.getAddress(
+        "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "taproot",
+      );
 
-      // Taproot address should start with bc1p (p is part of the encoding, indicating v1)
-      expect(address.startsWith("bc1p")).toBe(true);
-
-      // Should be a valid address
+      expect(address).toBe("bc1pmfr3p9j00pfxjh0zmgp99y8zftmd3s5pmedqhyptwy6lm87hf5sspknck9");
       expect(blockchain.validateAddress!(address)).toBe(true);
     });
 

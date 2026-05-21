@@ -1,6 +1,7 @@
 import { generateKeyPublic as getKeyPublic } from "../utils/secp256k1.ts";
 import { hexToBytes } from "@noble/hashes/utils.js";
 import { keccak_256 } from "@noble/hashes/sha3.js";
+import { secp256k1 } from "@noble/curves/secp256k1.js";
 import { addSchemeByte } from "../utils/address.ts";
 import { encodeBase58Check, validateBase58Check } from "../utils/encoding.ts";
 import { evmSignMessage, evmVerifyMessage } from "../utils/evm.ts";
@@ -49,13 +50,18 @@ export default function tron(options?: Options) {
    * @returns TRON address string
    */
   function getAddress(keyPublic: string): string {
-    // Convert public key to bytes
     const keyPublicBytes = hexToBytes(keyPublic);
+    let keyBytesForHashing: Uint8Array;
 
-    // Apply Keccak-256 hash to the public key
-    const keccakHash = keccak_256(keyPublicBytes);
+    if (keyPublicBytes.length === 33) {
+      keyBytesForHashing = secp256k1.Point.fromBytes(keyPublicBytes).toBytes(false).slice(1);
+    } else if (keyPublicBytes.length === 65) {
+      keyBytesForHashing = keyPublicBytes.slice(1);
+    } else {
+      throw new Error(`Invalid public key length: ${keyPublicBytes.length} bytes`);
+    }
 
-    // Take the last 20 bytes of the hash result
+    const keccakHash = keccak_256(keyBytesForHashing);
     const addressBytes = keccakHash.slice(-20);
 
     // Create versioned hash with network-specific prefix byte

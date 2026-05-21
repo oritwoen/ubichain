@@ -1,6 +1,7 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { ripemd160 } from "@noble/hashes/legacy.js";
 import { hexToBytes, bytesToHex } from "@noble/hashes/utils.js";
+import { secp256k1 } from "@noble/curves/secp256k1.js";
 import { encodeBase58Check, validateBase58Check } from "./encoding.ts";
 import { bech32, bech32m } from "@scure/base";
 
@@ -10,12 +11,42 @@ import { bech32, bech32m } from "@scure/base";
  * @returns Hash160 result
  */
 export function hash160(data: Uint8Array): Uint8Array {
-  // Calculate SHA256 hash
-  const sha256Hash = sha256(data);
+  return ripemd160(sha256(data));
+}
 
-  // Calculate RIPEMD160 hash of the SHA256 hash
-  // This avoids creating an intermediate array
-  return ripemd160(sha256Hash);
+function bytesToNumberBE(bytes: Uint8Array): bigint {
+  return BigInt(`0x${bytesToHex(bytes)}`);
+}
+
+function taggedHash(tag: string, data: Uint8Array): Uint8Array {
+  const tagHash = sha256(new TextEncoder().encode(tag));
+  const input = new Uint8Array(tagHash.length * 2 + data.length);
+  input.set(tagHash);
+  input.set(tagHash, tagHash.length);
+  input.set(data, tagHash.length * 2);
+  return sha256(input);
+}
+
+function xOnlyFromPublicKey(keyPublicBytes: Uint8Array): Uint8Array {
+  const point = secp256k1.Point.fromBytes(keyPublicBytes);
+  return point.toBytes(true).slice(1);
+}
+
+function generateTaprootProgram(keyPublicBytes: Uint8Array): Uint8Array {
+  const internalKey = xOnlyFromPublicKey(keyPublicBytes);
+  const internalPoint = secp256k1.Point.fromHex(bytesToHex(new Uint8Array([0x02, ...internalKey])));
+  const tweak = bytesToNumberBE(taggedHash("TapTweak", internalKey));
+
+  if (tweak >= secp256k1.Point.Fn.ORDER) {
+    throw new Error("Invalid Taproot tweak");
+  }
+
+  const outputPoint = internalPoint.add(secp256k1.Point.BASE.multiply(tweak));
+  if (outputPoint.is0()) {
+    throw new Error("Invalid Taproot output point");
+  }
+
+  return outputPoint.toBytes(true).slice(1);
 }
 
 /**
@@ -150,8 +181,7 @@ export function generateAddressSegWit(
   let programBytes: Uint8Array;
 
   if (options.witnessVersion === 1) {
-    // For Taproot (v1), use SHA256 hash (simplified)
-    programBytes = sha256(bytesKeyPublic);
+    programBytes = generateTaprootProgram(bytesKeyPublic);
   } else if (type === "p2wsh") {
     // For P2WSH, we hash the script (in this case, a simple pubkey script)
     const script = new Uint8Array(bytesKeyPublic.length + 2);

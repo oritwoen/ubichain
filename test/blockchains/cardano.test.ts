@@ -53,7 +53,7 @@ describe("Cardano blockchain", () => {
         const publicKey = blockchain.getKeyPublic(privateKey);
         const address = blockchain.getAddress(publicKey);
 
-        expect(address).toMatch(/^addr1[a-zA-Z0-9]+$/);
+        expect(address).toMatch(/^addr1[a-z0-9]+$/);
         expect(validateAddress(address)).toBe(true);
       });
 
@@ -62,7 +62,7 @@ describe("Cardano blockchain", () => {
         const publicKey = blockchain.getKeyPublic(privateKey);
         const address = blockchain.getAddress(publicKey, "enterprise");
 
-        expect(address).toMatch(/^addr1e[a-zA-Z0-9]+$/);
+        expect(address).toMatch(/^addr1[a-z0-9]+$/);
         expect(validateAddress(address)).toBe(true);
       });
 
@@ -71,17 +71,23 @@ describe("Cardano blockchain", () => {
         const publicKey = blockchain.getKeyPublic(privateKey);
         const address = blockchain.getAddress(publicKey, "stake");
 
-        expect(address).toMatch(/^stake1[a-zA-Z0-9]+$/);
+        expect(address).toMatch(/^stake1[a-z0-9]+$/);
         expect(validateAddress(address)).toBe(true);
       });
 
-      it("produces deterministic results for the same public key", () => {
+      it("matches CSL-derived Shelley address vectors", () => {
         const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
         const publicKey = blockchain.getKeyPublic(privateKey);
 
-        const address1 = blockchain.getAddress(publicKey);
-        const address2 = blockchain.getAddress(publicKey);
-        expect(address1).toBe(address2);
+        expect(blockchain.getAddress(publicKey)).toBe(
+          "addr1q8qvqahau6y67jdq0kfm9dy0hjmgv4u962nmk9pslsl7ryxqcpm0me5f4ay6qlvnk26gl09ksetct548hv2rplpluxgqg7tfu9",
+        );
+        expect(blockchain.getAddress(publicKey, "enterprise")).toBe(
+          "addr1v8qvqahau6y67jdq0kfm9dy0hjmgv4u962nmk9pslsl7ryq5mvnl7",
+        );
+        expect(blockchain.getAddress(publicKey, "stake")).toBe(
+          "stake1u8qvqahau6y67jdq0kfm9dy0hjmgv4u962nmk9pslsl7ryqg3v4rv",
+        );
       });
     });
 
@@ -132,7 +138,7 @@ describe("Cardano blockchain", () => {
         const wallet = blockchain.generateWallet();
         expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
         expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
-        expect(wallet.address).toMatch(/^addr1[a-zA-Z0-9]+$/);
+        expect(wallet.address).toMatch(/^addr1[a-z0-9]+$/);
         expect(validateAddress(wallet.address)).toBe(true);
       });
 
@@ -140,7 +146,7 @@ describe("Cardano blockchain", () => {
         const wallet = blockchain.generateWallet(undefined, "enterprise");
         expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
         expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
-        expect(wallet.address).toMatch(/^addr1e[a-zA-Z0-9]+$/);
+        expect(wallet.address).toMatch(/^addr1[a-z0-9]+$/);
         expect(validateAddress(wallet.address)).toBe(true);
       });
 
@@ -148,7 +154,7 @@ describe("Cardano blockchain", () => {
         const wallet = blockchain.generateWallet(undefined, "stake");
         expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
         expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
-        expect(wallet.address).toMatch(/^stake1[a-zA-Z0-9]+$/);
+        expect(wallet.address).toMatch(/^stake1[a-z0-9]+$/);
         expect(validateAddress(wallet.address)).toBe(true);
       });
     });
@@ -185,20 +191,32 @@ describe("Cardano blockchain", () => {
         const privateKey = testnetBlockchain.generateKeyPrivate();
         const publicKey = testnetBlockchain.getKeyPublic(privateKey);
 
-        // Generate addresses for different types
         const baseAddress = testnetBlockchain.getAddress(publicKey);
         const enterpriseAddress = testnetBlockchain.getAddress(publicKey, "enterprise");
         const stakeAddress = testnetBlockchain.getAddress(publicKey, "stake");
 
-        // Check address format
-        expect(baseAddress).toMatch(/^addr_test1[a-zA-Z0-9]+$/);
-        expect(enterpriseAddress).toMatch(/^addr_test1e[a-zA-Z0-9]+$/);
-        expect(stakeAddress).toMatch(/^stake_test1[a-zA-Z0-9]+$/);
+        expect(baseAddress).toMatch(/^addr_test1[a-z0-9]+$/);
+        expect(enterpriseAddress).toMatch(/^addr_test1[a-z0-9]+$/);
+        expect(stakeAddress).toMatch(/^stake_test1[a-z0-9]+$/);
 
-        // Validate addresses
         expect(validateAddress(baseAddress)).toBe(true);
         expect(validateAddress(enterpriseAddress)).toBe(true);
         expect(validateAddress(stakeAddress)).toBe(true);
+      });
+
+      it("matches CSL-derived testnet Shelley address vectors", () => {
+        const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
+        const publicKey = testnetBlockchain.getKeyPublic(privateKey);
+
+        expect(testnetBlockchain.getAddress(publicKey)).toBe(
+          "addr_test1qrqvqahau6y67jdq0kfm9dy0hjmgv4u962nmk9pslsl7ryxqcpm0me5f4ay6qlvnk26gl09ksetct548hv2rplpluxgqtgkfs6",
+        );
+        expect(testnetBlockchain.getAddress(publicKey, "enterprise")).toBe(
+          "addr_test1vrqvqahau6y67jdq0kfm9dy0hjmgv4u962nmk9pslsl7ryq0nc0sm",
+        );
+        expect(testnetBlockchain.getAddress(publicKey, "stake")).toBe(
+          "stake_test1urqvqahau6y67jdq0kfm9dy0hjmgv4u962nmk9pslsl7ryq0mxh83",
+        );
       });
     });
 
@@ -207,7 +225,7 @@ describe("Cardano blockchain", () => {
         const wallet = testnetBlockchain.generateWallet();
         expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
         expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
-        expect(wallet.address).toMatch(/^addr_test1[a-zA-Z0-9]+$/);
+        expect(wallet.address).toMatch(/^addr_test1[a-z0-9]+$/);
         expect(validateAddress(wallet.address)).toBe(true);
       });
 
@@ -215,7 +233,7 @@ describe("Cardano blockchain", () => {
         const wallet = testnetBlockchain.generateWallet(undefined, "enterprise");
         expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
         expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
-        expect(wallet.address).toMatch(/^addr_test1e[a-zA-Z0-9]+$/);
+        expect(wallet.address).toMatch(/^addr_test1[a-z0-9]+$/);
         expect(validateAddress(wallet.address)).toBe(true);
       });
 
@@ -223,7 +241,7 @@ describe("Cardano blockchain", () => {
         const wallet = testnetBlockchain.generateWallet(undefined, "stake");
         expect(wallet.keys.private).toMatch(/^[0-9a-f]{64}$/);
         expect(wallet.keys.public).toMatch(/^[0-9a-f]{64}$/);
-        expect(wallet.address).toMatch(/^stake_test1[a-zA-Z0-9]+$/);
+        expect(wallet.address).toMatch(/^stake_test1[a-z0-9]+$/);
         expect(validateAddress(wallet.address)).toBe(true);
       });
     });
