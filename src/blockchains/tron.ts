@@ -20,13 +20,7 @@ export default function tron(options?: Options) {
   const network = options?.network || "mainnet";
   const bip44 = 195; // SLIP-0044 index for TRON
 
-  // Network-specific parameters for address generation and validation
-  type NetworkParams = {
-    prefixByte: number;
-    prefixChar: string;
-  };
-
-  const networkParams: Record<string, NetworkParams> = {
+  const networkParams = {
     mainnet: {
       prefixByte: 0x41, // 65 in decimal, mainnet addresses start with 'T'
       prefixChar: "T",

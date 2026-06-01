@@ -90,8 +90,8 @@ export default function cardano(options?: Options) {
       const bytes = bech32.fromWords(decoded.words);
       if (bytes.length === 0) return false;
 
-      const addressNetwork = bytes[0] & 0x0f;
-      const addressType = bytes[0] >> 4;
+      const addressNetwork = bytes[0]! & 0x0f;
+      const addressType = bytes[0]! >> 4;
       if (addressNetwork !== networkId) return false;
 
       if (decoded.prefix === (network === "testnet" ? "stake_test" : "stake")) {

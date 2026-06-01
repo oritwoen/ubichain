@@ -37,15 +37,6 @@ function encodeCompactSize(n: number): Uint8Array {
   return buf;
 }
 
-// Define network parameters interface
-type NetworkParams = {
-  hrpSegWit: string;
-  prefixSegWitV0: string;
-  prefixSegWitV1: string;
-  bytesVersionP2PKH: number;
-  bytesVersionP2SH: number;
-};
-
 export default function bitcoin(options?: Options) {
   const name = "bitcoin";
   const curve: Curve = "secp256k1";
@@ -53,7 +44,7 @@ export default function bitcoin(options?: Options) {
   const bip44 = 0; // SLIP-0044 index for Bitcoin
 
   // Network-specific parameters for address generation and validation
-  const networkParams: Record<string, NetworkParams> = {
+  const networkParams = {
     mainnet: {
       hrpSegWit: "bc",
       prefixSegWitV0: "bc1q",
