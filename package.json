@@ -72,6 +72,8 @@
     "micro-key-producer": "0.8.6"
   },
   "devDependencies": {
+    "@earendil-works/pi-coding-agent": "latest",
+    "@earendil-works/pi-tui": "latest",
     "@solana/web3.js": "^1.98.4",
     "@types/node": "25.9.1",
     "@vitest/coverage-v8": "4.1.7",
@@ -81,8 +83,14 @@
     "oxfmt": "0.51.0",
     "oxlint": "1.66.0",
     "tsx": "^4.22.3",
+    "typebox": "latest",
     "typescript": "6.0.3",
     "vitest": "4.1.7"
   },
-  "packageManager": "pnpm@10.8.0"
+  "packageManager": "pnpm@10.8.0",
+  "pi": {
+    "extensions": [
+      "packages/pi/extensions/ubichain.ts"
+    ]
+  }
 }
