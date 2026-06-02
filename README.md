@@ -7,6 +7,9 @@
 
 Unified TypeScript interface for generating keys, addresses, and wallets across multiple blockchains. One API, eight chains, two curves.
 
+> [!WARNING]
+> **ubichain is experimental.** The package name, public API, provider model, CLI flags, and tool surfaces may change before the first stable release. Pin exact versions if you build on it now.
+
 ## Features
 
 - 🔑 **Key generation** - cryptographically secure private keys via Web Crypto API
@@ -113,6 +116,9 @@ Built on audited cryptographic packages from [@paulmillr](https://github.com/pau
 - [@scure/base](https://github.com/paulmillr/scure-base) - base58, bech32, hex encoding
 - [@scure/bip32](https://github.com/paulmillr/scure-bip32) - HD wallet key derivation
 - [micro-key-producer](https://github.com/paulmillr/micro-key-producer) - SLIP-0010 for ed25519
+
+> [!CAUTION]
+> **Never — ever — use this with real funds or with any wallet that has ever been used.** Generated and signed material is handled as plaintext; treat every key it touches as burned the moment it is produced. Generate fresh throwaway keys for testing only and assume anything passing through ubichain is compromised. Real-funds keys belong on a hardware wallet, never in a process, log, or agent transcript.
 
 ## License
 

@@ -8,7 +8,7 @@ import { Type } from "typebox";
 /** Lazy-load the library. */
 async function loadLib() {
   const mod = await import("ubichain").catch(() => {
-    // @ts-ignore — runtime fallback for dev (same package source)
+    // Runtime fallback for dev before dist is built (same package source).
     return import("../../../src/index.ts");
   });
   return mod as typeof import("ubichain");

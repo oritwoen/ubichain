@@ -54,8 +54,9 @@
     "fmt": "oxlint . --fix && oxfmt .",
     "lint": "oxlint . && oxfmt --check .",
     "lint:fix": "oxlint . --fix && oxfmt .",
-    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
+    "test": "pnpm lint && pnpm test:types && pnpm build && pnpm test:ext && vitest run --coverage",
     "test:types": "tsc --noEmit --skipLibCheck",
+    "test:ext": "tsc -p tsconfig.extensions.json --noEmit",
     "playground": "tsx",
     "playground:bip32": "tsx playground/bip32-demo.ts",
     "playground:slip10": "tsx playground/slip10-demo.ts",
@@ -72,8 +73,8 @@
     "micro-key-producer": "0.8.6"
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "latest",
-    "@earendil-works/pi-tui": "latest",
+    "@earendil-works/pi-coding-agent": "0.78.0",
+    "@earendil-works/pi-tui": "0.78.0",
     "@solana/web3.js": "^1.98.4",
     "@types/node": "25.9.1",
     "@vitest/coverage-v8": "4.1.7",
@@ -83,7 +84,7 @@
     "oxfmt": "0.51.0",
     "oxlint": "1.66.0",
     "tsx": "^4.22.3",
-    "typebox": "latest",
+    "typebox": "1.1.39",
     "typescript": "6.0.3",
     "vitest": "4.1.7"
   },
