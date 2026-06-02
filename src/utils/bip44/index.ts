@@ -101,12 +101,12 @@ export function parseBIP44Path(path: string):
     return undefined;
   }
 
-  // Parse each segment
-  const purpose = parseSegment(segments[0]);
-  const coinType = parseSegment(segments[1]);
-  const account = parseSegment(segments[2]);
-  const change = parseSegment(segments[3]);
-  const addressIndex = parseSegment(segments[4]);
+  // Parse each segment (length verified === 5 above)
+  const purpose = parseSegment(segments[0]!);
+  const coinType = parseSegment(segments[1]!);
+  const account = parseSegment(segments[2]!);
+  const change = parseSegment(segments[3]!);
+  const addressIndex = parseSegment(segments[4]!);
 
   // Validate purpose is 44'
   if (purpose !== BIP44_PURPOSE) {
