@@ -30,7 +30,7 @@ type ChainName = (typeof CHAINS)[number];
 async function getBlockchain(chain: string, network?: string) {
   const lib = await loadLib();
   const key = chain.toLowerCase() as ChainName;
-  if (!(key in lib.blockchains)) {
+  if (!Object.hasOwn(lib.blockchains, key)) {
     throw new Error(`Unknown chain "${chain}". Supported: ${CHAINS.join(", ")}`);
   }
   const factory = lib.blockchains[key];
@@ -326,7 +326,7 @@ export default function ubichainExtension(pi: ExtensionAPI) {
       }
 
       const key = params.chain.toLowerCase() as ChainName;
-      if (!(key in lib.blockchains)) {
+      if (!Object.hasOwn(lib.blockchains, key)) {
         return {
           details: undefined,
           content: [
